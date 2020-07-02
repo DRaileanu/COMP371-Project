@@ -56,12 +56,10 @@ int main() {
     programInit();
 
     // build and compile shader program
-    Shader shader("shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl");
+    
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    
-
     
 
 
@@ -100,18 +98,20 @@ int main() {
        
 
         // activate shader
-        shader.use();
+        
 
         // pass projection matrix to shader (note that in this case it could change every frame)
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        shader.setMat4("projection", projection);
+        //shader.setMat4("projection", projection); //use whatever shader we want
 
         // camera/view transformation
         glm::mat4 view = camera.GetViewMatrix();
-        shader.setMat4("view", view);
+        //shader.setMat4("view", view);
+
 
         // render objects
-        
+       
+
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
