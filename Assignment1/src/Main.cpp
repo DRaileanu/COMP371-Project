@@ -27,7 +27,7 @@ const unsigned int SCR_HEIGHT = 600;
 GLFWwindow* window;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 1.0f, -3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -56,13 +56,56 @@ int main() {
     programInit();
 
     // build and compile shader program
-    Shader shader("shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl");
+    Shader genericShader("shaders/generic.vs", "shaders/generic.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
+     // ------------------------------------------------------------------
+    float gridVertices[] = {
+        -1.0,  0.0,  0.0,
+         1.0,  0.0,  0.0,
+         0.0,  0.0,  1.0,
+         0.0,  0.0, -1.0
+    };
+
+    int gridIndexes[400];
+    for (int i = 0; i < 100; ++i) {
+        gridIndexes[2 * i] = 0;
+        gridIndexes[2 * i + 1] = 1;
+    }
+    for (int i = 0; i < 100; ++i) {
+        gridIndexes[2*i+200] = 2;
+        gridIndexes[2*i+201] = 3;
+    }
+
+
+    glm::vec3 gridPositions[200];
+    for (int i=0; i < 100; ++i) {
+        gridPositions[i] = glm::vec3(0.0, 0.0f, i-50.0f);
+        gridPositions[i + 100] = glm::vec3(i - 50.0f, 0.0f, 0.0f);
+    }
+
+
+
     
 
     
+
+    unsigned int VBO, VAO, EBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(gridVertices), gridVertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(gridIndexes), gridIndexes, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 
 
     // load and create a texture 
@@ -73,8 +116,7 @@ int main() {
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
-    
-
+   
 
 
     // render loop
@@ -97,21 +139,31 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // bind textures on corresponding texture units
-       
+
 
         // activate shader
-        shader.use();
+        genericShader.use();
 
         // pass projection matrix to shader (note that in this case it could change every frame)
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        shader.setMat4("projection", projection);
+        genericShader.setMat4("projection", projection);
 
         // camera/view transformation
         glm::mat4 view = camera.GetViewMatrix();
-        shader.setMat4("view", view);
+        genericShader.setMat4("view", view);
 
         // render objects
-        
+        glBindVertexArray(VAO);
+        for (unsigned int i = 0; i < 200; i++)
+        {
+            // calculate the model matrix for each object and pass it to shader before drawing
+            glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+            model = glm::translate(model, gridPositions[i]);
+            model = glm::scale(model, glm::vec3(50.0f, 50.0f, 50.0f));
+            genericShader.setMat4("model", model);
+
+            glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, (void*)(2*i*sizeof(float)));
+        }
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -121,7 +173,9 @@ int main() {
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------

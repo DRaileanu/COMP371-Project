@@ -28,6 +28,8 @@
   <ItemGroup>
     <None Include="shaders\fragment_shader.glsl" />
     <None Include="shaders\vertex_shader.glsl" />
+    <None Include="shaders\generic.vs" />
+    <None Include="shaders\generic.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\awesomeface.png">
