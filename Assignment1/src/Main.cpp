@@ -69,13 +69,17 @@ int main() {
         
     SceneNode* root = new SceneNode;
 
+    SceneNode* dan = new SceneNode;
+    dan->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, 0.0f, -30.0f)));
+    root->addChild(dan);
+
     Model* model1 = new Model('N');
     model1->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-2.5f, 0.0f, 0.0f)));
-    root->addChild(model1);
+    dan->addChild(model1);
 
     Model* model2 = new Model('1');
     model2->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(2.5f, 0.0f, 0.0f)));
-    root->addChild(model2);
+    dan->addChild(model2);
 
     
     
