@@ -9,7 +9,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "camera.h"
+#include "SceneNode.h"
 #include "Cube.h"
+#include "Model.h"
 
 #include <iostream>
 
@@ -47,6 +49,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
+//eventually goes into Renderer class
+void drawNode(SceneNode*, Shader*);
+
 
 
 //------------------------------------------------------------------------------
@@ -61,7 +66,17 @@ int main() {
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    Cube cube;
+        
+    SceneNode* root = new SceneNode;
+
+    Model* model1 = new Model('N');
+    model1->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-2.5f, 0.0f, 0.0f)));
+    root->addChild(model1);
+
+    Model* model2 = new Model('1');
+    model2->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(2.5f, 0.0f, 0.0f)));
+    root->addChild(model2);
+
 
     
     // load and create a texture 
@@ -112,20 +127,13 @@ int main() {
 
 
         // render objects
-        glm::mat4 model;
-        model = glm::mat4(1.0f);
-        shader.setMat4("model", model);
-        cube.draw();
+        root->update(currentFrame);
+        drawNode(root, &shader);
 
-
-
+        //glm::mat4 model;
         //model = glm::mat4(1.0f);
-        //model = glm::translate(model, glm::vec3(-1.5, 0.0, 0.0));
-        //model = glm::scale(model, glm::vec3(1.0, 5.0, 1.0));
-        ////model = scale * trans *  model;
         //shader.setMat4("model", model);
         //cube.draw();
-
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -242,4 +250,17 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     // make sure the viewport matches the new window dimensions
     glViewport(0, 0, width, height);
+}
+
+
+void drawNode(SceneNode* node, Shader* shader) {
+    if (node->getMesh()) {
+        glm::mat4 transform = node->getWorldTransform();
+        shader->setMat4("model", transform);
+        node->draw();
+    }
+
+    for (auto child : node->getChildren()) {
+        drawNode(child, shader);
+    }
 }

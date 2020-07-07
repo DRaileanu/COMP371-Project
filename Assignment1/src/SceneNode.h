@@ -18,13 +18,12 @@ public:
 
 	void addChild(SceneNode*);
 
-	virtual void update(float deltaTime);
+	virtual void update(float dt);
 	virtual void draw();
 	
-	std::vector<SceneNode*>::const_iterator getChildIteratorStart() { return children.begin(); }
-	std::vector<SceneNode*>::const_iterator getChildIteratorEnd() { return children.end(); }
-
-
+	//std::vector<SceneNode*>::const_iterator getChildIteratorStart() { return children.begin(); }
+	//std::vector<SceneNode*>::const_iterator getChildIteratorEnd() { return children.end(); }
+	std::vector<SceneNode*> getChildren() { return children; }
 protected:
 	SceneNode*	parent;
 	Mesh*		mesh;

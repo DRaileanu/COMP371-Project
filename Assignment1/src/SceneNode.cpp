@@ -28,7 +28,7 @@ void SceneNode::draw() {
 	}
 }
 
-void SceneNode::update(float deltaTime) {
+void SceneNode::update(float dt) {
 	if (parent) {//node has parent
 		worldTransform = parent->worldTransform * localTransform;
 	}
@@ -36,6 +36,6 @@ void SceneNode::update(float deltaTime) {
 		worldTransform = localTransform;
 	}
 	for (auto child : children) {
-		child->update(deltaTime);
+		child->update(dt);
 	}
 }

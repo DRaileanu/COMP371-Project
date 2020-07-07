@@ -4,8 +4,6 @@
 Mesh::Mesh() {
 	glGenVertexArrays(1, &VAO);
 	VBO = CBO = EBO = 0;
-	//numVertices = 0;
-	//numIndices = 0;
 	type = GL_TRIANGLES;
 }
 
