@@ -117,6 +117,18 @@ int main() {
     Model* model8 = new Model('3');
     model8->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(15.5f, 0.0f, 0.0f)));
     radhep->addChild(model8);
+
+    SceneNode* mohd = new SceneNode;
+    mohd->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-8.0f, -5.0f, -30.0f)));
+    root->addChild(mohd);
+
+    Model* model9 = new Model('H');
+    model9->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(10.5f, 0.0f, 0.0f)));
+    mohd->addChild(model9);
+
+    Model* model10 = new Model('1');
+    model10->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(15.5f, 0.0f, 0.0f)));
+    mohd->addChild(model10);
     
 
     
