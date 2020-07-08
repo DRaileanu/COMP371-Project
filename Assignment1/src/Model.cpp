@@ -12,6 +12,8 @@ Model::Model(char c) {
 	break;
 	case '5': {create5(); }
 	break;
+	case '2': {create2(); }
+	break;
 
 	//add cases for each letter/digit here and create your own function
 
@@ -148,4 +150,43 @@ void Model::create5() {
 	transform = glm::scale(transform, glm::vec3(1.25f, 1.0f, 1.0f));
 	node->setTransform(transform);
 	addChild(node);*/
+}
+
+
+void Model::create2() {
+	SceneNode* node;
+	glm::mat4 transform;
+
+	transform = glm::mat4(1.0f);
+	node = new SceneNode(cube);
+	transform = glm::scale(transform, glm::vec3(3.0f, 1.0f, 1.0f));
+	transform = glm::translate(transform, glm::vec3(0.0f, 2.0f, 0.0f));
+	node->setTransform(transform);
+	addChild(node);
+
+	transform = glm::mat4(1.0f);
+	node = new SceneNode(cube);
+	transform = glm::scale(transform, glm::vec3(1.0f, 2.0f, 1.0f));
+	transform = glm::translate(transform, glm::vec3(1.5f, 0.75f, 0.0f));
+	node->setTransform(transform);
+	addChild(node);
+
+	node = new SceneNode(cube);
+	transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.1f, -0.5f, 0.0f));
+	transform = glm::scale(transform, glm::vec3(0.7f, 2.0f, 1.0f));
+	transform = transform * glm::mat4(
+		glm::vec4(1.5f, 0.0f, 0.0f, 0.0f),
+		glm::vec4(4.0f, 1.0f, 0.0f, 0.0f),
+		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
+		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+		);
+	node->setTransform(transform);
+	addChild(node);
+
+	transform = glm::mat4(1.0f);
+	node = new SceneNode(cube);
+	transform = glm::scale(transform, glm::vec3(3.65f, 1.0f, 1.0f));
+	transform = glm::translate(transform, glm::vec3(0.0f, -2.0f, 0.0f));
+	node->setTransform(transform);
+	addChild(node);
 }

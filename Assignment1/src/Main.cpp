@@ -94,6 +94,18 @@ int main() {
     Moh->addChild(model4);
 
     
+    SceneNode* muher = new SceneNode;
+    muher->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, -10.0f, -30.0f)));
+    root->addChild(muher);
+
+    Model* model5 = new Model('H');
+    model5->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-2.5f, 0.0f, 0.0f)));
+    muher->addChild(model5);
+
+    Model* model6 = new Model('2');
+    model6->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(2.5f, 0.0f, 0.0f)));
+    muher->addChild(model6);
+
     
     // load and create a texture 
     // -------------------------
