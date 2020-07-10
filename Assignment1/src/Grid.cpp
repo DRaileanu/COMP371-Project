@@ -2,7 +2,7 @@
 
 Grid::Grid(int size) {
 	type = GL_LINES;
-	vertices = std::vector < glm::vec3>(4 * (size + 1));//+1 to size because need 2(n+1) lines for n*n squares
+	vertices = std::vector < glm::vec3>(4 * (size + 1));//n*n squares require 2(n+1) lines
 
 	float offset = (size % 2 == 0) ? size/2 : (size/2) + 0.5f;//offset needed about (0.0) depending on odd/even square grid
 	for (int i = 0; i <= size; ++i) {
@@ -21,4 +21,10 @@ Grid::Grid(int size) {
 }
 
 Grid::~Grid() {
+}
+
+void Grid::draw() {
+	glLineWidth(3.0f);
+	Drawable::draw();
+	glLineWidth(1.0f);
 }

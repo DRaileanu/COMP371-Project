@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AxisLines.cpp" />
     <ClCompile Include="src\Grid.cpp" />
     <ClCompile Include="src\Cube.cpp" />
     <ClCompile Include="src\Drawable.cpp" />
@@ -177,6 +178,7 @@
     <Image Include="textures\kappa.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AxisLines.h" />
     <ClInclude Include="src\Grid.h" />
     <ClInclude Include="src\Drawable.h" />
     <ClInclude Include="src\Cube.h" />
