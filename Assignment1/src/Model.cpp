@@ -122,8 +122,43 @@ void Model::create5() {
 
 
 void Model::create2() {
-	create5();
-	this->scale(glm::vec3(-1.0f, 1.0f, 1.0f));
+	SceneNode* node;
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(2.0f, 1.0f, 1.0f));
+	node->translate(glm::vec3(0.0f, 4.5f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 1.5f, 1.0f));
+	node->translate(glm::vec3(1.5f, 4.25f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->shear(glm::mat4(
+		glm::vec4(1.0f, 0.0f, 0.0f, 0.0f),
+		glm::vec4(3.0f, 1.0f, 0.0f, 0.0f),
+		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
+		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+		));
+	node->scale(glm::vec3(1.0f, 2.0f, 1.0f));
+	node->translate(glm::vec3(0.0f, 2.5, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(3.0f, 1.0f, 1.0f));
+	node->translate(glm::vec3(0.5f, 0.5, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 1.5f, 1.0f));
+	node->translate(glm::vec3(-1.5f, 0.75f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 1.5f, 1.0f));
+	node->translate(glm::vec3(-1.5f, 4.25f, 0.0f));
+	addChild(node);
 }
 
 void Model::createD() {
