@@ -9,21 +9,25 @@ public:
 	SceneNode(Drawable* drawable = NULL);
 	~SceneNode();
 
-	const glm::mat4& getTransform() const { return localTransform; }
-	void setTransform(const glm::mat4& matrix) { localTransform = matrix; }
-	glm::mat4 getWorldTransform() const { return worldTransform; }
+	virtual void draw();
+	virtual void updateLocalTransform(float dt);
+	virtual void updateWorldTransform(float dt);
+
+	void addChild(SceneNode*);
+	std::vector<SceneNode*> getChildren() { return children; }
 
 	Drawable* getDrawable() const { return drawable; }
 	void setDrawable(Drawable* drawable) { this->drawable = drawable; }
 
-	void addChild(SceneNode*);
-
-	virtual void update(float dt);
-	virtual void draw();
+	//const glm::mat4& getTransform() const { return localTransform; }
+	//void setTransform(const glm::mat4& matrix) { localTransform = matrix; }
+	glm::mat4 getWorldTransform() const { return worldTransform; }
 	
-	//std::vector<SceneNode*>::const_iterator getChildIteratorStart() { return children.begin(); }
-	//std::vector<SceneNode*>::const_iterator getChildIteratorEnd() { return children.end(); }
-	std::vector<SceneNode*> getChildren() { return children; }
+	void translate(glm::vec3);
+	void scale(glm::vec3);
+	void rotate(glm::vec3);
+	void shear(glm::mat4);
+
 protected:
 	SceneNode*	parent;
 	Drawable*	drawable;
@@ -31,5 +35,10 @@ protected:
 	glm::mat4	localTransform;
 	std::vector<SceneNode*> children;
 
+private:
+	glm::vec3	translation;
+	glm::vec3	rotation;
+	glm::vec3	scaling;
+	glm::mat4	shearing;
 };
 

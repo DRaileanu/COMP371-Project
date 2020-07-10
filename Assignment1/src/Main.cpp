@@ -10,9 +10,9 @@
 
 #include "camera.h"
 #include "SceneNode.h"
-#include "Cube.h"
 #include "Model.h"
 #include "Grid.h"
+#include "AxisLines.h"
 
 #include <iostream>
 
@@ -20,8 +20,8 @@
 // Constants
 //------------------------------------------------------------------------------
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1024;
+const unsigned int SCR_HEIGHT = 768;
 
 
 //------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ const unsigned int SCR_HEIGHT = 600;
 GLFWwindow* window;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
+Camera camera(glm::vec3(0.0f, 2.0f, 5.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -70,85 +70,84 @@ int main() {
       
 
     SceneNode* root = new SceneNode;
+    root->scale(glm::vec3(0.25, 0.25, 0.25));
+
+    SceneNode* axisLines = new SceneNode(new AxisLines);
+    axisLines->scale(glm::vec3(10.0f, 10.0f, 10.0f));
+    root->addChild(axisLines);
 
     SceneNode* grid= new SceneNode(new Grid);
     root->addChild(grid);
 
     SceneNode* dan = new SceneNode;
-    dan->setTransform(
-        glm::translate(glm::mat4(1.0f), glm::vec3(-46.5f, 2.5f, -47.5f)) *
-        glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f))
-        );
+    dan->scale(glm::vec3(2.0f, 2.0f, 2.0f));
+    dan->translate(glm::vec3(-40.0f, 0.0f, -40.0f));
     grid->addChild(dan);
  
     Model* model1 = new Model('N');
-    model1->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-2.5f, 0.0f, 0.0f)));
+    model1->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
     dan->addChild(model1);
 
     Model* model2 = new Model('1');
-    model2->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(2.5f, 0.0f, 0.0f)));
+    model2->translate(glm::vec3(2.5f, 0.0f, 0.0f));
     dan->addChild(model2);
 
 
     SceneNode* Moh = new SceneNode;
-    Moh->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(46.5f, 2.5f, -46.5f)) *
-        glm::rotate(glm::mat4(1.0f), glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f))
-        );
+    Moh->scale(glm::vec3(2.0f, 2.0f, 2.0f));
+    Moh->translate(glm::vec3(40.0f, 0.0f, -40.0f));
     grid->addChild(Moh);
 
     Model* model3 = new Model('H');
-    model3->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-2.5f, 0.0f, 0.0f)));
+    model3->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
     Moh->addChild(model3);
 
     Model* model4 = new Model('5');
-    model4->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(2.5f, 0.0f, 0.0f)));
+    model4->translate(glm::vec3(2.5f, 0.0f, 0.0f));
     Moh->addChild(model4);
 
     
     SceneNode* muher = new SceneNode;
-    muher->setTransform(
-        glm::translate(glm::mat4(1.0f), glm::vec3(-46.5f, 2.5f, 46.5f)) *
-        glm::rotate(glm::mat4(1.0f), glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f))
-        );
+    muher->scale(glm::vec3(2.0f, 2.0f, 2.0f));
+    muher->rotate(glm::vec3(0.0f, 180.0f, 0.0f));
+    muher->translate(glm::vec3(-40.5f, 0.0f, 40.5f));
     grid->addChild(muher);
 
     Model* model5 = new Model('H');
-    model5->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-2.5f, 0.0f, 0.0f)));
+    model5->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
     muher->addChild(model5);
 
     Model* model6 = new Model('2');
-    model6->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(2.5f, 0.0f, 0.0f)));
+    model6->translate(glm::vec3(2.5f, 0.0f, 0.0f));
     muher->addChild(model6);
 
 
     SceneNode* radhep = new SceneNode;
-    radhep->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(46.5f, 2.5f, 47.0f)) *
-        glm::rotate(glm::mat4(1.0f), glm::radians(-135.0f), glm::vec3(0.0f, 1.0f, 0.0f))
-        );
+    radhep->scale(glm::vec3(2.0f, 2.0f, 2.0f));
+    radhep->rotate(glm::vec3(0.0f, 180.0f, 0.0f));
+    radhep->translate(glm::vec3(40.0f, 0.0f, 40.0f));
     grid->addChild(radhep);
 
     Model* model7 = new Model('D');
-    model7->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-2.5f, 0.0f, 0.0f)));
+    model7->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
     radhep->addChild(model7);
 
     Model* model8 = new Model('3');
-    model8->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(2.5f, 0.0f, 0.0f)));
+    model8->translate(glm::vec3(2.5f, 0.0f, 0.0f));
     radhep->addChild(model8);
 
 
     SceneNode* mohd = new SceneNode;
-    mohd->setTransform(
-        glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 2.5f, 0.0f)) *
-        glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f))
-        );
+    mohd->scale(glm::vec3(2.0f, 2.0f, 2.0f));
+    mohd->translate(glm::vec3(0.0f, 0.0f, -5.0f));
     grid->addChild(mohd);
 
     Model* model9 = new Model('H');
-    model9->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(-2.5f, 0.0f, 0.0f)));
+    model9->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
     mohd->addChild(model9);
 
     Model* model10 = new Model('1');
-    model10->setTransform(glm::translate(glm::mat4(1.0f), glm::vec3(2.5f, 0.0f, 0.0f)));
+    model10->translate(glm::vec3(2.5f, 0.0f, 0.0f));
     mohd->addChild(model10);
     
 
@@ -178,6 +177,21 @@ int main() {
         // input
         // -----
         processInput(window);
+        if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
+            dan->scale(glm::vec3(1.01f, 1.01f, 1.01f));
+            Moh->scale(glm::vec3(1.01f, 1.01f, 1.01f));
+            muher->scale(glm::vec3(1.01f, 1.01f, 1.01f));
+            radhep->scale(glm::vec3(1.01f, 1.01f, 1.01f));
+            mohd->scale(glm::vec3(1.01f, 1.01f, 1.01f));
+        }
+        if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+            dan->scale(glm::vec3(0.99f, 0.99f, 0.99f));
+            Moh->scale(glm::vec3(0.99f, 0.99f, 0.99f));
+            muher->scale(glm::vec3(0.99f, 0.99f, 0.99f));
+            radhep->scale(glm::vec3(0.99f, 0.99f, 0.99f));
+            mohd->scale(glm::vec3(0.99f, 0.99f, 0.99f));
+        }
+
 
         // render
         // ------
@@ -191,7 +205,7 @@ int main() {
         shader.use();
 
         // pass projection matrix to shader (note that in this case it could change every frame)
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
         shader.setMat4("projection", projection); //use whatever shader we want
 
         // camera/view transformation
@@ -201,7 +215,13 @@ int main() {
 
 
         // render objects
-        root->update(currentFrame);
+        dan->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+        Moh->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+        muher->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+        radhep->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+        mohd->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+
+        root->updateWorldTransform(currentFrame);
         drawNode(root, &shader);
 
         //glm::mat4 model;
