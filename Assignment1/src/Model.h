@@ -3,15 +3,16 @@
 #include "Cube.h"
 #include <vector>
 
+//creates models of 3D letters/digits by manipulating geometry of unit cubes
+
 class Model : public SceneNode {
 public:
 	Model() = delete;
-	Model(char);
+	Model(char);//requires a character to be created
 	~Model();
 
-
-
 private:
+	//available models
 	void createN();
 	void create1();
 	void createH();

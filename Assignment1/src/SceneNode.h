@@ -4,10 +4,13 @@
 #include "Drawable.h"
 #include <vector>
 
+//base class for nodes in a Scene Graph
+//holds pointer to its Drawable geometry to draw it and provides implementation for basic geometry manipulation via rotate, scale and translate
+
 class SceneNode {
 public:
 	SceneNode(Drawable* drawable = NULL);
-	~SceneNode();
+	virtual ~SceneNode();
 
 	virtual void draw();
 	virtual void updateLocalTransform(float dt);
@@ -23,10 +26,11 @@ public:
 	//void setTransform(const glm::mat4& matrix) { localTransform = matrix; }
 	glm::mat4 getWorldTransform() const { return worldTransform; }
 	
+	//used to update localTransform
 	void translate(glm::vec3);
 	void scale(glm::vec3);
-	void rotate(glm::vec3);
-	void shear(glm::mat4);
+	void rotate(glm::vec3);//input is rotation along xyz-axes in degrees. Rotations are applied in order: ZYX
+	void shear(glm::mat4);//will only apply initial shear before any transformations, applying shear to already shear'd SceneNode will simply set new shear
 
 protected:
 	SceneNode*	parent;

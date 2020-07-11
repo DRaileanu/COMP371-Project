@@ -21,13 +21,10 @@ Model::Model(char c) {
 	}
 }
 
-Model::~Model() {
-
-}
+Model::~Model() {}
 
 void Model::createN() {
 	SceneNode* node;
-	glm::mat4 transform;
 
 	node = new SceneNode(cube);
 	node->scale(glm::vec3(2.0f, 2.0, 1.0f));
@@ -49,12 +46,10 @@ void Model::createN() {
 	node->scale(glm::vec3(1.0f, 5.0f, 1.0f));
 	node->translate(glm::vec3(-1.5f, 2.5f, 0.0f));
 	addChild(node);
-	
 }
 
 void Model::create1() {
 	SceneNode* node;
-	glm::mat4 transform;
 
 	node = new SceneNode(cube);
 	node->scale(glm::vec3(1.0f, 5.0f, 1.0f));
@@ -74,7 +69,6 @@ void Model::create1() {
 
 void Model::createH() {
 	SceneNode* node;
-	glm::mat4 transform;
 
 	node = new SceneNode(cube);
 	node->scale(glm::vec3(2.0f, 1.0, 1.0f));
@@ -119,7 +113,6 @@ void Model::create5() {
 	addChild(node);
 
 }
-
 
 void Model::create2() {
 	SceneNode* node;

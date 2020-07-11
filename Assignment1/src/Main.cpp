@@ -37,7 +37,7 @@ float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
 // timing
-float deltaTime = 0.0f;	// time between current frame and last frame
+float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 //------------------------------------------------------------------------------
@@ -65,10 +65,10 @@ int main() {
     // build and compile shader program
     Shader shader("shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl");
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-      
-
+    // set up the Scene Graph (automatically sets up vertex data, buffers and configures vertex attributes)
+    // ------------------------------------------------------------------  
+    
+    //root, grid and axis lines
     SceneNode* root = new SceneNode;
     root->scale(glm::vec3(0.25, 0.25, 0.25));
 
@@ -79,11 +79,16 @@ int main() {
     SceneNode* grid= new SceneNode(new Grid);
     root->addChild(grid);
 
+    //modelsNode to be able to manipulate all models at once
+    SceneNode* modelsNode = new SceneNode;
+    grid->addChild(modelsNode);
+
+
     SceneNode* dan = new SceneNode;
     dan->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     dan->translate(glm::vec3(-40.0f, 0.0f, -40.0f));
-    grid->addChild(dan);
- 
+    modelsNode->addChild(dan);
+
     Model* model1 = new Model('N');
     model1->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
     dan->addChild(model1);
@@ -96,7 +101,7 @@ int main() {
     SceneNode* Moh = new SceneNode;
     Moh->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     Moh->translate(glm::vec3(40.0f, 0.0f, -40.0f));
-    grid->addChild(Moh);
+    modelsNode->addChild(Moh);
 
     Model* model3 = new Model('H');
     model3->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
@@ -111,7 +116,7 @@ int main() {
     muher->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     muher->rotate(glm::vec3(0.0f, 180.0f, 0.0f));
     muher->translate(glm::vec3(-40.5f, 0.0f, 40.5f));
-    grid->addChild(muher);
+    modelsNode->addChild(muher);
 
     Model* model5 = new Model('H');
     model5->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
@@ -126,7 +131,7 @@ int main() {
     radhep->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     radhep->rotate(glm::vec3(0.0f, 180.0f, 0.0f));
     radhep->translate(glm::vec3(40.0f, 0.0f, 40.0f));
-    grid->addChild(radhep);
+    modelsNode->addChild(radhep);
 
     Model* model7 = new Model('D');
     model7->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
@@ -140,7 +145,7 @@ int main() {
     SceneNode* mohd = new SceneNode;
     mohd->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     mohd->translate(glm::vec3(0.0f, 0.0f, -5.0f));
-    grid->addChild(mohd);
+    modelsNode->addChild(mohd);
 
     Model* model9 = new Model('H');
     model9->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
@@ -150,7 +155,6 @@ int main() {
     model10->translate(glm::vec3(2.5f, 0.0f, 0.0f));
     mohd->addChild(model10);
     
-
     
     // load and create a texture 
     // -------------------------
@@ -161,7 +165,6 @@ int main() {
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     
-
 
 
     // render loop
@@ -215,11 +218,11 @@ int main() {
 
 
         // render objects
-        dan->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
-        Moh->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
-        muher->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
-        radhep->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
-        mohd->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+        //dan->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+        //Moh->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+        //muher->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+        //radhep->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+        //mohd->rotate(glm::vec3(0.0f, 3.0f, 0.0f));
 
         root->updateWorldTransform(currentFrame);
         drawNode(root, &shader);
@@ -292,10 +295,15 @@ void processInput(GLFWwindow* window) {
         glfwSetWindowShouldClose(window, true);
 
     //press 1/2 for Wireframe/Fill mode
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    }
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+    }
+    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
 
     //movement
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

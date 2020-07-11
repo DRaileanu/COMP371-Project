@@ -17,7 +17,7 @@ Drawable::~Drawable() {
 void Drawable::setupBufferData() {
 	glBindVertexArray(VAO);
 	//positions
-	if (vertices.empty()) { return; }//try removing and see if works with empty mesh
+	if (vertices.empty()) { return; }//TODO try removing and see if works with empty mesh
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
