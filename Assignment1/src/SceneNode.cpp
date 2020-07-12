@@ -14,20 +14,21 @@ SceneNode::~SceneNode() {
 	for (auto child : children) {
 		delete child;
 	}
-	//TODO leaving uncommented causes memory leak i think, will test later
-	//if (mesh != NULL) {
-	//	delete mesh;
-	//	mesh = NULL;
-	//}
+	if (drawable != NULL) {
+		delete drawable;
+		drawable = NULL;
+	}
 }
 
+//draws the drawable mesh if it exists
 void SceneNode::draw() {
 	if (drawable) {
 		drawable->draw();
 	}
 }
 
-void SceneNode::updateLocalTransform(float dt) {
+// computes local transform using transformaiton parameters in order shear->->scale->rotate(ZYX)->translate
+void SceneNode::updateLocalTransform() {
 	glm::mat4 transform = glm::mat4(1.0f);
 	transform = glm::translate(transform, translation);
 	transform = glm::rotate(transform, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -39,8 +40,9 @@ void SceneNode::updateLocalTransform(float dt) {
 
 }
 
-void SceneNode::updateWorldTransform(float dt) {
-	updateLocalTransform(dt);
+// recursively update scene node's world transform relative to parent's
+void SceneNode::updateWorldTransform() {
+	updateLocalTransform();
 	if (parent) {//node has parent
 		worldTransform = parent->worldTransform * localTransform;
 	}
@@ -48,7 +50,7 @@ void SceneNode::updateWorldTransform(float dt) {
 		worldTransform = localTransform;
 	}
 	for (auto child : children) {
-		child->updateWorldTransform(dt);
+		child->updateWorldTransform();
 	}
 }
 
@@ -69,6 +71,7 @@ void SceneNode::rotate(glm::vec3 r) {
 	rotation += r;
 }
 
+// note just sets shear, so can't stack several shears. Consider as initial manual transform before any others
 void SceneNode::shear(glm::mat4 shear) {
 	shearing = shear;
 }

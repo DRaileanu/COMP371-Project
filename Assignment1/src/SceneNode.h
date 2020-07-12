@@ -13,8 +13,8 @@ public:
 	virtual ~SceneNode();
 
 	virtual void draw();
-	virtual void updateLocalTransform(float dt);
-	virtual void updateWorldTransform(float dt);
+	virtual void updateLocalTransform();
+	virtual void updateWorldTransform();
 
 	void addChild(SceneNode*);
 	std::vector<SceneNode*> getChildren() { return children; }
@@ -22,8 +22,6 @@ public:
 	Drawable* getDrawable() const { return drawable; }
 	void setDrawable(Drawable* drawable) { this->drawable = drawable; }
 
-	//const glm::mat4& getTransform() const { return localTransform; }
-	//void setTransform(const glm::mat4& matrix) { localTransform = matrix; }
 	glm::mat4 getWorldTransform() const { return worldTransform; }
 	
 	//used to update localTransform
