@@ -3,6 +3,11 @@ Assignment #1 for COMP371-DD
 For clarity, Student Model refers to the letter and digit models each student had to create.
 Letter/Digit Model refers to the letter/digit in the Student Model.
 
+-----
+Build
+-----
+Open Assignment1.sln in base directory.
+Using 32-bit libraries, so build and run in x86
 
 ---------
 CONTROLS:
