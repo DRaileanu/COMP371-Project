@@ -6,7 +6,8 @@ public:
 	AxisLines();
 	~AxisLines();
 
-protected:
 	virtual void draw();
+protected:
+	//virtual void draw();
 };
 

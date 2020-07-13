@@ -57,7 +57,6 @@ int main() {
     //other Camera parameters
     float cameraYaw = -90.0f;
     float cameraPitch = 0.0f;
-    float cameraSpeed = 10.0f;
     float cameraSensitivity = 5.0f;
     float cameraZoom = 45.0f;
 
@@ -83,6 +82,7 @@ int main() {
     root->addChild(axisLines);
 
     SceneNode* grid= new SceneNode(new Grid);
+	grid->translate(glm::vec3(0.0f, -0.00f, 0.0f));
     root->addChild(grid);
 
     // student models
@@ -116,8 +116,7 @@ int main() {
     
     SceneNode* muher = new SceneNode;
     muher->scale(glm::vec3(2.0f, 2.0f, 2.0f));
-    muher->rotate(glm::vec3(0.0f, 180.0f, 0.0f));
-    muher->translate(glm::vec3(-40.5f, 0.0f, 40.5f));
+    muher->translate(glm::vec3(-40.0f, 0.0f, 40.0f));
     grid->addChild(muher);
 
     Model* model5 = new Model('H');
@@ -131,7 +130,6 @@ int main() {
 
     SceneNode* radhep = new SceneNode;
     radhep->scale(glm::vec3(2.0f, 2.0f, 2.0f));
-    radhep->rotate(glm::vec3(0.0f, 180.0f, 0.0f));
     radhep->translate(glm::vec3(40.0f, 0.0f, 40.0f));
     grid->addChild(radhep);
 
@@ -164,6 +162,10 @@ int main() {
     //world matrix used to change world orientation
     glm::mat4 world(1.0f);
 
+
+    //uncomment during demo to explain world orientation
+    //AxisLines ax;
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -175,25 +177,24 @@ int main() {
         // update Camera
         //--------------
         // update mouse cursor
-        double mouseX, mouseY, dx=0.0, dy=0.0;
+        double mouseX, mouseY, dx, dy;
         glfwGetCursorPos(window, &mouseX, &mouseY);
-        // process cursor movement only if appropriate mouse button is clicked
+		dx = mouseX - lastMouseX;
+		dy = lastMouseY - mouseY;
+		lastMouseX = mouseX;
+		lastMouseY = mouseY;
+        // update camera angular angles only if appropriate button is pressed
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-            dx = mouseX - lastMouseX;
+			cameraYaw += dx * cameraSensitivity * dt;
         }
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-            dy = lastMouseY - mouseY;
+			cameraPitch += dy * cameraSensitivity * dt;
         }
         if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-            cameraZoom -= lastMouseY - mouseY;
+			cameraZoom -= dy;
             //constrain zoom to avoid flipping
             cameraZoom = std::max(1.0f, std::min(120.0f, cameraZoom));
         }
-        lastMouseX = mouseX;
-        lastMouseY = mouseY;
-        // update camera angular angles
-        cameraYaw   += dx * cameraSensitivity * dt;
-        cameraPitch += dy * cameraSensitivity * dt;
         // constrain pitch angle so screen doesn't get flipped
         cameraPitch = std::max(-89.0f, std::min(89.0f, cameraPitch));
         // update camera parameters for view transform
@@ -294,10 +295,10 @@ int main() {
             selectedNode->translate(glm::vec3(5 * dt, 0.0f, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            selectedNode->translate(glm::vec3(0.0f, 5 * dt, 0.0f));
+            selectedNode->translate(glm::vec3(0.0f, 0.0f, -5 * dt));//confirmed with teacher that UP/DOWN meant along z-axis
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            selectedNode->translate(glm::vec3(0.0f, -5 * dt, 0.0f));
+            selectedNode->translate(glm::vec3(0.0f, 0.0f, 5 * dt));
         }
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
             selectedNode->rotate(glm::vec3(0.0f, 5.0f, 0.0f));//would use with rotaton with respect to dt, but assignment said 5 degrees
@@ -308,26 +309,27 @@ int main() {
 
 
         // world orientation transformations
-        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-            world = rotate(world, glm::radians(2.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        }
-        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-            world = rotate(world, -glm::radians(2.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+            world = rotate(glm::mat4(1.0f), glm::radians(2.0f), glm::vec3(1.0f, 0.0f, 0.0f))*world;
         }
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-            world = rotate(world, glm::radians(2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            world = rotate(glm::mat4(1.0f), -glm::radians(2.0f), glm::vec3(1.0f, 0.0f, 0.0f))*world;
         }
-        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-            world = rotate(world, -glm::radians(2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+            world = rotate(glm::mat4(1.0f), glm::radians(2.0f), glm::vec3(0.0f, 1.0f, 0.0f))*world;
+        }
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+            world = rotate(glm::mat4(1.0f), -glm::radians(2.0f), glm::vec3(0.0f, 1.0f, 0.0f))*world;
         }
         if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
             world = glm::mat4(1.0f);
-            //uncomment if also want to reset camera when pressing HOME
-            //cameraYaw = -90.0f;
-            //cameraPitch = 0.0f;
+            //comment next 2 lines if don't want camera to reset looking at towards -z axis
+            cameraYaw = -90.0f;
+            cameraPitch = 0.0f;
         }
         // pass world orientation matrix to shader
         shader.setMat4("world", world);
+
 
 
         // render
@@ -352,6 +354,11 @@ int main() {
         root->updateWorldTransform();
         drawNode(root, &shader);
         
+
+        //uncomment during demo to explain world orientation
+        //shader.setMat4("model", glm::mat4(1.0f));
+        //shader.setMat4("world", glm::mat4(1.0f));
+        //ax.draw();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
