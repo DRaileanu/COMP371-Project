@@ -13,7 +13,7 @@ Grid::Grid(int size) {
 	}
 
 	colours = std::vector < glm::vec3>(vertices.size());
-	for (int i = 0; i < colours.size(); ++i) {
+	for (unsigned int i = 0; i < colours.size(); ++i) {
 		colours[i] = glm::vec3(0.5f, 0.5f, 0.5f);
 	}
 

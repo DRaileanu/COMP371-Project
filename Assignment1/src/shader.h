@@ -1,5 +1,9 @@
-#ifndef SHADER_H
-#define SHADER_H
+//------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Shader class abstraction to load, compile and link shaders, as well as setting uniform values.
+// The code for this class belongs to https://learnopengl.com and is available at: https://github.com/JoeyDeVries/LearnOpenGL/tree/master/includes/learnopengl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#pragma once
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -188,4 +192,3 @@ private:
         }
     }
 };
-#endif
