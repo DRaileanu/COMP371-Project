@@ -308,25 +308,25 @@ int main() {
 
         // world orientation transformations
         if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-            world = rotate(glm::mat4(1.0f), glm::radians(2.0f), glm::vec3(1.0f, 0.0f, 0.0f)) * world;
+            root->rotate(glm::vec3(1.0f, 0.0f, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-            world = rotate(glm::mat4(1.0f), -glm::radians(2.0f), glm::vec3(1.0f, 0.0f, 0.0f)) * world;
+            root->rotate(glm::vec3(-1.0f, 0.0f, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-            world = rotate(glm::mat4(1.0f), glm::radians(2.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * world;
+            root->rotate(glm::vec3(0.0f, 1.0f, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-            world = rotate(glm::mat4(1.0f), -glm::radians(2.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * world;
+            root->rotate(glm::vec3(0.0f, -1.0f, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
-            world = glm::mat4(1.0f);
+            root->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
             //comment next 2 lines if don't want camera to reset looking at towards -z axis
             cameraYaw = -90.0f;
             cameraPitch = 0.0f;
         }
-        // pass world orientation matrix to shader
-        shader.setMat4("world", world);
+
+
 
 
 
@@ -400,7 +400,7 @@ void programInit() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR);
 
     // glad: load all OpenGL function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {

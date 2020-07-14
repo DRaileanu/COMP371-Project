@@ -29,6 +29,8 @@ public:
 	void scale(glm::vec3);
 	void rotate(glm::vec3);//input is rotation along xyz-axes in degrees. Rotations are applied in order: ZYX
 	void shear(glm::mat4);//will only apply initial shear before any transformations, applying shear to already shear'd SceneNode will simply set new shear
+	
+	void setRotation(glm::vec3);//manually set rotation
 
 protected:
 	SceneNode*	parent;

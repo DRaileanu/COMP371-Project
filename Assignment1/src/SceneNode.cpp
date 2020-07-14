@@ -75,3 +75,7 @@ void SceneNode::rotate(glm::vec3 r) {
 void SceneNode::shear(glm::mat4 shear) {
 	shearing = shear;
 }
+
+void SceneNode::setRotation(glm::vec3 r) {
+	rotation = r;
+}
