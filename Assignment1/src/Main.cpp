@@ -17,9 +17,11 @@
 #include "Model.h"
 #include "Grid.h"
 #include "AxisLines.h"
+#include "BuildingCube.h"
 
 #include <iostream>
 #include <algorithm>
+#include <queue>
 
 
 //----------------------------------------
@@ -69,6 +71,7 @@ int main() {
 
     // build and compile shader program
     Shader shader("shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl");
+    Shader buildShader("shaders/build_vertex_shader.glsl", "shaders/build_fragment_shader.glsl");//need another shader that uses uniforms to set colour, so we can change BuildingCube colours before placement
 
 
     // set up the Scene Graph (sets up vertex data, buffers and configures vertex attributes)
@@ -91,6 +94,7 @@ int main() {
     //Name Model is parent of all Letter Models
     //I'm using an additional SceneNode for every Letter Model because the Models are centered around x=y=z=0 in order to allow rotation around their center.
     //Translating the Letter Model directly above xz plane will work at first, but then when it's scaled, the bottom would go below xz plane. The extra SceneNode allows me to scale and stay on xz plane.
+    //So we rotate using letter models and scale/translate using letterNode
 
     SceneNode* nameModels = new SceneNode;
     nameModels->translate(glm::vec3(0.0f, 0.0f, 5.0f));//move all letters at the back
@@ -145,9 +149,32 @@ int main() {
     letter6Node->addChild(letter6);
     
 
-
-    //default selected node to transform
+    // default selected node to transform
+    // need 2 nodes, since rotations need to be applied on Letter Model, while translation and scaling have to be applied on the SceneNode containing the Letter Model
     SceneNode* selectedNode = nameModels;
+    SceneNode* selectedLetter = nameModels;
+
+ 
+
+    //EXTRA: Building Mode
+    //--------------------
+    //need another root for building since needs to be rendered using a different shader
+    bool buildingMode = false;
+    SceneNode* buildRoot = new SceneNode;
+    SceneNode* buildModel = NULL;//gets defined when first cube is placed and becomes center of rotation
+    SceneNode* buildCube = new SceneNode(new BuildingCube);//visual to see where we can place new cube
+    buildRoot->addChild(buildCube);
+    bool placementKeyPressed = false;//used to avoid new cubes to be placed at every frame when pressing placement key
+
+    std::queue<glm::vec3> buildColors;//available colors of cubes we can place. Using it as a circular queue
+    buildColors.push(glm::vec3(1.0f, 0.0f, 0.0f));
+    buildColors.push(glm::vec3(1.0f, 0.5f, 0.0f));
+    buildColors.push(glm::vec3(1.0f, 1.0f, 0.0f));
+    buildColors.push(glm::vec3(0.0f, 1.0f, 0.0f));
+    buildColors.push(glm::vec3(0.0f, 0.0f, 1.0f));
+    buildColors.push(glm::vec3(1.0f, 0.0f, 1.0f));
+    glm::vec3 currentBuildColor = buildColors.front();
+    bool colorSwitchKeyPressed = false;//so colors only change on initial key press
 
 
     // render loop
@@ -190,8 +217,30 @@ int main() {
         cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
 
 
+
         // keyboard input handling
         // --------------
+        // Camera movement
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_RELEASE) {
+            cameraPosition -= 10 * dt * cameraFront;
+        }
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_RELEASE) {
+            cameraPosition += 10 * dt * cameraFront;
+        }
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_RELEASE) {
+            cameraPosition -= 10 * dt * cameraRight;
+        }
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_RELEASE) {
+            cameraPosition += 10 * dt * cameraRight;
+        }
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_RELEASE) {
+            cameraPosition += 10 * dt * cameraUp;
+        }
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_RELEASE) {
+            cameraPosition -= 10 * dt * cameraUp;
+        }
+
+
         // exit program
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
@@ -207,73 +256,47 @@ int main() {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
 
-        // select student models to transform
 
-
+        // select model to transform
         if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
             selectedNode = nameModels;
+            selectedLetter = nameModels;
         }
         if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-            selectedNode = letter1;
+            selectedNode = letter1Node;
+            selectedLetter = letter1;
         }
         if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-            selectedNode = letter2;
+            selectedNode = letter2Node;
+            selectedLetter = letter2;
         }
         if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
-            selectedNode = letter3;
+            selectedNode = letter3Node;
+            selectedLetter = letter3;
         }
         if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
-            selectedNode = letter4;
+            selectedNode = letter4Node;
+            selectedLetter = letter4;
         }
         if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
-            selectedNode = letter5;
+            selectedNode = letter5Node;
+            selectedLetter = letter5;
         }
         if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-            selectedNode = letter6;
-        }
-        //// option to select only letter or digit model for transformations
-        //if (selectedNode == dan) {
-        //    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-        //        selectedNode = model1;
-        //    }
-        //    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-        //        selectedNode = model2;
-        //    }
-        //}
-        //if (selectedNode == moh) {
-        //    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-        //        selectedNode = model3;
-        //    }
-        //    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-        //        selectedNode = model4;
-        //    }
-        //}
-        //if (selectedNode == muher) {
-        //    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-        //        selectedNode = model5;
-        //    }
-        //    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-        //        selectedNode = model6;
-        //    }
-        //}
-        //if (selectedNode == radhep) {
-        //    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-        //        selectedNode = model7;
-        //    }
-        //    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-        //        selectedNode = model8;
-        //    }
-        //}
-        //if (selectedNode == mohd) {
-        //    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-        //        selectedNode = model9;
-        //    }
-        //    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-        //        selectedNode = model10;
-        //    }
-        //}
+            selectedNode = letter6Node;
+            selectedLetter = letter6;
 
-        // apply transformations
+        }
+        if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
+            if (buildModel) {
+                selectedNode = buildModel;
+                selectedLetter = buildModel;
+            }
+        }
+        
+
+
+        // apply model transformations
         if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
             selectedNode->scale(glm::vec3(0.5 * dt + 1, 0.5 * dt + 1, 0.5 * dt + 1));
         }
@@ -287,32 +310,50 @@ int main() {
             selectedNode->translate(glm::vec3(5 * dt, 0.0f, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            selectedNode->translate(glm::vec3(0.0f, 0.0f, -5 * dt));//confirmed with teacher that UP/DOWN meant along z-axis
+            selectedNode->translate(glm::vec3(0.0f, 0.0f, -5 * dt));
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
             selectedNode->translate(glm::vec3(0.0f, 0.0f, 5 * dt));
         }
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+            selectedNode->translate(glm::vec3(0.0f, 5*dt, 0.0f));
+        }
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+            selectedNode->translate(glm::vec3(0.0f, -5*dt, 0.0f));
+        }
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(0.0f, 5.0f, 0.0f));//would use with rotaton with respect to dt, but assignment said 5 degrees
+            selectedLetter->rotate(glm::vec3(0.0f, 100*dt, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(0.0f, -5.0f, 0.0f));
+            selectedLetter->rotate(glm::vec3(0.0f, -100*dt, 0.0f));
+        }
+        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+            selectedLetter->rotate(glm::vec3(0.0f, 0.0f, 100*dt));
+        }
+        if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+            selectedLetter->rotate(glm::vec3(0.0f, 0.0f, -100*dt));
+        }
+        if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+            selectedLetter->rotate(glm::vec3(-100*dt, 0.0f, 0.0f));
+        }
+        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+            selectedLetter->rotate(glm::vec3(100*dt, 0.0f, 0.0f));
         }
 
-
-        // world orientation transformations
-        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-            cameraPosition -= 10*dt*cameraFront;
+        // world orientation
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) {
+            root->rotate(glm::vec3(-50*dt, 0.0f, 0.0f));
         }
-        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-            cameraPosition += 10*dt*cameraFront;
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) {
+            root->rotate(glm::vec3(50 * dt, 0.0f, 0.0f));
         }
-        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-            cameraPosition -= 10*dt*cameraRight;
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) {
+            root->rotate(glm::vec3(0.0f, -50 * dt, 0.0f));
         }
-        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-            cameraPosition += 10*dt*cameraRight;
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) {
+            root->rotate(glm::vec3(0.0f, 50 * dt, 0.0f));
         }
+        // reset world orientation (and camera if the 2 lines are uncomented)
         if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
             root->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
             //comment next 2 lines if don't want camera to reset looking at towards -z axis
@@ -321,6 +362,40 @@ int main() {
         }
 
 
+        // Building Mode control
+        //----------------------
+        if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+            buildingMode = true;
+        }
+        if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+            buildingMode = false;
+        }
+        if (buildingMode) {
+            if (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS && !placementKeyPressed) {
+                if (buildModel == NULL) {
+                    buildModel = new SceneNode;
+                    buildModel->setTranslation(buildCube->getTranslate());
+                    root->addChild(buildModel);
+                }
+                placementKeyPressed = true;
+                SceneNode* newNode = new SceneNode(new Cube(currentBuildColor));
+                newNode->translate(buildCube->getTranslate() - buildModel->getTranslate());
+                buildModel->addChild(newNode);
+            }
+            if (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_RELEASE && placementKeyPressed) {
+                placementKeyPressed = false;
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS && !colorSwitchKeyPressed) {
+                colorSwitchKeyPressed = true;
+                buildColors.push(buildColors.front());
+                buildColors.pop();
+                currentBuildColor = buildColors.front();
+            }
+            if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE && colorSwitchKeyPressed) {
+                colorSwitchKeyPressed = false;
+            }
+        }
 
         // render
         // ------
@@ -328,23 +403,37 @@ int main() {
         glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
         // activate shader
         shader.use();
-
-        // pass projection matrix to shader
+        // pass projection and camera/view  transformations to shader
         glm::mat4 projection = glm::perspective(glm::radians(cameraZoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
         shader.setMat4("projection", projection);
 
-        // pass camera/view transformation to shader
         glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
         shader.setMat4("view", view);
 
        
 
         // update and render Scene Graph
+        shader.use();
         root->updateWorldTransform();
         drawNode(root, &shader);
 
+
+
+        // update and render BuildingCube
+        if (buildingMode) {
+            glm::vec3 buildTranslation = cameraPosition + cameraFront * glm::vec3(5.0f, 5.0f, 5.0f);
+            buildCube->setTranslation(buildTranslation);
+
+            buildShader.use();
+            buildShader.setMat4("projection", projection);
+            buildShader.setMat4("view", view);
+            buildShader.setVec3("aColor", currentBuildColor);
+            buildRoot->updateWorldTransform();
+            drawNode(buildRoot, &buildShader);
+        }
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

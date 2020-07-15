@@ -39,10 +39,15 @@
     <ClCompile Include="src\AxisLines.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\BuildingCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment_shader.glsl" />
     <None Include="shaders\vertex_shader.glsl" />
+    <None Include="shaders\build_vertex_shader.glsl" />
+    <None Include="shaders\build_fragment_shader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\awesomeface.png">
@@ -75,6 +80,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BuildingCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

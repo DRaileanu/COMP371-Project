@@ -79,3 +79,7 @@ void SceneNode::shear(glm::mat4 shear) {
 void SceneNode::setRotation(glm::vec3 r) {
 	rotation = r;
 }
+
+void SceneNode::setTranslation(glm::vec3 t) {
+	translation = t;
+}

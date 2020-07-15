@@ -15,6 +15,7 @@ public:
 	//provides basic implementation for drawing geometry
 	virtual void draw();
 
+
 protected:
 	//handles setup of data buffers into coresponding array object
 	void setupBufferData();

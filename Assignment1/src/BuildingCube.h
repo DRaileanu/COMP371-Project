@@ -1,11 +1,10 @@
 #pragma once
 #include "Drawable.h"
 
-class AxisLines : public Drawable {
+class BuildingCube : public Drawable {
 public:
-	AxisLines();
-	~AxisLines();
-
+	BuildingCube();
+	~BuildingCube();
 
 protected:
 	virtual void draw();
