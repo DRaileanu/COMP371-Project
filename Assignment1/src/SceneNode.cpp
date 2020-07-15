@@ -59,6 +59,10 @@ void SceneNode::addChild(SceneNode* child) {
 	child->parent = this;
 }
 
+void SceneNode::removeChild(SceneNode* child) {
+	children.erase(std::find(children.begin(), children.end(), child));
+}
+
 void SceneNode::translate(glm::vec3 t) {
 	translation += t;
 }

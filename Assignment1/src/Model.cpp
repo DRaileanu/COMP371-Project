@@ -325,6 +325,12 @@ void Model::createE() {
 
 
 
+
+
+
+
+// Methods used in assignment 1
+
 void Model::createN() {
 	SceneNode* node;
 

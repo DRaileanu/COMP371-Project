@@ -79,25 +79,23 @@ int main() {
 
     //root, grid and axis lines
     SceneNode* root = new SceneNode;
-    //root->scale(glm::vec3(0.25, 0.25, 0.25));
 
     SceneNode* axisLines = new SceneNode(new AxisLines);
     axisLines->scale(glm::vec3(3.0f, 3.0f, 3.0f));
     root->addChild(axisLines);
 
-    SceneNode* grid = new SceneNode(new Grid);
-    grid->translate(glm::vec3(0.0f, 0.0f, 0.0f));
+    SceneNode* grid = new SceneNode(new Grid);;
+    grid->translate(glm::vec3(0.0f, -0.0001f, 0.0f));
     root->addChild(grid);
 
     
-
-    //Name Model is parent of all Letter Models
+    //ameModels is parent of all Letter Models
     //I'm using an additional SceneNode for every Letter Model because the Models are centered around x=y=z=0 in order to allow rotation around their center.
     //Translating the Letter Model directly above xz plane will work at first, but then when it's scaled, the bottom would go below xz plane. The extra SceneNode allows me to scale and stay on xz plane.
-    //So we rotate using letter models and scale/translate using letterNode
+    //So we rotate using letter models and scale/translate using letterNode. Translating twice in between rotations won't work with current implementation of SceneNode
 
     SceneNode* nameModels = new SceneNode;
-    nameModels->translate(glm::vec3(0.0f, 0.0f, 5.0f));//move all letters at the back
+    nameModels->translate(glm::vec3(0.0f, 0.0f, -49.0f));//move all letters at the back
     grid->addChild(nameModels);
 
 
@@ -322,22 +320,22 @@ int main() {
             selectedNode->translate(glm::vec3(0.0f, -5*dt, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-            selectedLetter->rotate(glm::vec3(0.0f, 100*dt, 0.0f));
+            selectedLetter->rotate(glm::vec3(0.0f, 50*dt, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-            selectedLetter->rotate(glm::vec3(0.0f, -100*dt, 0.0f));
+            selectedLetter->rotate(glm::vec3(0.0f, -50*dt, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-            selectedLetter->rotate(glm::vec3(0.0f, 0.0f, 100*dt));
+            selectedLetter->rotate(glm::vec3(0.0f, 0.0f, 50*dt));
         }
         if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-            selectedLetter->rotate(glm::vec3(0.0f, 0.0f, -100*dt));
+            selectedLetter->rotate(glm::vec3(0.0f, 0.0f, -50*dt));
         }
         if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-            selectedLetter->rotate(glm::vec3(-100*dt, 0.0f, 0.0f));
+            selectedLetter->rotate(glm::vec3(-50*dt, 0.0f, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-            selectedLetter->rotate(glm::vec3(100*dt, 0.0f, 0.0f));
+            selectedLetter->rotate(glm::vec3(50*dt, 0.0f, 0.0f));
         }
 
         // world orientation
@@ -353,10 +351,10 @@ int main() {
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) {
             root->rotate(glm::vec3(0.0f, 50 * dt, 0.0f));
         }
-        // reset world orientation (and camera if the 2 lines are uncomented)
+        // reset world orientation and camera to original state
         if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
             root->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-            //comment next 2 lines if don't want camera to reset looking at towards -z axis
+            cameraPosition = glm::vec3(0.0f, 0.0f, 20.0f);
             cameraYaw = -90.0f;
             cameraPitch = 0.0f;
         }
@@ -371,7 +369,14 @@ int main() {
             buildingMode = false;
         }
         if (buildingMode) {
-            if (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS && !placementKeyPressed) {
+            // remove currently built model if it exists
+            if (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS && buildModel != NULL) {
+                root->removeChild(buildModel);
+                delete buildModel;
+                buildModel = NULL;
+            }
+            if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !placementKeyPressed) {
+                // first placed cube becomes root of buildingModel, so all transformations are relative to it
                 if (buildModel == NULL) {
                     buildModel = new SceneNode;
                     buildModel->setTranslation(buildCube->getTranslate());
@@ -382,17 +387,17 @@ int main() {
                 newNode->translate(buildCube->getTranslate() - buildModel->getTranslate());
                 buildModel->addChild(newNode);
             }
-            if (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_RELEASE && placementKeyPressed) {
+            if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE && placementKeyPressed) {
                 placementKeyPressed = false;
             }
-
-            if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS && !colorSwitchKeyPressed) {
+            //switch colors of the next placed cube
+            if ((glfwGetKey(window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS) && !colorSwitchKeyPressed) {
                 colorSwitchKeyPressed = true;
                 buildColors.push(buildColors.front());
                 buildColors.pop();
                 currentBuildColor = buildColors.front();
             }
-            if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE && colorSwitchKeyPressed) {
+            if (glfwGetKey(window, GLFW_KEY_RIGHT_ALT) == GLFW_RELEASE && colorSwitchKeyPressed) {
                 colorSwitchKeyPressed = false;
             }
         }
@@ -504,7 +509,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-
+//recursively draws the Scene Graph
 void drawNode(SceneNode* node, Shader* shader) {
     if (node->getDrawable()) {
         glm::mat4 transform = node->getWorldTransform();

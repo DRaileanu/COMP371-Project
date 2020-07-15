@@ -4,6 +4,7 @@
 #include <vector>
 
 //creates models of 3D letters/digits by manipulating geometry of unit cubes
+// For QUIZ1, note that every cube is scaled by (1.0f, 0.5f, 0.25f) inside createR/A/I/L/E methods as required
 
 class Model : public SceneNode {
 public:

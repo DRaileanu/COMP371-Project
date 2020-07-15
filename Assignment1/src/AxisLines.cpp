@@ -28,7 +28,7 @@ AxisLines::AxisLines() {
 AxisLines::~AxisLines(){}
 
 void AxisLines::draw() {
-	glLineWidth(5.0f);
+	glLineWidth(10.0f);
 	Drawable::draw();
 	glLineWidth(1.0f);
 }

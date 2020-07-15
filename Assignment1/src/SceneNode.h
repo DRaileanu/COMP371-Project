@@ -22,6 +22,7 @@ public:
 	virtual void updateWorldTransform();
 
 	void addChild(SceneNode*);
+	void removeChild(SceneNode*);
 	std::vector<SceneNode*> getChildren() { return children; }
 
 	Drawable* getDrawable() const { return drawable; }
