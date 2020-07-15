@@ -38,6 +38,7 @@ public:
 	
 	void setRotation(glm::vec3);//manually set rotation
 
+
 protected:
 	SceneNode*	parent;
 	Drawable*	drawable;

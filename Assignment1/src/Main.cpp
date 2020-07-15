@@ -76,18 +76,34 @@ int main() {
 
     //root, grid and axis lines
     SceneNode* root = new SceneNode;
-    root->scale(glm::vec3(0.25, 0.25, 0.25));
+    //root->scale(glm::vec3(0.25, 0.25, 0.25));
 
     SceneNode* axisLines = new SceneNode(new AxisLines);
-    axisLines->scale(glm::vec3(10.0f, 10.0f, 10.0f));
+    axisLines->scale(glm::vec3(3.0f, 3.0f, 3.0f));
     root->addChild(axisLines);
 
     SceneNode* grid = new SceneNode(new Grid);
-    grid->translate(glm::vec3(0.0f, -0.00f, 0.0f));
-    root->addChild(grid);
+    grid->translate(glm::vec3(0.0f, 0.0f, 0.0f));
+    //root->addChild(grid);
 
     // student models
-    SceneNode* dan = new SceneNode;
+    
+    SceneNode* nameModels = new SceneNode;
+    nameModels->translate(glm::vec3(0.0f, 0.0f, 5.0f));
+    root->addChild(nameModels);
+
+    SceneNode* letterRNode = new SceneNode;
+    letterRNode->translate(glm::vec3(0.0f, 0.0f, 0.0f));
+    nameModels->addChild(letterRNode);
+
+
+    Model* letterR = new Model('R');
+    letterR->translate(glm::vec3(0.0f, 2.4f, 0.0f));
+    letterRNode->addChild(letterR);
+
+    
+    
+    /*SceneNode* dan = new SceneNode;
     dan->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     dan->translate(glm::vec3(-40.0f, 0.0f, -40.0f));
     grid->addChild(dan);
@@ -154,11 +170,11 @@ int main() {
 
     Model* model10 = new Model('1');
     model10->translate(glm::vec3(2.5f, 0.0f, 0.0f));
-    mohd->addChild(model10);
+    mohd->addChild(model10);*/
 
 
     //default selected node to transform
-    SceneNode* selectedNode = mohd;
+    SceneNode* selectedNode = letterRNode;
 
 
     // render loop
@@ -196,8 +212,9 @@ int main() {
         cameraFront.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
         cameraFront.y = sin(glm::radians(cameraPitch));
         cameraFront.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-        glm::vec3 cameraRight = glm::cross(cameraFront, glm::vec3(0.0f, 1.0f, 0.0f));
-        cameraUp = glm::cross(cameraRight, cameraFront);
+        cameraFront = glm::normalize(cameraFront);
+        glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, glm::vec3(0.0f, 1.0f, 0.0f)));
+        cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
 
 
         // keyboard input handling
@@ -218,63 +235,66 @@ int main() {
         }
 
         // select student models to transform
-        if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-            selectedNode = dan;
-        }
-        if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-            selectedNode = moh;
-        }
-        if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
-            selectedNode = muher;
-        }
-        if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
-            selectedNode = radhep;
-        }
-        if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
-            selectedNode = mohd;
-        }
 
-        // option to select only letter or digit model for transformations
-        if (selectedNode == dan) {
-            if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-                selectedNode = model1;
-            }
-            if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-                selectedNode = model2;
-            }
-        }
-        if (selectedNode == moh) {
-            if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-                selectedNode = model3;
-            }
-            if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-                selectedNode = model4;
-            }
-        }
-        if (selectedNode == muher) {
-            if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-                selectedNode = model5;
-            }
-            if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-                selectedNode = model6;
-            }
-        }
-        if (selectedNode == radhep) {
-            if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-                selectedNode = model7;
-            }
-            if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-                selectedNode = model8;
-            }
-        }
-        if (selectedNode == mohd) {
-            if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-                selectedNode = model9;
-            }
-            if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-                selectedNode = model10;
-            }
-        }
+
+
+        //if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+        //    selectedNode = dan;
+        //}
+        //if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+        //    selectedNode = moh;
+        //}
+        //if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
+        //    selectedNode = muher;
+        //}
+        //if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
+        //    selectedNode = radhep;
+        //}
+        //if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
+        //    selectedNode = mohd;
+        //}
+
+        //// option to select only letter or digit model for transformations
+        //if (selectedNode == dan) {
+        //    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
+        //        selectedNode = model1;
+        //    }
+        //    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
+        //        selectedNode = model2;
+        //    }
+        //}
+        //if (selectedNode == moh) {
+        //    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
+        //        selectedNode = model3;
+        //    }
+        //    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
+        //        selectedNode = model4;
+        //    }
+        //}
+        //if (selectedNode == muher) {
+        //    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
+        //        selectedNode = model5;
+        //    }
+        //    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
+        //        selectedNode = model6;
+        //    }
+        //}
+        //if (selectedNode == radhep) {
+        //    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
+        //        selectedNode = model7;
+        //    }
+        //    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
+        //        selectedNode = model8;
+        //    }
+        //}
+        //if (selectedNode == mohd) {
+        //    if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
+        //        selectedNode = model9;
+        //    }
+        //    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
+        //        selectedNode = model10;
+        //    }
+        //}
 
         // apply transformations
         if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
@@ -305,16 +325,16 @@ int main() {
 
         // world orientation transformations
         if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-            root->rotate(glm::vec3(1.0f, 0.0f, 0.0f));
+            cameraPosition -= 10*dt*cameraFront;
         }
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-            root->rotate(glm::vec3(-1.0f, 0.0f, 0.0f));
+            cameraPosition += 10*dt*cameraFront;
         }
         if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-            root->rotate(glm::vec3(0.0f, 1.0f, 0.0f));
+            cameraPosition -= 10*dt*cameraRight;
         }
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-            root->rotate(glm::vec3(0.0f, -1.0f, 0.0f));
+            cameraPosition += 10*dt*cameraRight;
         }
         if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
             root->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));

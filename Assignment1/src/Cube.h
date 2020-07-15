@@ -8,8 +8,7 @@
 
 class Cube : public Drawable {
 public:
-	Cube();//creates cube with different colours on each side
-	Cube(glm::vec3 colour);//creates cube with all faces of same colour given
+	Cube();
 	~Cube();
 
 };

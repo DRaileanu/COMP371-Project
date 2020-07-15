@@ -5,23 +5,115 @@ Model::Model(char c) {
 	cube = new Cube;
 	switch (c) {
 	case 'N': {createN(); }
-	break;
+			break;
 	case '1': {create1(); }
-	break;
+			break;
 	case 'H': {createH(); }
-	break;
+			break;
 	case '5': {create5(); }
-	break;
+			break;
 	case '2': {create2(); }
-	break;
+			break;
 	case 'D': {createD(); }
-	break;
+			break;
 	case '3': {create3(); }
-	break;
+			break;
+
+	//new methods added for Quiz1
+	case 'R': {createR(); }
+			break;
+	case 'A': {createA(); }
+			break;
+
+
+
 	}
 }
 
 Model::~Model() {}
+
+
+void Model::createR() {
+	SceneNode* node;
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->translate(glm::vec3(-0.55f, 0.0f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->translate(glm::vec3(0.55f, 0.0f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->rotate(glm::vec3(0.0f, 0.0f, 90.0f));
+	node->translate(glm::vec3(-1.4f, 0.80f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->rotate(glm::vec3(0.0f, 0.0f, 90.0f));
+	node->translate(glm::vec3(-1.4f, 1.9f, 0.0f));
+	addChild(node);
+
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->rotate(glm::vec3(0.0f, 0.0f, 90.0f));
+	node->translate(glm::vec3(-1.4f, -0.80f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->rotate(glm::vec3(0.0f, 0.0f, 90.0f));
+	node->translate(glm::vec3(-1.4f, -1.9f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->translate(glm::vec3(-0.55f, 2.7f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->translate(glm::vec3(0.55f, 2.7f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->rotate(glm::vec3(0.0f, 0.0f, 90.0f));
+	node->translate(glm::vec3(1.4f, 0.8f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->rotate(glm::vec3(0.0f, 0.0f, 90.0f));
+	node->translate(glm::vec3(1.4f, 1.9f, 0.0f));
+	addChild(node);
+
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->rotate(glm::vec3(0.0f, 0.0f, -45.0f));
+	node->translate(glm::vec3(-0.45f, -0.90f, 0.0f));
+	addChild(node);
+
+	node = new SceneNode(cube);
+	node->scale(glm::vec3(1.0f, 0.5f, 0.25f));
+	node->rotate(glm::vec3(0.0f, 0.0f, -45.0f));
+	node->translate(glm::vec3(0.45f, -1.85f, 0.0f));
+	addChild(node);
+
+}
+
+void Model::createA() {
+
+}
+
+
+
 
 void Model::createN() {
 	SceneNode* node;
@@ -47,6 +139,16 @@ void Model::createN() {
 	node->translate(glm::vec3(-1.5f, 2.5f, 0.0f));
 	addChild(node);
 }
+
+
+
+
+
+
+
+
+
+
 
 void Model::create1() {
 	SceneNode* node;
