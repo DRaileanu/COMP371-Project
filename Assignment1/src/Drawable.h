@@ -1,4 +1,5 @@
 #pragma once
+#include "TextureLoader.h"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -8,25 +9,33 @@
 //can be instantiated on its own, but useless since no way to provide geometry data for now, use a class that inherits it
 
 class Drawable {
+
 public:
+	enum AttributeTypes { VERTEX_BUFFER, NORMAL_BUFFER, COLOUR_BUFFER, TEXTURE_BUFFER, INDEX_BUFFER, NUM_BUFFERS };
 	Drawable();
 	virtual ~Drawable();
 
 	//provides basic implementation for drawing geometry
 	virtual void draw();
 
+	virtual void setTexture(GLuint tex) { texture = tex; }
+	virtual GLuint getTexture() { return texture; }
+
+	void setColours(glm::vec3);//sets all colours to given colour
+
 protected:
 	//handles setup of data buffers into coresponding array object
 	void setupBufferData();
 
 	GLuint VAO;//array object
-	GLuint VBO;//vertex buffer
-	GLuint CBO;//color buffer
-	GLuint EBO;//element(index) buffer
+	GLuint bufferObjects[NUM_BUFFERS];
 	GLuint type;//type of primitive
 
+	GLuint texture;
 	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec3> normals;
 	std::vector<glm::vec3> colours;
+	std::vector<glm::vec2> texCoords;
 	std::vector<unsigned int> indices;
 };
 

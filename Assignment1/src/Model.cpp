@@ -1,6 +1,5 @@
 #include "Model.h"
 
-
 Model::Model(char c) {
 	cube = new Cube;
 	switch (c) {
@@ -214,4 +213,9 @@ void Model::create3() {
 	node->scale(glm::vec3(3.0f, 1.0f, 1.0f));
 	node->translate(glm::vec3(-0.5f, 4.5f, 0.0f));
 	addChild(node);
+}
+
+
+void Model::setColours(glm::vec3 newColour) {
+	cube->setColours(newColour);
 }

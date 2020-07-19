@@ -11,7 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
+#include "TextureLoader.h"
 #include "shader.h"
 #include "SceneNode.h"
 #include "Model.h"
@@ -40,7 +40,7 @@ void programInit();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 //TODO move eventually into Renderer class
-void drawNode(SceneNode*, Shader*);
+void drawNode(SceneNode*, Shader*, Shader*);
 
 
 //----------------------------------------
@@ -68,7 +68,8 @@ int main() {
     glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
 
     // build and compile shader program
-    Shader shader("shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl");
+    Shader shader("shaders/generic.vs", "shaders/generic.fs");
+    Shader blendingShader("shaders/blending.vs", "shaders/blending.fs");
 
 
     // set up the Scene Graph (sets up vertex data, buffers and configures vertex attributes)
@@ -163,6 +164,10 @@ int main() {
     //world matrix used to change world orientation
     glm::mat4 world(1.0f);
 
+
+
+
+    //------------------------------------------------------------------------------
 
     // render loop
     // -----------
@@ -327,6 +332,9 @@ int main() {
         }
 
 
+        if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
+            model1->setColours(glm::vec3(sinf(lastFrame), cosf(lastFrame), sinf(lastFrame*3)));
+        }
 
 
 
@@ -348,9 +356,14 @@ int main() {
         shader.setMat4("view", view);
 
 
+        blendingShader.use();
+        blendingShader.setMat4("projection", projection);
+        blendingShader.setMat4("view", view);
+
+
         // update and render Scene Graph
         root->updateWorldTransform();
-        drawNode(root, &shader);
+        drawNode(root, &shader, &blendingShader);
 
 
 
@@ -423,14 +436,25 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 
-void drawNode(SceneNode* node, Shader* shader) {
+void drawNode(SceneNode* node, Shader* shader, Shader* blendingShader) {
     if (node->getDrawable()) {
         glm::mat4 transform = node->getWorldTransform();
-        shader->setMat4("model", transform);
+
+        if (node->getDrawable()->getTexture()) {
+            blendingShader->use();
+            blendingShader->setInt("texture1", 0);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, node->getDrawable()->getTexture());
+            blendingShader->setMat4("model", transform);
+        }
+        else {
+            shader->use();
+            shader->setMat4("model", transform);
+        }
         node->draw();
     }
 
     for (auto child : node->getChildren()) {
-        drawNode(child, shader);
+        drawNode(child, shader, blendingShader);
     }
 }

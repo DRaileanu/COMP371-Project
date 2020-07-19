@@ -11,6 +11,8 @@ public:
 	Model(char);//requires a character to be created
 	~Model();
 
+	void setColours(glm::vec3);
+
 private:
 	//available models
 	void createN();

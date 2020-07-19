@@ -39,10 +39,15 @@
     <ClCompile Include="src\AxisLines.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fragment_shader.glsl" />
-    <None Include="shaders\vertex_shader.glsl" />
+    <None Include="shaders\generic.fs" />
+    <None Include="shaders\generic.vs" />
+    <None Include="shaders\blending.vs" />
+    <None Include="shaders\blending.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\awesomeface.png">
@@ -52,6 +57,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="textures\kappa.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\container.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\awesomeface.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -75,6 +86,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TextureLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
