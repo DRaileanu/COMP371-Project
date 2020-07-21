@@ -41,21 +41,30 @@ void Renderer::render() {
 	blendingShader->setMat4("view", view);
 
 	glDisable(GL_BLEND);
-
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glDepthMask(GL_TRUE);
 	for (auto& node : opaqueDrawables) {
 		renderNode(node);
 	}
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask(GL_FALSE);
 
-	for (auto& node : transparentDrawables) {
-		renderNode(node.second);
+	glCullFace(GL_FRONT);
+	for (auto iter = transparentDrawables.rbegin(); iter != transparentDrawables.rend(); ++iter) {
+		renderNode(iter->second);
+	}
+
+	glCullFace(GL_BACK);
+	for (auto iter = transparentDrawables.rbegin(); iter != transparentDrawables.rend(); ++iter) {
+		renderNode(iter->second);
 	}
 
 	opaqueDrawables.clear();
 	transparentDrawables.clear();
-
+	glDepthMask(GL_TRUE);//needs to be set to true before clearing depth buffer, else getting weird issues
 }
 
 void Renderer::preRender(SceneNode* node) {
@@ -67,7 +76,8 @@ void Renderer::preRender(SceneNode* node) {
 
 	if (Drawable* nodeDrawable= node->getDrawable()) {
 		if (nodeDrawable->isTransparent()) {//if transparent, sort form front to back
-			float distance = glm::length(mainCamera->Position - glm::vec3(node->getWorldTransform()[4]));//so ugly! make nicer if got time
+			glm::vec3 nodePosition = glm::vec3(node->getWorldTransform()[3]);
+			float distance = glm::length(mainCamera->Position - nodePosition);//so ugly! make nicer if got time
 			transparentDrawables[distance] = node;//adding to map container using distance as key automatically does the sorting
 		}
 		else {
