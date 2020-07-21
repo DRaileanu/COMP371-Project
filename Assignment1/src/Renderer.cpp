@@ -19,13 +19,12 @@ Renderer::~Renderer() {
 }
 
 
+
 void Renderer::render() {
 	if (!rootSceneNode) {
 		return;
 	}
-
-	preRender(rootSceneNode);
-
+	glDepthMask(GL_TRUE);//needs to be set to true before clearing depth buffer, else getting weird issues
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -40,34 +39,47 @@ void Renderer::render() {
 	blendingShader->setMat4("projection", projection);
 	blendingShader->setMat4("view", view);
 
-	glDisable(GL_BLEND);
+
+	// render opaques first
+	glDisable(GL_BLEND);//does it really need to be disabled?
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glDepthMask(GL_TRUE);
 	for (auto& node : opaqueDrawables) {
 		renderNode(node);
 	}
 
+	// render transparents, back to front
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask(GL_FALSE);
 
+	
+	// both methods seem to work the same, consider if theres really a difference since I could swear there was one when i first came up with it
+
+	//method 1
+	//--------
+	//glDisable(GL_CULL_FACE);
+	//for (auto iter = transparentDrawables.rbegin(); iter != transparentDrawables.rend(); ++iter) {
+	//	renderNode(iter->second);
+	//}
+
+	//method 2
+	//--------
 	glCullFace(GL_FRONT);
 	for (auto iter = transparentDrawables.rbegin(); iter != transparentDrawables.rend(); ++iter) {
 		renderNode(iter->second);
 	}
-
 	glCullFace(GL_BACK);
 	for (auto iter = transparentDrawables.rbegin(); iter != transparentDrawables.rend(); ++iter) {
 		renderNode(iter->second);
 	}
 
-	opaqueDrawables.clear();
-	transparentDrawables.clear();
-	glDepthMask(GL_TRUE);//needs to be set to true before clearing depth buffer, else getting weird issues
+
+	//opaqueDrawables.clear();
+	//transparentDrawables.clear();
 }
 
-void Renderer::preRender(SceneNode* node) {
+void Renderer::updateScene(SceneNode* node) {
 	if (!node) {
 		return;
 	}
@@ -86,7 +98,7 @@ void Renderer::preRender(SceneNode* node) {
 	}
 
 	for (auto& child : node->getChildren()) {
-		preRender(child);
+		updateScene(child);
 	}
 }
 
@@ -97,6 +109,12 @@ void Renderer::setRootSceneNode(SceneNode* node) {
 
 void Renderer::removeRootSceneNode(SceneNode* node) {
 	rootSceneNode = NULL;
+}
+
+void Renderer::postRender()
+{
+	opaqueDrawables.clear();
+	transparentDrawables.clear();
 }
 
 

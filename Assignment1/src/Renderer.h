@@ -26,18 +26,19 @@ public:
 	Renderer(Camera* camera, Shader* genericShader, Shader* blendingShader);
 	~Renderer();
 
+	void updateScene(SceneNode*);
 	void render();
 
 	void setRootSceneNode(SceneNode*);
-	void removeRootSceneNode(SceneNode*);//does not delete the actual SceneNode, just removes from rendering (would probably never be used)
+	void removeRootSceneNode(SceneNode*);//does not delete the actual SceneNode, just removes from rendering (would probably never be used, consider removing)
 
 	//drawing parameters
 	void setPolygonMode(GLuint mode) { polygonMode = mode; }
 	void setTexRatio(float ratio) { texRatio = ratio; }
 
+	void postRender();//for benchmarking purposes, remove later. (need to be called after every preRender/render or refilling drawables list with repeating data)
 
 private:
-	void preRender(SceneNode*);
 
 	Shader* genericShader;
 	Shader* blendingShader;
