@@ -23,6 +23,9 @@ public:
 
 	void setColours(glm::vec3);//sets all colours to given colour
 
+	bool isTransparent() { return transparent; }
+	void setTransparent(bool transparent) { this->transparent = transparent; }
+
 protected:
 	//handles setup of data buffers into coresponding array object
 	void setupBufferData();
@@ -30,6 +33,7 @@ protected:
 	GLuint VAO;//array object
 	GLuint bufferObjects[NUM_BUFFERS];
 	GLuint type;//type of primitive
+	bool transparent;
 
 	GLuint texture;
 	std::vector<glm::vec3> vertices;

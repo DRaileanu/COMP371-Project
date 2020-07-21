@@ -12,11 +12,14 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "TextureLoader.h"
-#include "shader.h"
+#include "Shader.h"
 #include "SceneNode.h"
 #include "Model.h"
 #include "Grid.h"
 #include "AxisLines.h"
+#include "Renderer.h"
+#include "Camera.h"
+
 
 #include <iostream>
 #include <algorithm>
@@ -26,11 +29,15 @@
 // Globals
 //----------------------------------------
 
-const unsigned int SCR_WIDTH = 1024;
-const unsigned int SCR_HEIGHT = 768;
+extern const unsigned int SCR_WIDTH = 1024;//extern, otherwise extern won't work in other classes to get access to it
+extern const unsigned int SCR_HEIGHT = 768;//if create Window class, can move in there and not have this
 
 GLFWwindow* window;
 
+Camera* mainCamera;
+float lastX = (float)SCR_WIDTH / 2.0;
+float lastY = (float)SCR_HEIGHT / 2.0;
+bool firstMouse = true;
 
 //----------------------------------------
 // Functions prototypes
@@ -38,6 +45,7 @@ GLFWwindow* window;
 
 void programInit();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 //TODO move eventually into Renderer class
 void drawNode(SceneNode*, Shader*, Shader*);
@@ -50,27 +58,30 @@ int main() {
     //initialize OpenGL libraries and create window
     programInit();
 
-
+    mainCamera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f));
     //Camera parameters for view transform
-    glm::vec3   cameraPosition(0.0f, 0.0f, 20.0f);
-    glm::vec3   cameraFront(0.0f, 0.0f, -1.0f);
-    glm::vec3   cameraUp(0.0f, 1.0f, 0.0f);
-    //other Camera parameters
-    float cameraYaw = -90.0f;
-    float cameraPitch = 0.0f;
-    float cameraSensitivity = 5.0f;
-    float cameraZoom = 45.0f;
+    //glm::vec3   cameraPosition(0.0f, 0.0f, 20.0f);
+    //glm::vec3   cameraFront(0.0f, 0.0f, -1.0f);
+    //glm::vec3   cameraUp(0.0f, 1.0f, 0.0f);
+    ////other Camera parameters
+    //float cameraYaw = -90.0f;
+    //float cameraPitch = 0.0f;
+    //float cameraSensitivity = 5.0f;
+    //float cameraZoom = 45.0f;
 
-    //frame time parameters
+
+    ////frame time parameters
     float lastFrame = glfwGetTime();
-    double lastMouseX;
-    double lastMouseY;
-    glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
+    //double lastMouseX;
+    //double lastMouseY;
+    //glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
 
     // build and compile shader program
-    Shader shader("shaders/generic.vs", "shaders/generic.fs");
+    Shader genericShader("shaders/generic.vs", "shaders/generic.fs");
     Shader blendingShader("shaders/blending.vs", "shaders/blending.fs");
 
+
+    Renderer* renderer = new Renderer(mainCamera, &genericShader, &blendingShader);
 
     // set up the Scene Graph (sets up vertex data, buffers and configures vertex attributes)
     // --------------------------------------------------------------------------------------
@@ -164,7 +175,13 @@ int main() {
     //world matrix used to change world orientation
     glm::mat4 world(1.0f);
 
+    //model1->getDrawable()->setTexture(0);
 
+    renderer->setRootSceneNode(root);
+
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
     //------------------------------------------------------------------------------
@@ -173,39 +190,38 @@ int main() {
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        // per-frame time logic
         float dt = glfwGetTime() - lastFrame;
         lastFrame += dt;
 
         // update Camera
         //--------------
         // update mouse cursor
-        double mouseX, mouseY, dx, dy;
-        glfwGetCursorPos(window, &mouseX, &mouseY);
-        dx = mouseX - lastMouseX;
-        dy = lastMouseY - mouseY;
-        lastMouseX = mouseX;
-        lastMouseY = mouseY;
-        // update camera angular angles only if appropriate button is pressed
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-            cameraYaw += dx * cameraSensitivity * dt;
-        }
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-            cameraPitch += dy * cameraSensitivity * dt;
-        }
-        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-            cameraZoom -= dy;
-            //constrain zoom to avoid flipping
-            cameraZoom = std::max(1.0f, std::min(120.0f, cameraZoom));
-        }
-        // constrain pitch angle so screen doesn't get flipped
-        cameraPitch = std::max(-89.0f, std::min(89.0f, cameraPitch));
-        // update camera parameters for view transform
-        cameraFront.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-        cameraFront.y = sin(glm::radians(cameraPitch));
-        cameraFront.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-        glm::vec3 cameraRight = glm::cross(cameraFront, glm::vec3(0.0f, 1.0f, 0.0f));
-        cameraUp = glm::cross(cameraRight, cameraFront);
+        //double mouseX, mouseY, dx, dy;
+        //glfwGetCursorPos(window, &mouseX, &mouseY);
+        //dx = mouseX - lastMouseX;
+        //dy = lastMouseY - mouseY;
+        //lastMouseX = mouseX;
+        //lastMouseY = mouseY;
+        //// update camera angular angles only if appropriate button is pressed
+        //if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+        //    cameraYaw += dx * cameraSensitivity * dt;
+        //}
+        //if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        //    cameraPitch += dy * cameraSensitivity * dt;
+        //}
+        //if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+        //    cameraZoom -= dy;
+        //    //constrain zoom to avoid flipping
+        //    cameraZoom = std::max(1.0f, std::min(120.0f, cameraZoom));
+        //}
+        //// constrain pitch angle so screen doesn't get flipped
+        //cameraPitch = std::max(-89.0f, std::min(89.0f, cameraPitch));
+        //// update camera parameters for view transform
+        //cameraFront.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+        //cameraFront.y = sin(glm::radians(cameraPitch));
+        //cameraFront.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+        //glm::vec3 cameraRight = glm::cross(cameraFront, glm::vec3(0.0f, 1.0f, 0.0f));
+        //cameraUp = glm::cross(cameraRight, cameraFront);
 
 
         // keyboard input handling
@@ -327,8 +343,8 @@ int main() {
         if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
             root->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
             //comment next 2 lines if don't want camera to reset looking at towards -z axis
-            cameraYaw = -90.0f;
-            cameraPitch = 0.0f;
+            mainCamera->Yaw = -90.0f;
+            mainCamera->Pitch = 0.0f;
         }
 
 
@@ -337,34 +353,35 @@ int main() {
         }
 
 
-
+        std::cout << dt << std::endl;
         // render
         // ------
         // reset color and clear Depth Buffer Bit
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // activate shader
-        shader.use();
+        //// activate shader
+        //shader.use();
 
-        // pass projection matrix to shader
-        glm::mat4 projection = glm::perspective(glm::radians(cameraZoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
-        shader.setMat4("projection", projection);
+        //// pass projection matrix to shader
+        //glm::mat4 projection = glm::perspective(glm::radians(cameraZoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
+        //shader.setMat4("projection", projection);
 
-        // pass camera/view transformation to shader
-        glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
-        shader.setMat4("view", view);
+        //// pass camera/view transformation to shader
+        //glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+        //shader.setMat4("view", view);
 
 
-        blendingShader.use();
-        blendingShader.setMat4("projection", projection);
-        blendingShader.setMat4("view", view);
+        //blendingShader.use();
+        //blendingShader.setMat4("projection", projection);
+        //blendingShader.setMat4("view", view);
 
 
         // update and render Scene Graph
-        root->updateWorldTransform();
-        drawNode(root, &shader, &blendingShader);
+        //root->updateWorldTransform();
+        //drawNode(root, &shader, &blendingShader);
 
+        renderer->render();
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -411,9 +428,10 @@ void programInit() {
     // set required callback functions
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
 
     // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // glad: load all OpenGL function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -436,6 +454,26 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+    lastX = xpos;
+    lastY = ypos;
+
+    mainCamera->ProcessMouseMovement(xoffset, yoffset);
+}
+
+
+
 void drawNode(SceneNode* node, Shader* shader, Shader* blendingShader) {
     if (node->getDrawable()) {
         glm::mat4 transform = node->getWorldTransform();
@@ -446,12 +484,18 @@ void drawNode(SceneNode* node, Shader* shader, Shader* blendingShader) {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, node->getDrawable()->getTexture());
             blendingShader->setMat4("model", transform);
+           // glDisable(GL_DEPTH_TEST);
+            //glEnable(GL_BLEND);
+            //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            node->draw();
         }
         else {
             shader->use();
             shader->setMat4("model", transform);
+            node->draw();
         }
-        node->draw();
+       
     }
 
     for (auto child : node->getChildren()) {

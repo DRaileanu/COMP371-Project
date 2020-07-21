@@ -1,7 +1,7 @@
 #include "Cube.h"
 
 Cube::Cube() {
-    texture = loadTexture("res/container.jpg");
+    
 
     vertices = {
         //front

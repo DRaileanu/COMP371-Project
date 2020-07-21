@@ -49,14 +49,18 @@ void SceneNode::updateWorldTransform() {
 	else {//node is root node
 		worldTransform = localTransform;
 	}
-	for (auto child : children) {
-		child->updateWorldTransform();
-	}
+	//for (auto child : children) {
+	//	child->updateWorldTransform();
+	//}
 }
 
 void SceneNode::addChild(SceneNode* child) {
 	children.push_back(child);
 	child->parent = this;
+}
+
+void SceneNode::removeChild(SceneNode* child) {
+	children.erase(std::find(children.begin(), children.end(), child));
 }
 
 void SceneNode::translate(glm::vec3 t) {
