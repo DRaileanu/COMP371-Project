@@ -344,9 +344,9 @@ int main() {
         // render
         // ------
         renderer->updateScene();
-        for (int i = 0; i < 10; ++i) {//for benchmarking performance by updateScene/render many times
-            renderer->updateScene();
-        }
+        //for (int i = 0; i < 100; ++i) {//for benchmarking performance by updateScene/render many times
+        //   
+        //}
         renderer->render();
         renderer->postRender();
 

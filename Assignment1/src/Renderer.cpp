@@ -111,7 +111,7 @@ void Renderer::updateNode(SceneNode* node, const glm::mat4& CTM) {
 		}
 	}
 
-	if (GroupNode* groupNode = dynamic_cast<GroupNode*>(node)) {
+	else if (GroupNode* groupNode = dynamic_cast<GroupNode*>(node)) {
 		for (auto& child : groupNode->getChildren()) {
 			updateNode(child, node->getWorldTransform());
 		}
