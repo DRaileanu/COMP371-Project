@@ -20,15 +20,17 @@ Model::Model(char c) {
 	}
 }
 
-Model::~Model() {}
+Model::~Model() {
+	delete cube;
+}
 
 void Model::createN() {
-	SceneNode* node;
+	DrawNode* node;
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(2.0f, 2.0, 1.0f));
 	node->translate(glm::vec3(0.0f, 2.5f, 0.0f));
-	node->shear(glm::mat4(
+	node->setManualTransform(glm::mat4(
 		glm::vec4(1.0f, -1.5f, 0.0f, 0.0f),
 		glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
 		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
@@ -36,30 +38,29 @@ void Model::createN() {
 		));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 5.0f, 1.0f));
 	node->translate(glm::vec3(1.5f, 2.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 5.0f, 1.0f));
 	node->translate(glm::vec3(-1.5f, 2.5f, 0.0f));
 	addChild(node);
 }
 
 void Model::create1() {
-	SceneNode* node;
-	//cube->setTexture(loadTexture("res/container.jpg"));
-	cube->setTransparent(true);
-	node = new SceneNode(cube);
+	DrawNode* node;
+
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 5.0f, 1.0f));
 	node->translate(glm::vec3(0.0f, 2.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.25f, 1.0f, 1.0f));
 	node->translate(glm::vec3(-1.125, 4.0f, 0.0f));
-	node->shear(glm::mat4(
+	node->setManualTransform(glm::mat4(
 		glm::vec4(1.0f, 1.0f, 0.0f, 0.0f),
 		glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
 		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
@@ -68,67 +69,66 @@ void Model::create1() {
 }
 
 void Model::createH() {
-	SceneNode* node;
+	DrawNode* node;
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(2.0f, 1.0, 1.0f));
 	node->translate(glm::vec3(0.0f, 2.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 5.0f, 1.0f));
 	node->translate(glm::vec3(1.5f, 2.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 5.0f, 1.0f));
 	node->translate(glm::vec3(-1.5f, 2.5f, 0.0f));
 	addChild(node);
 }
 void Model::create5() {
-	SceneNode* node;
-	glm::mat4 transform;
+	DrawNode* node;
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(4.0f, 1.0f, 1.0f));
 	node->translate(glm::vec3(0.0f, 0.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(4.0f, 1.0f, 1.0f));
 	node->translate(glm::vec3(0.0f, 4.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(4.0f, 1.0f, 1.0f));
 	node->translate(glm::vec3(0.0f, 2.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->translate(glm::vec3(-1.5f, 3.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->translate(glm::vec3(1.5f, 1.5f, 0.0f));
 	addChild(node);
 
 }
 
 void Model::create2() {
-	SceneNode* node;
+	DrawNode* node;
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(2.0f, 1.0f, 1.0f));
 	node->translate(glm::vec3(0.0f, 4.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 1.5f, 1.0f));
 	node->translate(glm::vec3(1.5f, 4.25f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
-	node->shear(glm::mat4(
+	node = new DrawNode(cube);
+	node->setManualTransform(glm::mat4(
 		glm::vec4(1.0f, 0.0f, 0.0f, 0.0f),
 		glm::vec4(3.0f, 1.0f, 0.0f, 0.0f),
 		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
@@ -138,28 +138,27 @@ void Model::create2() {
 	node->translate(glm::vec3(0.0f, 2.5, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(3.0f, 1.0f, 1.0f));
 	node->translate(glm::vec3(0.5f, 0.5, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 1.5f, 1.0f));
 	node->translate(glm::vec3(-1.5f, 0.75f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 1.5f, 1.0f));
 	node->translate(glm::vec3(-1.5f, 4.25f, 0.0f));
 	addChild(node);
 }
 
 void Model::createD() {
-	SceneNode* node;
-	glm::mat4 transform;
+	DrawNode* node;
 
-	node = new SceneNode(cube);
-	node->shear(glm::mat4(
+	node = new DrawNode(cube);
+	node->setManualTransform(glm::mat4(
 		glm::vec4(1.0f, -1.5f, 0.0f, 0.0f),
 		glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
 		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
@@ -169,18 +168,18 @@ void Model::createD() {
 	node->translate(glm::vec3(0.5f, 3.75f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 2.0f, 1.0f));
 	node->translate(glm::vec3(1.5f, 2.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 5.0f, 1.0f));
 	node->translate(glm::vec3(-1.5f, 2.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
-	node->shear(glm::mat4(
+	node = new DrawNode(cube);
+	node->setManualTransform(glm::mat4(
 		glm::vec4(1.0f, 1.5f, 0.0f, 0.0f),
 		glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
 		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
@@ -192,25 +191,24 @@ void Model::createD() {
 }
 
 void Model::create3() {
-	SceneNode* node;
-	glm::mat4 transform;
+	DrawNode* node;
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(1.0f, 5.0f, 1.0f));
 	node->translate(glm::vec3(1.5f, 2.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(3.0f, 1.0f, 1.0f));
 	node->translate(glm::vec3(-0.5f, 0.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(3.0f, 1.0f, 1.0f));
 	node->translate(glm::vec3(-0.5f, 2.5f, 0.0f));
 	addChild(node);
 
-	node = new SceneNode(cube);
+	node = new DrawNode(cube);
 	node->scale(glm::vec3(3.0f, 1.0f, 1.0f));
 	node->translate(glm::vec3(-0.5f, 4.5f, 0.0f));
 	addChild(node);

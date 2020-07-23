@@ -14,7 +14,8 @@
 #include <map>
 
 #include "Camera.h"
-#include "SceneNode.h"
+#include "GroupNode.h"
+#include "DrawNode.h"
 #include "Shader.h"
 #include "Light.h"
 
@@ -26,11 +27,11 @@ public:
 	Renderer(Camera* camera, Shader* genericShader, Shader* blendingShader);
 	~Renderer();
 
-	void updateScene(SceneNode*);
+	void updateScene();
 	void render();
 
-	void setRootSceneNode(SceneNode*);
-	void removeRootSceneNode(SceneNode*);//does not delete the actual SceneNode, just removes from rendering (would probably never be used, consider removing)
+	void setRootSceneNode(GroupNode* node) { rootSceneNode = node; }
+	void removeRootSceneNode() { rootSceneNode = NULL; }
 
 	//drawing parameters
 	void setPolygonMode(GLuint mode) { polygonMode = mode; }
@@ -46,15 +47,16 @@ private:
 
 	Camera* mainCamera;
 
-	SceneNode* rootSceneNode;
+	GroupNode* rootSceneNode;
 	std::forward_list<Light*> lights;
-	std::forward_list<SceneNode*> opaqueDrawables;
-	std::map<float, SceneNode*> transparentDrawables;
+	std::forward_list<DrawNode*> opaqueDrawables;
+	std::map<float, DrawNode*> transparentDrawables;
 
 	GLuint polygonMode;
 	float texRatio;
 
-	void renderNode(SceneNode*);
+	void updateNode(SceneNode* node, const glm::mat4& CTM);
+	void renderNode(DrawNode* node);
 
 
 

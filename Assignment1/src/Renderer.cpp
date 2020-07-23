@@ -79,37 +79,17 @@ void Renderer::render() {
 	//transparentDrawables.clear();
 }
 
-void Renderer::updateScene(SceneNode* node) {
-	if (!node) {
+void Renderer::updateScene() {
+	if (!rootSceneNode) {
 		return;
 	}
+	rootSceneNode->updateWorldTransform(glm::mat4(1.0f));
+	updateNode(rootSceneNode, rootSceneNode->getWorldTransform());
 
-	node->updateWorldTransform();
-
-	if (Drawable* nodeDrawable= node->getDrawable()) {
-		if (nodeDrawable->isTransparent()) {//if transparent, sort form front to back
-			glm::vec3 nodePosition = glm::vec3(node->getWorldTransform()[3]);
-			float distance = glm::length(mainCamera->Position - nodePosition);//so ugly! make nicer if got time
-			transparentDrawables[distance] = node;//adding to map container using distance as key automatically does the sorting
-		}
-		else {
-			opaqueDrawables.push_front(node);
-		}
-	}
-
-	for (auto& child : node->getChildren()) {
-		updateScene(child);
-	}
+	
 }
 
 
-void Renderer::setRootSceneNode(SceneNode* node) {
-	rootSceneNode = node;
-}
-
-void Renderer::removeRootSceneNode(SceneNode* node) {
-	rootSceneNode = NULL;
-}
 
 void Renderer::postRender()
 {
@@ -117,13 +97,33 @@ void Renderer::postRender()
 	transparentDrawables.clear();
 }
 
+void Renderer::updateNode(SceneNode* node, const glm::mat4& CTM) {
+	node->updateWorldTransform(CTM);
 
-void Renderer::renderNode(SceneNode* node) {
-	if (node->getDrawable()->getTexture()) {
+	if (DrawNode* drawNode = dynamic_cast<DrawNode*>(node)) {
+		if (drawNode->isTransparent()) {
+			glm::vec3 nodePosition = glm::vec3(node->getWorldTransform()[3]);
+			float distance = glm::length(mainCamera->Position - nodePosition);
+			transparentDrawables[distance] = drawNode;//adding to map container using distance as key automatically does the sorting
+		}
+		else {
+			opaqueDrawables.push_front(drawNode);
+		}
+	}
+
+	if (GroupNode* groupNode = dynamic_cast<GroupNode*>(node)) {
+		for (auto& child : groupNode->getChildren()) {
+			updateNode(child, node->getWorldTransform());
+		}
+	}
+}
+
+void Renderer::renderNode(DrawNode* node) {
+	if (GLuint texture = node->getTexture()) {
 		blendingShader->use();
 		blendingShader->setInt("texture1", 0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, node->getDrawable()->getTexture());
+		glBindTexture(GL_TEXTURE_2D, texture);
 		blendingShader->setMat4("model", node->getWorldTransform());
 
 		node->draw();

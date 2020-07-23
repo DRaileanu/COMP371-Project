@@ -16,9 +16,6 @@ Sphere::Sphere(float r, int s) {
     //    vertices.push_back(glm::vec3(icosahedronVertices[3*i], icosahedronVertices[3 * i + 1], icosahedronVertices[3 * i +2]));
     //}
 
-    texture = loadTexture("res/container.jpg");
-
-
 
 	setupBufferData();
 }

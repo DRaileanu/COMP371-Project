@@ -7,6 +7,6 @@ public:
 	~AxisLines();
 
 protected:
-	virtual void draw();
+	void draw() override;
 };
 

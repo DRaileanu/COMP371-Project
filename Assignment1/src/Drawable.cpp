@@ -7,8 +7,6 @@ Drawable::Drawable() {
 		bufferObjects[i] = 0;
 	}
 	type = GL_TRIANGLES;
-	texture = 0;
-	transparent = false;
 }
 
 Drawable::~Drawable() {

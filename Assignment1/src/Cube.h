@@ -9,5 +9,5 @@
 class Cube : public Drawable {
 public:
 	Cube();
-	~Cube();
+	~Cube() {}
 };

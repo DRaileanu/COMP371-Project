@@ -1,33 +1,30 @@
 #include "SceneNode.h"
 
-SceneNode::SceneNode(Drawable* drawable) {
-	this->drawable = drawable;
-	parent = NULL;
+SceneNode::SceneNode() {
 	localTransform = glm::mat4(1.0f);
 	translation = glm::vec3(0.0f, 0.0f, 0.0f);
 	rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	scaling = glm::vec3(1.0f, 1.0f, 1.0f);
-	shearing = glm::mat4(1.0f);
-
+	manualTransform = glm::mat4(1.0f);
 	dirty = true;
 }
 
 SceneNode::~SceneNode() {
-	for (auto child : children) {
-		delete child;
-	}
-	if (drawable != NULL) {
-		delete drawable;
-		drawable = NULL;
-	}
+	//for (auto child : children) {
+	//	delete child;
+	//}
+	//if (drawable != NULL) {
+	//	delete drawable;
+	//	drawable = NULL;
+	//}
 }
 
 //draws the drawable mesh if it exists
-void SceneNode::draw() {
-	if (drawable) {
-		drawable->draw();
-	}
-}
+//void SceneNode::draw() {
+//	if (drawable) {
+//		drawable->draw();
+//	}
+//}
 
 // computes local transform using transformaiton parameters in order shear->->scale->rotate(ZYX)->translate
 void SceneNode::updateLocalTransform() {
@@ -37,33 +34,50 @@ void SceneNode::updateLocalTransform() {
 	transform = glm::rotate(transform, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	transform = glm::rotate(transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	transform = glm::scale(transform, scaling);
-	transform = transform * shearing;
+	transform = transform * manualTransform;
 	localTransform = transform;
 
 }
 
 // recursively update scene node's world transform relative to parent's
-void SceneNode::updateWorldTransform() {
+void SceneNode::updateWorldTransform(const glm::mat4& CTM) {
 	if (dirty) {//replace dirty with true to see FPS difference
 		updateLocalTransform();
 		dirty = false;
 	}
-	if (parent) {//node has parent
-		worldTransform = parent->worldTransform * localTransform;
-	}
-	else {//node is root node
-		worldTransform = localTransform;
-	}
+	worldTransform = CTM * localTransform;
 }
 
-void SceneNode::addChild(SceneNode* child) {
-	children.push_back(child);
-	child->parent = this;
+//void SceneNode::addChild(SceneNode* child) {
+//	children.push_back(child);
+//	child->parent = this;
+//}
+
+//void SceneNode::removeChild(SceneNode* child) {
+//	children.erase(std::find(children.begin(), children.end(), child));
+//}
+
+
+void SceneNode::setTranslation(glm::vec3 t) {
+	translation = t;
+	dirty = true;
 }
 
-void SceneNode::removeChild(SceneNode* child) {
-	children.erase(std::find(children.begin(), children.end(), child));
+void SceneNode::setRotation(glm::vec3 r) {
+	rotation = r;
+	dirty = true;
 }
+
+void SceneNode::setScaling(glm::vec3 s) {
+	scaling = s;
+	dirty = true;
+}
+
+void SceneNode::setManualTransform(glm::mat4 m) {
+	manualTransform = m;
+	dirty = true;
+}
+
 
 void SceneNode::translate(glm::vec3 t) {
 	translation += t;
@@ -80,13 +94,3 @@ void SceneNode::rotate(glm::vec3 r) {
 	dirty = true;
 }
 
-// note just sets shear, so can't stack several shears. Consider as initial manual transform before any others
-void SceneNode::shear(glm::mat4 shear) {
-	shearing = shear;
-	dirty = true;
-}
-
-void SceneNode::setRotation(glm::vec3 r) {
-	rotation = r;
-	dirty = true;
-}

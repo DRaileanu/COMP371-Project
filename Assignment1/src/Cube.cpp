@@ -186,7 +186,3 @@ Cube::Cube() {
     setupBufferData();
 }
 
-Cube::~Cube()
-{
-}
-

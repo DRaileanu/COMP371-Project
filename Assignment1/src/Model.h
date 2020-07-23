@@ -1,11 +1,12 @@
 #pragma once
-#include "SceneNode.h"
+#include "GroupNode.h"
+#include "DrawNode.h"
 #include "Cube.h"
 #include <vector>
 
 //creates models of 3D letters/digits by manipulating geometry of unit cubes
 
-class Model : public SceneNode {
+class Model : public GroupNode {
 public:
 	Model() = delete;
 	Model(char);//requires a character to be created
@@ -23,6 +24,6 @@ private:
 	void createD();
 	void create3();
 
-	Drawable* cube;
+	Drawable* cube;//all DrawNodes of a Model will share same Cube
 };
 

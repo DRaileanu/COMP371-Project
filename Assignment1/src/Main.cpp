@@ -13,7 +13,8 @@
 
 #include "TextureLoader.h"
 #include "Shader.h"
-#include "SceneNode.h"
+#include "GroupNode.h"
+#include "DrawNode.h"
 #include "Model.h"
 #include "Grid.h"
 #include "AxisLines.h"
@@ -76,22 +77,21 @@ int main() {
     // --------------------------------------------------------------------------------------
 
     //root, grid and axis lines
-    SceneNode* root = new SceneNode;
-    root->scale(glm::vec3(0.25, 0.25, 0.25));
+    GroupNode* root = new GroupNode;
+    //root->scale(glm::vec3(0.25, 0.25, 0.25));
 
-    SceneNode* axisLines = new SceneNode(new AxisLines);
+    DrawNode* axisLines = new DrawNode(new AxisLines);
     axisLines->scale(glm::vec3(10.0f, 10.0f, 10.0f));
     root->addChild(axisLines);
 
-    SceneNode* grid = new SceneNode(new Grid);
-    grid->translate(glm::vec3(0.0f, -0.00f, 0.0f));
+    DrawNode* grid = new DrawNode(new Grid);
     root->addChild(grid);
 
     // student models
-    SceneNode* dan = new SceneNode;
+    GroupNode* dan = new GroupNode;
     dan->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     dan->translate(glm::vec3(-40.0f, 0.0f, -40.0f));
-    grid->addChild(dan);
+    root->addChild(dan);
 
     Model* model1 = new Model('N');
     model1->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
@@ -102,10 +102,10 @@ int main() {
     dan->addChild(model2);
 
 
-    SceneNode* moh = new SceneNode;
+    GroupNode* moh = new GroupNode;
     moh->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     moh->translate(glm::vec3(40.0f, 0.0f, -40.0f));
-    grid->addChild(moh);
+    root->addChild(moh);
 
     Model* model3 = new Model('H');
     model3->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
@@ -116,10 +116,10 @@ int main() {
     moh->addChild(model4);
 
 
-    SceneNode* muher = new SceneNode;
+    GroupNode* muher = new GroupNode;
     muher->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     muher->translate(glm::vec3(-40.0f, 0.0f, 40.0f));
-    grid->addChild(muher);
+    root->addChild(muher);
 
     Model* model5 = new Model('H');
     model5->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
@@ -130,10 +130,10 @@ int main() {
     muher->addChild(model6);
 
 
-    SceneNode* radhep = new SceneNode;
+    GroupNode* radhep = new GroupNode;
     radhep->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     radhep->translate(glm::vec3(40.0f, 0.0f, 40.0f));
-    grid->addChild(radhep);
+    root->addChild(radhep);
 
     Model* model7 = new Model('D');
     model7->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
@@ -144,10 +144,10 @@ int main() {
     radhep->addChild(model8);
 
 
-    SceneNode* mohd = new SceneNode;
+    GroupNode* mohd = new GroupNode;
     mohd->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     mohd->translate(glm::vec3(0.0f, 0.0f, -5.0f));
-    grid->addChild(mohd);
+    root->addChild(mohd);
 
     Model* model9 = new Model('H');
     model9->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
@@ -159,9 +159,9 @@ int main() {
 
 
 
-    SceneNode* sphere = new SceneNode(new Sphere(10,6));
+    DrawNode* sphere = new DrawNode(new Sphere(10,6));
     sphere->translate(glm::vec3(0.0f, 10.0f, 0.0f));
-    grid->addChild(sphere);
+    root->addChild(sphere);
 
 
     ////default selected node to transform
@@ -343,9 +343,9 @@ int main() {
 
         // render
         // ------
-        renderer->updateScene(root);
+        renderer->updateScene();
         for (int i = 0; i < 10; ++i) {//for benchmarking performance by updateScene/render many times
-
+            renderer->updateScene();
         }
         renderer->render();
         renderer->postRender();

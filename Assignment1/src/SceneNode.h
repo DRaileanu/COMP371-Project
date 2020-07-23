@@ -13,45 +13,68 @@
 //base class for nodes in a Scene Graph
 //holds pointer to its Drawable geometry to draw it and provides implementation for basic geometry manipulation via rotate, scale and translate
 
+//enum class SceneNodeType {
+//	GroupNode,
+//	DrawNode,
+//	LightNode
+//};
+
+
 class SceneNode {
 public:
-	SceneNode(Drawable* drawable = NULL);
 	virtual ~SceneNode();
 
-	virtual void draw();
-	virtual void updateLocalTransform();
-	virtual void updateWorldTransform();
-
-	void addChild(SceneNode*);
-	void removeChild(SceneNode*);
-	std::vector<SceneNode*> getChildren() { return children; }
-
-	Drawable* getDrawable() const { return drawable; }
-	void setDrawable(Drawable* drawable) { this->drawable = drawable; }
-
-	glm::mat4 getWorldTransform() const { return worldTransform; }
-	
-	//used to update localTransform
+	//virtual SceneNodeType nodeType() const = 0;
+	//get transform parameters
+	const glm::vec3 getTranslation() { return translation; }
+	const glm::vec3 getRotation() { return rotation; }
+	const glm::vec3 getScaling() { return scaling; }
+	const glm::mat4 getManualTransform() { return manualTransform; }
+	//set transform parameters
+	void setTranslation(glm::vec3 t);
+	void setRotation(glm::vec3 r);
+	void setScaling(glm::vec3 s);
+	void setManualTransform(glm::mat4 m);
+	//add to current transform parameters
 	void translate(glm::vec3);
 	void scale(glm::vec3);
 	void rotate(glm::vec3);//input is rotation along xyz-axes in degrees. Rotations are applied in order: ZYX
-	void shear(glm::mat4);//will only apply initial shear before any transformations, applying shear to already shear'd SceneNode will simply set new shear
 	
-	void setRotation(glm::vec3);//manually set rotation
+	const glm::mat4& getWorldTransform() { return worldTransform; }
+
+
+
+
+	//virtual void draw();
+	void updateWorldTransform(const glm::mat4& CTM);
+
+	//void addChild(SceneNode*);
+	//void removeChild(SceneNode*);
+	//std::vector<SceneNode*> getChildren() { return children; }
+
+	//Drawable* getDrawable() const { return drawable; }
+	//void setDrawable(Drawable* drawable) { this->drawable = drawable; }
+
+	
+	
+	
 
 protected:
-	SceneNode*	parent;
-	Drawable*	drawable;
+	SceneNode();//not allowed to instantiate SceneNode on their own, must be a derived class
+	void updateLocalTransform();
+
+	//SceneNode*	parent;
+	//Drawable*	drawable;
 	glm::mat4	worldTransform;
 	glm::mat4	localTransform;
-	std::vector<SceneNode*> children;
+	//std::vector<SceneNode*> children;
 
-private:
 	glm::vec3	translation;
 	glm::vec3	rotation;
 	glm::vec3	scaling;
-	glm::mat4	shearing;
+	glm::mat4	manualTransform;
 
 	bool dirty;//used to know if localTransform needs to be updated to improve performance
+	bool visible;
 };
 
