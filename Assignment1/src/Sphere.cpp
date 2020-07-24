@@ -4,18 +4,22 @@ Sphere::Sphere(float r, int s) {
     radius = r;
     subdivision = s;
     buildVerticesFlat();
-    
+
     //dangerous and dumb, but I know what I'm doing
     glm::vec3* vecs = reinterpret_cast<glm::vec3*>(icosahedronVertices.data());
     glm::vec2* tex = reinterpret_cast<glm::vec2*>(icosahedronTexCoords.data());
+    glm::vec3* norms = reinterpret_cast<glm::vec3*>(icosahedronNormals.data());
     auto nVecs = icosahedronVertices.size() / 3;
     vertices.assign(vecs, vecs + nVecs);
     texCoords.assign(tex, tex + nVecs);
+    normals.assign(norms, norms + nVecs);
     //otherwise have to push them one by one like this like this:
     //for (int i = 0; i < icosahedronVertices.size()/3; ++i) {
     //    vertices.push_back(glm::vec3(icosahedronVertices[3*i], icosahedronVertices[3 * i + 1], icosahedronVertices[3 * i +2]));
     //}
 
+    //colours.resize(vertices.size());
+    //std::fill(colours.begin(), colours.end(), glm::vec3(1.0f, 1.0f, 1.0f));
 
 	setupBufferData();
 }
@@ -118,6 +122,32 @@ void Sphere::addTexCoord(float s, float t)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// add single normal to array
+///////////////////////////////////////////////////////////////////////////////
+void Sphere::addNormal(float nx, float ny, float nz)
+{
+    icosahedronNormals.push_back(nx);
+    icosahedronNormals.push_back(ny);
+    icosahedronNormals.push_back(nz);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// add 3 normals of a triangle to array
+///////////////////////////////////////////////////////////////////////////////
+void Sphere::addNormals(const float n1[3], const float n2[3], const float n3[3])
+{
+    icosahedronNormals.push_back(n1[0]);  // nx
+    icosahedronNormals.push_back(n1[1]);  // ny
+    icosahedronNormals.push_back(n1[2]);  // nz
+    icosahedronNormals.push_back(n2[0]);
+    icosahedronNormals.push_back(n2[1]);
+    icosahedronNormals.push_back(n2[2]);
+    icosahedronNormals.push_back(n3[0]);
+    icosahedronNormals.push_back(n3[1]);
+    icosahedronNormals.push_back(n3[2]);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // add 3 texture coords of a triangle to array
 ///////////////////////////////////////////////////////////////////////////////
 void Sphere::addTexCoords(const float t1[2], const float t2[2], const float t3[2])
@@ -130,7 +160,43 @@ void Sphere::addTexCoords(const float t1[2], const float t2[2], const float t3[2
     icosahedronTexCoords.push_back(t3[1]);
 }
 
+// static functions ===========================================================
+///////////////////////////////////////////////////////////////////////////////
+// return face normal (4th param) of a triangle v1-v2-v3
+// if a triangle has no surface (normal length = 0), then return a zero vector
+///////////////////////////////////////////////////////////////////////////////
+void Sphere::computeFaceNormal(const float v1[3], const float v2[3], const float v3[3], float n[3])
+{
+    const float EPSILON = 0.000001f;
 
+    // default return value (0, 0, 0)
+    n[0] = n[1] = n[2] = 0;
+
+    // find 2 edge vectors: v1-v2, v1-v3
+    float ex1 = v2[0] - v1[0];
+    float ey1 = v2[1] - v1[1];
+    float ez1 = v2[2] - v1[2];
+    float ex2 = v3[0] - v1[0];
+    float ey2 = v3[1] - v1[1];
+    float ez2 = v3[2] - v1[2];
+
+    // cross product: e1 x e2
+    float nx, ny, nz;
+    nx = ey1 * ez2 - ez1 * ey2;
+    ny = ez1 * ex2 - ex1 * ez2;
+    nz = ex1 * ey2 - ey1 * ex2;
+
+    // normalize only if the length is > 0
+    float length = sqrtf(nx * nx + ny * ny + nz * nz);
+    if (length > EPSILON)
+    {
+        // normalize
+        float lengthInv = 1.0f / length;
+        n[0] = nx * lengthInv;
+        n[1] = ny * lengthInv;
+        n[2] = nz * lengthInv;
+    }
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -149,12 +215,12 @@ void Sphere::buildVerticesFlat()
 
     // clear memory of prev arrays
     std::vector<float>().swap(icosahedronVertices);
-    //std::vector<float>().swap(normals);
+    std::vector<float>().swap(icosahedronNormals);
     std::vector<float>().swap(icosahedronTexCoords);
     std::vector<unsigned int>().swap(indices);
 
     const float* v0, * v1, * v2, * v3, * v4, * v11;     // vertex positions
-    //float n[3];                                         // face normal
+    float n[3];                                         // face normal
     float t0[2], t1[2], t2[2], t3[2], t4[2], t11[2];    // texCoords
     unsigned int index = 0;
 
@@ -185,29 +251,29 @@ void Sphere::buildVerticesFlat()
         t11[0] = 2 * i * S_STEP;         t11[1] = T_STEP * 3;
 
         // add a triangle in 1st row
-        //Icosphere::computeFaceNormal(v0, v1, v2, n);
+        Sphere::computeFaceNormal(v0, v1, v2, n);
         addVertices(v0, v1, v2);
-        //addNormals(n, n, n);
+        addNormals(n, n, n);
         addTexCoords(t0, t1, t2);
         addIndices(index, index + 1, index + 2);
 
         // add 2 triangles in 2nd row
-        //Icosphere::computeFaceNormal(v1, v3, v2, n);
+        Sphere::computeFaceNormal(v1, v3, v2, n);
         addVertices(v1, v3, v2);
-        //addNormals(n, n, n);
+        addNormals(n, n, n);
         addTexCoords(t1, t3, t2);
         addIndices(index + 3, index + 4, index + 5);
 
-        //Icosphere::computeFaceNormal(v2, v3, v4, n);
+        Sphere::computeFaceNormal(v2, v3, v4, n);
         addVertices(v2, v3, v4);
-        //addNormals(n, n, n);
+        addNormals(n, n, n);
         addTexCoords(t2, t3, t4);
         addIndices(index + 6, index + 7, index + 8);
 
         // add a triangle in 3rd row
-        //Icosphere::computeFaceNormal(v3, v11, v4, n);
+        Sphere::computeFaceNormal(v3, v11, v4, n);
         addVertices(v3, v11, v4);
-        //addNormals(n, n, n);
+        addNormals(n, n, n);
         addTexCoords(t3, t11, t4);
         addIndices(index + 9, index + 10, index + 11);
 
@@ -235,7 +301,7 @@ void Sphere::buildVerticesSmooth()
 
     // clear memory of prev arrays
     std::vector<float>().swap(icosahedronVertices);
-    //std::vector<float>().swap(normals);
+    std::vector<float>().swap(icosahedronNormals);
     std::vector<float>().swap(icosahedronTexCoords);
     std::vector<unsigned int>().swap(indices);
     std::map<std::pair<float, float>, unsigned int>().swap(sharedIndices);
@@ -258,77 +324,77 @@ void Sphere::buildVerticesSmooth()
     //    05  06  07  08  09        //
     // add 14 non-shared vertices first (index from 0 to 13)
     addVertex(tmpVertices[0], tmpVertices[1], tmpVertices[2]);      // v0 (top)
-    //addNormal(0, 0, 1);
+    addNormal(0, 0, 1);
     addTexCoord(S_STEP, 0);
 
     addVertex(tmpVertices[0], tmpVertices[1], tmpVertices[2]);      // v1
-    //addNormal(0, 0, 1);
+    addNormal(0, 0, 1);
     addTexCoord(S_STEP * 3, 0);
 
     addVertex(tmpVertices[0], tmpVertices[1], tmpVertices[2]);      // v2
-    //addNormal(0, 0, 1);
+    addNormal(0, 0, 1);
     addTexCoord(S_STEP * 5, 0);
 
     addVertex(tmpVertices[0], tmpVertices[1], tmpVertices[2]);      // v3
-    //addNormal(0, 0, 1);
+    addNormal(0, 0, 1);
     addTexCoord(S_STEP * 7, 0);
 
     addVertex(tmpVertices[0], tmpVertices[1], tmpVertices[2]);      // v4
-    //addNormal(0, 0, 1);
+    addNormal(0, 0, 1);
     addTexCoord(S_STEP * 9, 0);
 
     addVertex(tmpVertices[33], tmpVertices[34], tmpVertices[35]);   // v5 (bottom)
-    //addNormal(0, 0, -1);
+    addNormal(0, 0, -1);
     addTexCoord(S_STEP * 2, T_STEP * 3);
 
     addVertex(tmpVertices[33], tmpVertices[34], tmpVertices[35]);   // v6
-    //addNormal(0, 0, -1);
+    addNormal(0, 0, -1);
     addTexCoord(S_STEP * 4, T_STEP * 3);
 
     addVertex(tmpVertices[33], tmpVertices[34], tmpVertices[35]);   // v7
-    //addNormal(0, 0, -1);
+    addNormal(0, 0, -1);
     addTexCoord(S_STEP * 6, T_STEP * 3);
 
     addVertex(tmpVertices[33], tmpVertices[34], tmpVertices[35]);   // v8
-    //addNormal(0, 0, -1);
+    addNormal(0, 0, -1);
     addTexCoord(S_STEP * 8, T_STEP * 3);
 
     addVertex(tmpVertices[33], tmpVertices[34], tmpVertices[35]);   // v9
-    //addNormal(0, 0, -1);
+    addNormal(0, 0, -1);
     addTexCoord(S_STEP * 10, T_STEP * 3);
 
     v[0] = tmpVertices[3];  v[1] = tmpVertices[4];  v[2] = tmpVertices[5];  // v10 (left)
     Sphere::computeVertexNormal(v, n);
     addVertex(v[0], v[1], v[2]);
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(0, T_STEP);
 
     addVertex(v[0], v[1], v[2]);                                            // v11 (right)
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP * 10, T_STEP);
 
     v[0] = tmpVertices[18]; v[1] = tmpVertices[19]; v[2] = tmpVertices[20]; // v12 (left)
     Sphere::computeVertexNormal(v, n);
     addVertex(v[0], v[1], v[2]);
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP, T_STEP * 2);
 
     addVertex(v[0], v[1], v[2]);                                            // v13 (right)
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP * 11, T_STEP * 2);
 
     // add 8 shared vertices to array (index from 14 to 21)
     v[0] = tmpVertices[6];  v[1] = tmpVertices[7];  v[2] = tmpVertices[8];  // v14 (shared)
     Sphere::computeVertexNormal(v, n);
     addVertex(v[0], v[1], v[2]);
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP * 2, T_STEP);
     sharedIndices[std::make_pair(S_STEP * 2, T_STEP)] = icosahedronTexCoords.size() / 2 - 1;
 
     v[0] = tmpVertices[9];  v[1] = tmpVertices[10]; v[2] = tmpVertices[11]; // v15 (shared)
     Sphere::computeVertexNormal(v, n);
     addVertex(v[0], v[1], v[2]);
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP * 4, T_STEP);
     sharedIndices[std::make_pair(S_STEP * 4, T_STEP)] = icosahedronTexCoords.size() / 2 - 1;
 
@@ -336,42 +402,42 @@ void Sphere::buildVerticesSmooth()
     scale = Sphere::computeScaleForLength(v, 1);
     n[0] = v[0] * scale;    n[1] = v[1] * scale;    n[2] = v[2] * scale;
     addVertex(v[0], v[1], v[2]);
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP * 6, T_STEP);
     sharedIndices[std::make_pair(S_STEP * 6, T_STEP)] = icosahedronTexCoords.size() / 2 - 1;
 
     v[0] = tmpVertices[15]; v[1] = tmpVertices[16]; v[2] = tmpVertices[17]; // v17 (shared)
     Sphere::computeVertexNormal(v, n);
     addVertex(v[0], v[1], v[2]);
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP * 8, T_STEP);
     sharedIndices[std::make_pair(S_STEP * 8, T_STEP)] = icosahedronTexCoords.size() / 2 - 1;
 
     v[0] = tmpVertices[21]; v[1] = tmpVertices[22]; v[2] = tmpVertices[23]; // v18 (shared)
     Sphere::computeVertexNormal(v, n);
     addVertex(v[0], v[1], v[2]);
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP * 3, T_STEP * 2);
     sharedIndices[std::make_pair(S_STEP * 3, T_STEP * 2)] = icosahedronTexCoords.size() / 2 - 1;
 
     v[0] = tmpVertices[24]; v[1] = tmpVertices[25]; v[2] = tmpVertices[26]; // v19 (shared)
     Sphere::computeVertexNormal(v, n);
     addVertex(v[0], v[1], v[2]);
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP * 5, T_STEP * 2);
     sharedIndices[std::make_pair(S_STEP * 5, T_STEP * 2)] = icosahedronTexCoords.size() / 2 - 1;
 
     v[0] = tmpVertices[27]; v[1] = tmpVertices[28]; v[2] = tmpVertices[29]; // v20 (shared)
     Sphere::computeVertexNormal(v, n);
     addVertex(v[0], v[1], v[2]);
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP * 7, T_STEP * 2);
     sharedIndices[std::make_pair(S_STEP * 7, T_STEP * 2)] = icosahedronTexCoords.size() / 2 - 1;
 
     v[0] = tmpVertices[30]; v[1] = tmpVertices[31]; v[2] = tmpVertices[32]; // v21 (shared)
     Sphere::computeVertexNormal(v, n);
     addVertex(v[0], v[1], v[2]);
-    //addNormal(n[0], n[1], n[2]);
+    addNormal(n[0], n[1], n[2]);
     addTexCoord(S_STEP * 9, T_STEP * 2);
     sharedIndices[std::make_pair(S_STEP * 9, T_STEP * 2)] = icosahedronTexCoords.size() / 2 - 1;
 
@@ -419,7 +485,7 @@ void Sphere::subdivideVerticesFlat()
     const float* t1, * t2, * t3;          // ptr to original texcoords of a triangle
     float newV1[3], newV2[3], newV3[3]; // new vertex positions
     float newT1[2], newT2[2], newT3[2]; // new texture coords
-    //float normal[3];                    // new face normal
+    float normal[3];                    // new face normal
     unsigned int index = 0;             // new index value
     int i, j;
 
@@ -433,7 +499,7 @@ void Sphere::subdivideVerticesFlat()
 
         // clear prev arrays
         icosahedronVertices.clear();
-        //normals.clear();
+        icosahedronNormals.clear();
         icosahedronTexCoords.clear();
         indices.clear();
 
@@ -460,26 +526,26 @@ void Sphere::subdivideVerticesFlat()
             // add 4 new triangles
             addVertices(v1, newV1, newV3);
             addTexCoords(t1, newT1, newT3);
-            //computeFaceNormal(v1, newV1, newV3, normal);
-            //addNormals(normal, normal, normal);
+            computeFaceNormal(v1, newV1, newV3, normal);
+            addNormals(normal, normal, normal);
             addIndices(index, index + 1, index + 2);
 
             addVertices(newV1, v2, newV2);
             addTexCoords(newT1, t2, newT2);
-            //computeFaceNormal(newV1, v2, newV2, normal);
-            //addNormals(normal, normal, normal);
+            computeFaceNormal(newV1, v2, newV2, normal);
+            addNormals(normal, normal, normal);
             addIndices(index + 3, index + 4, index + 5);
 
             addVertices(newV1, newV2, newV3);
             addTexCoords(newT1, newT2, newT3);
-            //computeFaceNormal(newV1, newV2, newV3, normal);
-            //addNormals(normal, normal, normal);
+            computeFaceNormal(newV1, newV2, newV3, normal);
+            addNormals(normal, normal, normal);
             addIndices(index + 6, index + 7, index + 8);
 
             addVertices(newV3, newV2, v3);
             addTexCoords(newT3, newT2, t3);
-            //computeFaceNormal(newV3, newV2, v3, normal);
-            //addNormals(normal, normal, normal);
+            computeFaceNormal(newV3, newV2, v3, normal);
+            addNormals(normal, normal, normal);
             addIndices(index + 9, index + 10, index + 11);
        
 
@@ -646,7 +712,7 @@ unsigned int Sphere::addSubVertexAttribs(const float v[3], const float n[3], con
     else
     {
         addVertex(v[0], v[1], v[2]);
-        //addNormal(n[0], n[1], n[2]);
+        addNormal(n[0], n[1], n[2]);
         addTexCoord(t[0], t[1]);
         index = icosahedronTexCoords.size() / 2 - 1;
     }
@@ -710,7 +776,7 @@ bool Sphere::isSharedTexCoord(const float t[2])
 ///////////////////////////////////////////////////////////////////////////////
 bool Sphere::isOnLineSegment(const float a[2], const float b[2], const float c[2])
 {
-    const float EPSILON = 0.0001f;
+    const float EPSILON = 0.0000001f;
 
     // cross product must be 0 if c is on the line
     float cross = ((b[0] - a[0]) * (c[1] - a[1])) - ((b[1] - a[1]) * (c[0] - a[0]));

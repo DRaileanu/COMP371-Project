@@ -60,7 +60,7 @@ int main() {
     programInit();
 
     // setup Camera
-    mainCamera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f));
+    mainCamera = new Camera(glm::vec3(0.0f, 7.5f, 7.5f));
     glfwGetCursorPos(window, &lastX, &lastY);
 
     ////frame time parameters
@@ -158,21 +158,69 @@ int main() {
     mohd->addChild(model10);
 
 
-
-    DrawNode* sphere = new DrawNode(new Sphere(10,6));
-    sphere->translate(glm::vec3(0.0f, 10.0f, 0.0f));
+    Sphere* spheredraw = new Sphere(5, 6);
+    //spheredraw->setColours(glm::vec3(1.0, 1.0f, 1.0f));
+    DrawNode* sphere = new DrawNode(spheredraw);
+    sphere->translate(glm::vec3(0.0f, 10.0f, -10.0f));
     root->addChild(sphere);
+    sphere->setTransparent(true);
 
 
     ////default selected node to transform
-    SceneNode* selectedNode = sphere;
 
+    GroupNode* lightNodes = new GroupNode();
+    lightNodes->translate(glm::vec3(0.0f, 10.0f, 0.0f));
+    root->addChild(lightNodes);
+
+    GroupNode* light1Node = new GroupNode();
+    light1Node->translate(glm::vec3(4.0f, 0.0f, 0.0f));
+    lightNodes->addChild(light1Node);
+
+    GroupNode* light2Node = new GroupNode();
+    light2Node->translate(glm::vec3(-2.0f, 0.0f, 3.46f));
+    lightNodes->addChild(light2Node);
+
+    GroupNode* light3Node = new GroupNode();
+    light3Node->translate(glm::vec3(-1.0f, 0.0f, -3.46f));
+    lightNodes->addChild(light3Node);
+
+    LightNode* light1 = new LightNode(LightType::PointLight);
+    light1->setAmbient(glm::vec3(0.1f, 0.1f, 0.1f));
+    light1->setDiffuse(glm::vec3(1.0f, 0.0f, 0.0f));
+    light1->setSpecular(glm::vec3(0.5f, 0.5f, 0.5f));
+    light1Node->addChild(light1);
+
+    LightNode* light2 = new LightNode(LightType::PointLight);
+    light2->setAmbient(glm::vec3(0.1f, 0.1f, 0.1f));
+    light2->setDiffuse(glm::vec3(0.0f, 1.0f, 0.0f));
+    light2->setSpecular(glm::vec3(0.5f, 0.5f, 0.5f));
+    light2Node->addChild(light2);
+
+    LightNode* light3 = new LightNode(LightType::PointLight);
+    light3->setAmbient(glm::vec3(0.1f, 0.1f, 0.1f));
+    light3->setDiffuse(glm::vec3(0.0f, 0.0f, 1.0f));
+    light3->setSpecular(glm::vec3(0.5f, 0.5f, 0.5f));
+    light3Node->addChild(light3);
+
+    Drawable* lightcube = new Cube;
+    lightcube->setColours(glm::vec3(1.0f));
+    DrawNode* light1cube = new DrawNode(lightcube);
+    light1cube->translate(glm::vec3(0.0f, 0.75f, 0.0f));
+    light1Node->addChild(light1cube);
+
+    DrawNode* light2cube = new DrawNode(lightcube);
+    light2cube->translate(glm::vec3(0.0f, 0.75f, 0.0f));
+    light2Node->addChild(light2cube);
+
+    DrawNode* light3cube = new DrawNode(lightcube);
+    light3cube->translate(glm::vec3(0.0f, 0.75f, 0.0f));
+    light3Node->addChild(light3cube);
 
     //world matrix used to change world orientation
     glm::mat4 world(1.0f);
 
 
-
+    SceneNode* selectedNode = lightNodes;
 
     
     renderer->setRootSceneNode(root);

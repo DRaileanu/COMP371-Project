@@ -17,12 +17,13 @@
 #include "GroupNode.h"
 #include "DrawNode.h"
 #include "Shader.h"
-#include "Light.h"
+#include "LightNode.h"
 
 extern const unsigned int SCR_WIDTH;
 extern const unsigned int SCR_HEIGHT;
 
 class Renderer{
+	const static int MAX_LIGHTS = 3;
 public:
 	Renderer(Camera* camera, Shader* genericShader, Shader* blendingShader);
 	~Renderer();
@@ -48,7 +49,7 @@ private:
 	Camera* mainCamera;
 
 	GroupNode* rootSceneNode;
-	std::forward_list<Light*> lights;
+	std::vector<LightNode*> lights;
 	std::forward_list<DrawNode*> opaqueDrawables;
 	std::map<float, DrawNode*> transparentDrawables;
 
@@ -58,7 +59,7 @@ private:
 	void updateNode(SceneNode* node, const glm::mat4& CTM);
 	void renderNode(DrawNode* node);
 
-
+	
 
 
 };

@@ -34,15 +34,50 @@ void Renderer::render() {
 	genericShader->use();
 	genericShader->setMat4("projection", projection);
 	genericShader->setMat4("view", view);
+	genericShader->setVec3("viewPos", mainCamera->Position);
+
+	genericShader->setInt("numberOfLights", lights.size());
+	for (int i = 0; i < lights.size(); ++i) {
+		switch (lights[i]->getType()) {
+		case LightType::PointLight: {
+			genericShader->setVec3("pointLights[" + std::to_string(i) + "].position", lights[i]->getWorldTransform()[3]);
+			//genericShader->setVec3("pointLights[" + std::to_string(i) + "].colour", lights[i]->getColour());
+			genericShader->setVec3("pointLights[" + std::to_string(i) + "].ambient", lights[i]->getAmbient());
+			genericShader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", lights[i]->getDiffuse());
+			genericShader->setVec3("pointLights[" + std::to_string(i) + "].specular", lights[i]->getSpecular());
+			break;
+		}
+
+
+		default : {}
+		}
+	}
 
 	blendingShader->use();
 	blendingShader->setMat4("projection", projection);
 	blendingShader->setMat4("view", view);
+	blendingShader->setVec3("viewPos", mainCamera->Position);
 
+	blendingShader->setInt("numberOfLights", lights.size());
+	for (int i = 0; i < lights.size(); ++i) {
+		switch (lights[i]->getType()) {
+		case LightType::PointLight: {
+			blendingShader->setVec3("pointLights[" + std::to_string(i) + "].position", lights[i]->getWorldTransform()[3]);
+			//blendingShader->setVec3("pointLights[" + std::to_string(i) + "].colour", lights[i]->getColour());
+			blendingShader->setVec3("pointLights[" + std::to_string(i) + "].ambient", lights[i]->getAmbient());
+			blendingShader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", lights[i]->getDiffuse());
+			blendingShader->setVec3("pointLights[" + std::to_string(i) + "].specular", lights[i]->getSpecular());
+			break;
+		}
+
+
+		default: {}
+		}
+	}
 
 	// render opaques first
 	glDisable(GL_BLEND);//does it really need to be disabled?
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	for (auto& node : opaqueDrawables) {
 		renderNode(node);
@@ -95,6 +130,7 @@ void Renderer::postRender()
 {
 	opaqueDrawables.clear();
 	transparentDrawables.clear();
+	lights.clear();
 }
 
 void Renderer::updateNode(SceneNode* node, const glm::mat4& CTM) {
@@ -111,6 +147,14 @@ void Renderer::updateNode(SceneNode* node, const glm::mat4& CTM) {
 		}
 	}
 
+	else if (LightNode* lightNode = dynamic_cast<LightNode*>(node)) {
+		if (lights.size() > 5) {
+			std::cout << "Reached maximum of 5 lights, can't add more!" << std::endl;
+			return;
+		}
+		lights.push_back(lightNode);
+	}
+
 	else if (GroupNode* groupNode = dynamic_cast<GroupNode*>(node)) {
 		for (auto& child : groupNode->getChildren()) {
 			updateNode(child, node->getWorldTransform());
@@ -119,19 +163,28 @@ void Renderer::updateNode(SceneNode* node, const glm::mat4& CTM) {
 }
 
 void Renderer::renderNode(DrawNode* node) {
+	Material material = node->getMaterial();
 	if (GLuint texture = node->getTexture()) {
 		blendingShader->use();
 		blendingShader->setInt("texture1", 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		blendingShader->setMat4("model", node->getWorldTransform());
-
-		node->draw();
+		
+		blendingShader->setVec3("material.ambient", material.ambient);
+		blendingShader->setVec3("material.diffuse", material.diffuse);
+		blendingShader->setVec3("material.specular", material.specular);
+		blendingShader->setFloat("material.shininess", material.shininess);
 	}
 	else {
 		genericShader->use();
 		genericShader->setMat4("model", node->getWorldTransform());
-		node->draw();
+
+		genericShader->setVec3("material.ambient", material.ambient);
+		genericShader->setVec3("material.diffuse", material.diffuse);
+		genericShader->setVec3("material.specular", material.specular);
+		genericShader->setFloat("material.shininess", material.shininess);
 	}
+	node->draw();
 }
 
