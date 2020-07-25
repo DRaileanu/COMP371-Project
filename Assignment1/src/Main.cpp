@@ -392,7 +392,10 @@ int main() {
 
 
         if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
-            model1->setColours(glm::vec3(sinf(lastFrame), cosf(lastFrame), sinf(lastFrame*3)));
+            renderer->setShadowMode(false);
+        }
+        if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
+            renderer->setShadowMode(true);
         }
 
 

@@ -116,37 +116,38 @@ void Renderer::render() {
 		}
 	}
 
-	//create depthCubeMap transformation matrics
-	glm::vec3 lightPos = lights[0]->getWorldTransform()[3];
-	//float near_plane = 1.0f;
-	//float far_plane = 25.0f;
-	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, near_plane, far_plane);
-	std::vector<glm::mat4> shadowTransforms;
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	if (shadowMode) {
+		//create depthCubeMap transformation matrics
+		glm::vec3 lightPos = lights[0]->getWorldTransform()[3];
+		//float near_plane = 1.0f;
+		//float far_plane = 25.0f;
+		glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, near_plane, far_plane);
+		std::vector<glm::mat4> shadowTransforms;
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 
-	//render scene to depthCubeMap
-	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-	glClear(GL_DEPTH_BUFFER_BIT);
-	shadowShader->use();
-	for (unsigned int i = 0; i < 6; ++i) {
-		shadowShader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+		//render scene to depthCubeMap
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		shadowShader->use();
+		for (unsigned int i = 0; i < 6; ++i) {
+			shadowShader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+		}
+		shadowShader->setFloat("far_plane", far_plane);
+		shadowShader->setVec3("lightPos", lightPos);
+
+		glEnable(GL_CULL_FACE);
+		for (auto& node : opaqueDrawables) {
+			shadowRenderNode(node);
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	}
-	shadowShader->setFloat("far_plane", far_plane);
-	shadowShader->setVec3("lightPos", lightPos);
-	
-	glEnable(GL_CULL_FACE);
-	for (auto& node : opaqueDrawables) {
-		shadowRenderNode(node);
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
 
 
 	// render opaques first
