@@ -52,12 +52,16 @@ void Model::createN() {
 void Model::create1() {
 	DrawNode* node;
 
+	GLuint texture = loadTexture("res/container.jpg");
+
 	node = new DrawNode(cube);
+	node->setTexture(texture);
 	node->scale(glm::vec3(1.0f, 5.0f, 1.0f));
 	node->translate(glm::vec3(0.0f, 2.5f, 0.0f));
 	addChild(node);
 
 	node = new DrawNode(cube);
+	node->setTexture(texture);
 	node->scale(glm::vec3(1.25f, 1.0f, 1.0f));
 	node->translate(glm::vec3(-1.125, 4.0f, 0.0f));
 	node->setManualTransform(glm::mat4(

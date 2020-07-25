@@ -10,14 +10,13 @@ struct Material {
 
 struct PointLight {
     vec3 position;
-    //vec3 colour;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
 
 };
 
-#define MAX_LIGHTS 5
+#define MAX_LIGHTS 3
 uniform PointLight pointLights[MAX_LIGHTS];
 uniform Material material;
 
@@ -26,6 +25,9 @@ uniform vec3 viewPos;
 in vec3 FragPos;
 in vec3 Normal;
 in vec3 Color;
+
+uniform samplerCube depthCubeMap;
+uniform float far_plane;
 
 vec3 CalcPointLight(PointLight light, vec3 norm, vec3 FragPos, vec3 viewDir);
 
@@ -39,7 +41,7 @@ void main()
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
 	}
 
-    FragColor = vec4(result * Color, 0.4f);
+    FragColor = vec4(result, 0.4f);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 norm, vec3 FragPos, vec3 viewDir) {
@@ -50,15 +52,15 @@ vec3 CalcPointLight(PointLight light, vec3 norm, vec3 FragPos, vec3 viewDir) {
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     // attenuation
-    //float distance = length(light.position - FragPos);
-    //float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+    float distance = length(light.position - FragPos);
+    float attenuation = 1.0 / (1 + 0.01 * distance + 0.0025 * (distance*distance));    
     // combine results
     vec3 ambient = light.ambient * material.ambient;
     vec3 diffuse = light.diffuse * diff * material.diffuse;
     vec3 specular = light.specular * spec * material.specular;
-    //ambient *= attenuation;
-    //diffuse *= attenuation;
-    //specular *= attenuation;
-    return (ambient + diffuse + specular );
+    ambient = ambient * attenuation;
+    diffuse = diffuse * attenuation;
+    specular = specular * attenuation;
+    return (ambient + diffuse + specular);
 
 }

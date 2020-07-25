@@ -178,6 +178,9 @@
     <None Include="shaders\blending.vs" />
     <None Include="shaders\generic.fs" />
     <None Include="shaders\generic.vs" />
+    <None Include="shaders\shadow.fs" />
+    <None Include="shaders\shadow.gs" />
+    <None Include="shaders\shadow.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\awesomeface.png" />

@@ -57,7 +57,6 @@ public:
 
 	
 	
-	
 
 protected:
 	SceneNode();//not allowed to instantiate SceneNode on their own, must be a derived class

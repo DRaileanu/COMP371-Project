@@ -23,9 +23,10 @@ extern const unsigned int SCR_WIDTH;
 extern const unsigned int SCR_HEIGHT;
 
 class Renderer{
-	const static int MAX_LIGHTS = 3;
+	const static int MAX_LIGHTS = 3;//be sure that it matches the MAX_LIGHTS from shaders
+	const static unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 public:
-	Renderer(Camera* camera, Shader* genericShader, Shader* blendingShader);
+	Renderer(Camera* camera, Shader* genericShader, Shader* blendingShader, Shader* shadowShader);
 	~Renderer();
 
 	void updateScene();
@@ -37,6 +38,7 @@ public:
 	//drawing parameters
 	void setPolygonMode(GLuint mode) { polygonMode = mode; }
 	void setTexRatio(float ratio) { texRatio = ratio; }
+	void setShadowMode(bool mode) { shadowMode = mode; }
 
 	void postRender();//for benchmarking purposes, remove later. (need to be called after every preRender/render or refilling drawables list with repeating data)
 
@@ -55,10 +57,17 @@ private:
 
 	GLuint polygonMode;
 	float texRatio;
+	bool shadowMode;
+
+	GLuint depthMapFBO = 0;//frame buffer for rendering shadows
+	GLuint depthCubeMap = 0;//cube depth map texture to hold info for shadow maping Point Lights
+
+
+	
 
 	void updateNode(SceneNode* node, const glm::mat4& CTM);
 	void renderNode(DrawNode* node);
-
+	void shadowRenderNode(DrawNode* node);
 	
 
 
