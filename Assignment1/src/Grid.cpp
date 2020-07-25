@@ -11,14 +11,17 @@ Grid::Grid(int size) {
 	//	vertices[4 * i + 2] = glm::vec3(-offset, 0.0f, i-offset);
 	//	vertices[4 * i + 3] = glm::vec3(offset, 0.0f, i - offset);
 	//}
-	vertices = {
-	glm::vec3(-0.5f, -0.5f, -0.5f),
-		glm::vec3(0.5f, -0.5f, -0.5f),
-		glm::vec3(0.5f, -0.5f, 0.5f),
-		glm::vec3(-0.5f, -0.5f, -0.5f),
-		glm::vec3(0.5f, -0.5f, 0.5f),
-		glm::vec3(-0.5f, -0.5f, 0.5f),
-	};
+
+	for (int i = 0; i <= size; i++) {
+		vertices = {
+		glm::vec3(i -(-0.5f), -0.5f, -0.5f),
+			glm::vec3(i-(0.5f), -0.5f, -0.5f),
+			glm::vec3(0.5f, -0.5f, i-0.5f),
+			glm::vec3(-0.5f, -0.5f, -0.5f),
+			glm::vec3(0.5f, -0.5f, i-0.5f),
+			glm::vec3(-0.5f, -0.5f, i-0.5f),
+		};
+	}
 
 	colours = std::vector < glm::vec3>(vertices.size());
 	for (unsigned int i = 0; i < colours.size(); ++i) {
