@@ -34,6 +34,9 @@ Renderer::Renderer(Camera* camera, Shader* genericShader, Shader* blendingShader
 
 
 	//setup textures
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
+
 	genericShader->use();
 	genericShader->setInt("texture1", 0);
 	genericShader->setInt("depthCubeMap", 7);
@@ -41,6 +44,7 @@ Renderer::Renderer(Camera* camera, Shader* genericShader, Shader* blendingShader
 	blendingShader->use();
 	blendingShader->setInt("texture1", 0);
 	blendingShader->setInt("depthCubeMap", 7);
+
 
 
 }
@@ -97,8 +101,7 @@ void Renderer::render() {
 	blendingShader->setVec3("viewPos", viewPos);
 	blendingShader->setFloat("far_plane", far_plane);
 	blendingShader->setBool("shadows", shadowMode);
-	glActiveTexture(GL_TEXTURE7);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
+
 
 	for (int i = 0; i < lights.size(); ++i) {
 		switch (lights[i]->getType()) {
@@ -117,6 +120,9 @@ void Renderer::render() {
 	}
 
 	if (shadowMode) {
+		shadowShader->use();
+		shadowShader->setFloat("far_plane", far_plane);
+
 		//create depthCubeMap transformation matrics
 		glm::vec3 lightPos = lights[0]->getWorldTransform()[3];
 		//float near_plane = 1.0f;
@@ -134,20 +140,49 @@ void Renderer::render() {
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		shadowShader->use();
 		for (unsigned int i = 0; i < 6; ++i) {
 			shadowShader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
 		}
-		shadowShader->setFloat("far_plane", far_plane);
+
 		shadowShader->setVec3("lightPos", lightPos);
 
 		glEnable(GL_CULL_FACE);
 		for (auto& node : opaqueDrawables) {
 			shadowRenderNode(node);
 		}
+
+
+		shadowTransforms.clear();
+
+		/*lightPos = lights[1]->getWorldTransform()[3];
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+
+
+		for (unsigned int i = 0; i < 6; ++i) {
+			shadowShader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+		}
+
+		shadowShader->setVec3("lightPos", lightPos);
+
+
+		glEnable(GL_CULL_FACE);
+		for (auto& node : opaqueDrawables) {
+			shadowRenderNode(node);
+		}*/
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
 	}
+
+
+
+
+
 
 
 	// render opaques first

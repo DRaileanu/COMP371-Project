@@ -55,7 +55,7 @@ public:
 	//Drawable* getDrawable() const { return drawable; }
 	//void setDrawable(Drawable* drawable) { this->drawable = drawable; }
 
-	
+	bool isDirty() { return dirty; }
 	
 
 protected:
