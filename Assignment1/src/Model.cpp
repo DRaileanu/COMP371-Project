@@ -17,6 +17,8 @@ Model::Model(char c) {
 	break;
 	case '3': {create3(); }
 	break;
+	case 'G': {createGridSurface(); }
+	break;
 	}
 }
 
@@ -217,6 +219,18 @@ void Model::create3() {
 	node->translate(glm::vec3(-0.5f, 4.5f, 0.0f));
 	addChild(node);
 }
+
+void Model::createGridSurface() {
+	DrawNode* node;
+
+	node = new DrawNode(cube);
+	node->scale(glm::vec3(100.0f, 0.0f, 100.0f));
+	node->translate(glm::vec3(0.0f, -0.2f, 0.0f));
+	setColours(glm::vec3(10.0f, 5.0f, 10.0f));
+
+	addChild(node);
+}
+
 
 
 void Model::setColours(glm::vec3 newColour) {

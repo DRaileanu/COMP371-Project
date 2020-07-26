@@ -23,6 +23,7 @@ private:
 	void create2();
 	void createD();
 	void create3();
+	void createGridSurface();
 
 	Drawable* cube;//all DrawNodes of a Model will share same Cube
 };

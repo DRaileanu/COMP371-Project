@@ -88,6 +88,14 @@ int main() {
     DrawNode* grid = new DrawNode(new Grid);
     root->addChild(grid);
 
+
+    GroupNode* gridSurface = new GroupNode;
+    gridSurface->scale(glm::vec3(50.0f, 50.0f, 50.0f));
+    root->addChild(gridSurface);
+
+    Model* model0 = new Model('G');
+    root->addChild(model0);
+
     // student models
     GroupNode* dan = new GroupNode;
     dan->scale(glm::vec3(2.0f, 2.0f, 2.0f));
