@@ -225,7 +225,7 @@ void Model::createGridSurface() {
 
 	node = new DrawNode(cube);
 	node->scale(glm::vec3(100.0f, 0.0f, 100.0f));
-	node->translate(glm::vec3(0.0f, -0.2f, 0.0f));
+	node->translate(glm::vec3(0.0f, -0.1f, 0.0f));
 	setColours(glm::vec3(10.0f, 5.0f, 10.0f));
 
 	addChild(node);
