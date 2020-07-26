@@ -93,8 +93,8 @@ int main() {
     gridSurface->scale(glm::vec3(50.0f, 50.0f, 50.0f));
     root->addChild(gridSurface);
 
-    Model* model0 = new Model('G');
-    root->addChild(model0);
+    Model* gridSurfaceModel = new Model('G');
+    root->addChild(gridSurfaceModel);
 
     // student models
     GroupNode* dan = new GroupNode;
