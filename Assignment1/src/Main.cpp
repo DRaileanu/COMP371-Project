@@ -78,20 +78,35 @@ int main() {
     // set up the Scene Graph (sets up vertex data, buffers and configures vertex attributes)
     // --------------------------------------------------------------------------------------
 
+    //generate all the Materials and textures
+    Material* gridMaterial = new Material{
+        glm::vec3(0.1, 0.1, 0.1), 
+        glm::vec3(0.5, 0.5, 0.5), 
+        glm::vec3(0.75, 0.75f, 0.75f), 
+        32.0 };
+    Material* polishedGoldMaterial = new Material{
+    glm::vec3(0.24725, 0.2245, 0.0645),
+    glm::vec3(0.34615, 0.3143, 0.0903),
+    glm::vec3(0.797357, 0.723991, 0.208006),
+    83.2 };
+
+    GLuint tileTexture = loadTexture("res/tile.jpg");
+    GLuint woodTexture = loadTexture("res/wood.jpg");
+
+
+
     //root, grid and axis lines
     GroupNode* root = new GroupNode;
-    //root->scale(glm::vec3(0.25, 0.25, 0.25));
 
     DrawNode* axisLines = new DrawNode(new AxisLines);
     axisLines->translate(glm::vec3(0.0f, 0.01, 0.0f));
-    axisLines->scale(glm::vec3(10.0f, 10.0f, 10.0f));
+    axisLines->scale(glm::vec3(5.0f, 5.0f, 5.0f));
     root->addChild(axisLines);
 
     
     DrawNode* grid = new DrawNode(new Grid);
-    Material* gridMaterial = new Material{ glm::vec3(0.1, 0.1, 0.1), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.75, 0.75f, 0.75f), 32.0 };
     grid->setMaterial(gridMaterial);
-    grid->setTexture(loadTexture("res/tile_diffuse.jpg"));
+    grid->setTexture(tileTexture);
     root->addChild(grid);
 
     // student models
@@ -101,6 +116,7 @@ int main() {
     root->addChild(dan);
 
     Model* model1 = new Model('N');
+    model1->setMaterial(polishedGoldMaterial);
     model1->translate(glm::vec3(-2.5f, 0.0f, 0.0f));
     dan->addChild(model1);
 
@@ -364,17 +380,17 @@ int main() {
         }
 
         if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-            model1->pitchForward(100*dt);
+            model3->pitchForward(100*dt);
         }
         if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-            model1->pitchBackward(100 * dt);
+            model3->pitchBackward(100 * dt);
         }
 
         if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-            model1->shearRight(dt);
+            model3->scaleTop(2*dt);
         }
         if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-            model1->shearLeft(dt);
+            model3->scaleTop(-2*dt);
         }
 
 

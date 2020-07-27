@@ -88,7 +88,10 @@
     <Image Include="res\container2.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\tile_diffuse.jpg">
+    <Image Include="res\tile.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\wood.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

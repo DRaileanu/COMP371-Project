@@ -13,16 +13,19 @@ public:
 	Model(char);//requires a character to be created
 	~Model();
 
-	void setColours(glm::vec3);
+	//void setColours(glm::vec3);
+	void setMaterial(Material*);
+	void setTexture(GLuint);
+
 
 	void pitchForward(float pitch);
 	void pitchBackward(float pitch);
 	void shearRight(float shear);
 	void shearLeft(float shear);
-	void shearUp(float shear);
-	void shearDown(float shear);
+	void scaleTop(float scale);
 
 private:
+	//void addChild(SceneNode*) override;//Not allowed
 	//available models
 	void createN();
 	void create1();
@@ -36,6 +39,8 @@ private:
 	Sphere* sphere;
 	GroupNode* topPart;
 	GroupNode* bottomPart;
+
+
 
 
 };

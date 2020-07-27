@@ -35,6 +35,10 @@ Model::~Model() {
 	delete cube;
 }
 
+//void Model::addChild(SceneNode* node) {
+//
+//}
+
 void Model::createN() {
 	DrawNode* node;
 	node = new DrawNode(cube);
@@ -313,8 +317,30 @@ void Model::create3() {
 }
 
 
-void Model::setColours(glm::vec3 newColour) {
-	cube->setColours(newColour);
+//void Model::setColours(glm::vec3 newColour) {
+//	cube->setColours(newColour);
+//}
+
+
+//using lambda recursion, sets material for all DrawNodes under this Model
+//I'm actually amazed that this worked lol
+void Model::setMaterial(Material* material) {
+	auto traversal = [&](SceneNode* node)->void {
+		auto lambda = [&](SceneNode* node, const auto& lambda)->void {
+			if (DrawNode* drawNode = dynamic_cast<DrawNode*>(node)) {
+				drawNode->setMaterial(material);
+				return;
+			}
+			else if (GroupNode* groupNode = dynamic_cast<GroupNode*>(node)) {
+				for (SceneNode* child : groupNode->getChildren()) {
+					lambda(child, lambda);
+				}
+			}
+			else return;
+		};
+		return lambda(node, lambda);
+	};
+	traversal(this);
 }
 
 
@@ -336,5 +362,9 @@ void Model::shearLeft(float shear) {
 	glm::mat4 matr = topPart->getManualTransform();
 	matr = glm::shearY3D(matr, shear, 0.0f);
 	topPart->setManualTransform(matr);
+}
+
+void Model::scaleTop(float scale) {
+	topPart->scale(glm::vec3(1.0f, 1+scale, 1.0f));
 }
 

@@ -8,12 +8,12 @@ public:
 		for (auto child : children) delete child;
 	}
 
-	void addChild(SceneNode*);
-	void removeChild(SceneNode*);
+	virtual void addChild(SceneNode*);
+	virtual void removeChild(SceneNode*);
 
 	std::vector<SceneNode*> getChildren() { return children; }
 
-private:
+protected:
 	std::vector<SceneNode*> children;
 };
 
