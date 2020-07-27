@@ -340,10 +340,12 @@ int main() {
             selectedNode->translate(glm::vec3(5 * dt, 0.0f, 0.0f));
         }
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
-            selectedNode->translate(glm::vec3(0.0f, 0.0f, -5 * dt));//confirmed with teacher that UP/DOWN meant along z-axis
+            //selectedNode->translate(glm::vec3(0.0f, 0.0f, -5 * dt));//confirmed with teacher that UP/DOWN meant along z-axis
+            selectedNode->moveBackwards(glm::vec3(0.0f, 0.0f, -0.02 * dt));
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
             selectedNode->translate(glm::vec3(0.0f, 0.0f, 5 * dt));
+            selectedNode->moveForward(glm::vec3(0.0f, 0.0f, 0.02 * dt));
         }
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {

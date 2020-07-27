@@ -39,6 +39,9 @@ public:
 	void translate(glm::vec3);
 	void scale(glm::vec3);
 	void rotate(glm::vec3);//input is rotation along xyz-axes in degrees. Rotations are applied in order: ZYX
+	void moveForward(glm::vec3);
+	void moveBackwards(glm::vec3);
+
 	
 	const glm::mat4& getWorldTransform() { return worldTransform; }
 

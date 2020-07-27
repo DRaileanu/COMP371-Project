@@ -93,4 +93,33 @@ void SceneNode::rotate(glm::vec3 r) {
 	rotation += r;
 	dirty = true;
 }
+void SceneNode::moveForward(glm::vec3 t) {
+	int cycles = rotation.y / 360;
+	//std::cout << cycles;
+	float degrees = rotation.y - (cycles * 360);
+	float dx = (std::sin(glm::radians(degrees)));
+	float dz = (std::cos(glm::radians(degrees)));//sin(degrees)
+	t.x = dx;
+	t.z = dz;
+	translation += t;
+	dirty = true;
+	std::cout << t.z;
+	//std::cout <<"rotation.y: "<<rotation.y <<"cycles: "<<cycles <<"degrees: "<< degrees <<"\n";
+	//std::cout <<"angle now is: "<< rotation.x << " " << rotation.y << " " << rotation.z;
 
+}
+void SceneNode::moveBackwards(glm::vec3 t) {
+	int cycles = rotation.y / 360;
+	//std::cout << cycles;
+	float degrees = rotation.y - (cycles * 360);
+	float dx = (std::sin(glm::radians(degrees)))/-1;
+	float dz = (std::cos(glm::radians(degrees)))/-1;//sin(degrees)
+	t.x = dx;
+	t.z = dz;
+	translation += t;
+	dirty = true;
+	std::cout << t.z;
+	//std::cout <<"rotation.y: "<<rotation.y <<"cycles: "<<cycles <<"degrees: "<< degrees <<"\n";
+	//std::cout <<"angle now is: "<< rotation.x << " " << rotation.y << " " << rotation.z;
+
+}
