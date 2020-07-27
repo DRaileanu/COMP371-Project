@@ -1,6 +1,7 @@
 //---------------------------------------------------------------------------------------------------------
 // Camera abstraction class created by the authors at https://learnopengl.com
 // Can be accessed at: https://github.com/JoeyDeVries/LearnOpenGL/blob/master/includes/learnopengl/camera.h
+// MODIFIED: 2020-07-22 by Dan Raileanu
 //---------------------------------------------------------------------------------------------------------
 
 #pragma once
@@ -110,10 +111,10 @@ public:
     void ProcessMouseScroll(float yoffset)
     {
         Zoom -= (float)yoffset;
-        if (Zoom < 1.0f)
-            Zoom = 1.0f;
-        if (Zoom > 45.0f)
-            Zoom = 45.0f; 
+        if (Zoom < 10.0f)
+            Zoom = 10.0f;
+        if (Zoom > 130.0f)
+            Zoom = 130.0f; 
     }
 
 private:

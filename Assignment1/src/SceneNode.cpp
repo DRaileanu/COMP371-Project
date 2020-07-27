@@ -9,22 +9,8 @@ SceneNode::SceneNode() {
 	dirty = true;
 }
 
-SceneNode::~SceneNode() {
-	//for (auto child : children) {
-	//	delete child;
-	//}
-	//if (drawable != NULL) {
-	//	delete drawable;
-	//	drawable = NULL;
-	//}
-}
+SceneNode::~SceneNode() {}
 
-//draws the drawable mesh if it exists
-//void SceneNode::draw() {
-//	if (drawable) {
-//		drawable->draw();
-//	}
-//}
 
 // computes local transform using transformaiton parameters in order shear->->scale->rotate(ZYX)->translate
 void SceneNode::updateLocalTransform() {
@@ -47,15 +33,6 @@ void SceneNode::updateWorldTransform(const glm::mat4& CTM) {
 	}
 	worldTransform = CTM * localTransform;
 }
-
-//void SceneNode::addChild(SceneNode* child) {
-//	children.push_back(child);
-//	child->parent = this;
-//}
-
-//void SceneNode::removeChild(SceneNode* child) {
-//	children.erase(std::find(children.begin(), children.end(), child));
-//}
 
 
 void SceneNode::setTranslation(glm::vec3 t) {

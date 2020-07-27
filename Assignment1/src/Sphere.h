@@ -53,7 +53,6 @@ private:
 	std::vector<float> icosahedronNormals;
 	std::vector<float> icosahedronTexCoords;
 
-
 	std::map<std::pair<float, float>, unsigned int> sharedIndices;
 };
 

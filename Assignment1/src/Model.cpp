@@ -4,7 +4,8 @@
 
 Model::Model(char c) {
 	cube = new Cube;
-	sphere = new Sphere(3.0, 5);
+	sphere = new Sphere(3.0, 4);
+	sphere->setColours(glm::vec3(0.7f, 0.7f, 0.7f));
 
 	bottomPart = new GroupNode;
 	addChild(bottomPart);
@@ -14,7 +15,7 @@ Model::Model(char c) {
 	addChild(topPart);
 
 	DrawNode* sphereNode = new DrawNode(sphere);
-	sphereNode->setTransparency(0.6);
+	sphereNode->setTransparency(0.7f);
 	sphereNode->translate(glm::vec3(0.0f, 3.0f, 0.0f));
 	topPart->addChild(sphereNode);
 

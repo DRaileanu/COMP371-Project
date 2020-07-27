@@ -5,6 +5,9 @@ Sphere::Sphere(float r, int s) {
     subdivision = s;
     buildVerticesFlat();
 
+    //after buildVerticesFlat(), the vertices, tex and norms are inside icosahedron(Vertices/TexCoords/Normals)
+    //they are tightly packed as floats, so have to get them to vertices/texCoords/normals which use glm::vec3
+
     //dangerous and dumb, but I know what I'm doing
     glm::vec3* vecs = reinterpret_cast<glm::vec3*>(icosahedronVertices.data());
     glm::vec2* tex = reinterpret_cast<glm::vec2*>(icosahedronTexCoords.data());
@@ -18,8 +21,8 @@ Sphere::Sphere(float r, int s) {
     //    vertices.push_back(glm::vec3(icosahedronVertices[3*i], icosahedronVertices[3 * i + 1], icosahedronVertices[3 * i +2]));
     //}
 
-    //colours.resize(vertices.size());
-    //std::fill(colours.begin(), colours.end(), glm::vec3(1.0f, 1.0f, 1.0f));
+    colours.resize(vertices.size());//by default no color, but can be set by calling setColour(glm::vec3) from Drawable class
+    //std::fill(colours.begin(), colours.end(), glm::vec3(1.0f, 1.0f, 1.0f));//otherwise uncomment this for default color
 
 	setupBufferData();
 }

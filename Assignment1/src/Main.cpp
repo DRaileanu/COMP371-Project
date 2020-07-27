@@ -31,8 +31,8 @@
 // Globals
 //----------------------------------------
 
-extern const unsigned int SCR_WIDTH = 1024;//extern, otherwise extern won't work in other classes to get access to it
-extern const unsigned int SCR_HEIGHT = 768;//if create Window class, can move in there and not have this
+extern  unsigned int SCR_WIDTH = 1024;//extern, otherwise extern won't work in Renderer which needs to for perspective and window viewport resize after computing shadow
+extern  unsigned int SCR_HEIGHT = 768;//if create Window class, can move in there and not have this
 
 GLFWwindow* window;
 
@@ -68,12 +68,12 @@ int main() {
 
     // build and compile shader program
     Shader genericShader("shaders/generic.vs", "shaders/generic.fs");
-    Shader lightingMaterial("shaders/lightingMaterial.vs", "shaders/lightingMaterial.fs");
-    Shader lightingTexture("shaders/lightingTexture.vs", "shaders/lightingTexture.fs");
+    Shader lightingMaterialShader("shaders/lightingMaterial.vs", "shaders/lightingMaterial.fs");
+    Shader lightingTextureShader("shaders/lightingTexture.vs", "shaders/lightingTexture.fs");
     Shader shadowShader("shaders/shadow.vs", "shaders/shadow.fs", "shaders/shadow.gs");
 
     // setup Renderer
-    Renderer* renderer = new Renderer(mainCamera, &genericShader, &lightingMaterial, &lightingTexture, &shadowShader);
+    Renderer* renderer = new Renderer(mainCamera, &genericShader, &lightingMaterialShader, &lightingTextureShader, &shadowShader);
 
     // set up the Scene Graph (sets up vertex data, buffers and configures vertex attributes)
     // --------------------------------------------------------------------------------------
@@ -206,7 +206,7 @@ int main() {
     
     //light sources
     GroupNode* lightNodes = new GroupNode();
-    lightNodes->translate(glm::vec3(0.0f, 10.0f, 0.0f));
+    lightNodes->translate(glm::vec3(0.0f, 10.0f, 2.0f));
     root->addChild(lightNodes);
 
     GroupNode* light1Node = new GroupNode();
@@ -217,9 +217,6 @@ int main() {
     light2Node->translate(glm::vec3(-2.0f, 0.0f, 0.0f));
     lightNodes->addChild(light2Node);
 
-    //GroupNode* light3Node = new GroupNode();
-    //light3Node->translate(glm::vec3(-1.0f, 0.0f, -3.46f));
-    ////lightNodes->addChild(light3Node);
 
     LightNode* light1 = new LightNode(LightType::PointLight);
     light1->setProperties(LightProperties{
@@ -235,15 +232,7 @@ int main() {
         glm::vec3(0.0f, 0.0f, 3.0f),
         glm::vec3(1.0f, 1.0f, 1.0f),
         });
-    //light2Node->addChild(light2);
 
-    //LightNode* light3 = new LightNode(LightType::PointLight);
-    //light3->setProperties(LightProperties{
-    //    glm::vec3(0.25f, 0.25f, 0.25f),
-    //    glm::vec3(1.0f, 1.0f, 1.0f),
-    //    glm::vec3(1.0f, 1.0f, 1.0f)
-    //    });
-    //light3Node->addChild(light3);
 
     Drawable* lightcube = new Cube;
     lightcube->setColours(glm::vec3(1.0f));
@@ -255,15 +244,8 @@ int main() {
     light2cube->translate(glm::vec3(0.0f, 0.0f, 0.5f));
     light2Node->addChild(light2cube);
 
-    //DrawNode* light3cube = new DrawNode(lightcube);
-    //light3cube->translate(glm::vec3(0.0f, 0.75f, 0.0f));
-    //light3Node->addChild(light3cube);
 
 
-
-
-    //world matrix used to change world orientation
-    glm::mat4 world(1.0f);
 
 
     //default selected node to transform
@@ -442,7 +424,6 @@ int main() {
         //}
         if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
             root->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-            //comment next 2 lines if don't want camera to reset looking at towards -z axis
             mainCamera->Yaw = -90.0f;
             mainCamera->Pitch = 0.0f;
         }
@@ -460,12 +441,11 @@ int main() {
         // render
         // ------
         renderer->updateScene();
-        //for (int i = 0; i < 100; ++i) {//for benchmarking performance by updateScene/render many times
-        //   
-        //}
         renderer->render();
-        renderer->postRender();
 
+
+
+        //displays FPS for debugging
         static int frames = 1;
         static float total = 0;
         total += 1/dt;
@@ -525,10 +505,9 @@ void programInit() {
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
-    //glfwSetKeyCallback(window, key_callback);//remove if deleting key_callback()
 
     // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
     // glad: load all OpenGL function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -547,6 +526,8 @@ void programInit() {
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     // make sure the viewport matches the new window dimensions
     glViewport(0, 0, width, height);
+    SCR_HEIGHT = height;
+    SCR_WIDTH = width;
 }
 
 
@@ -558,10 +539,15 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     lastX = xpos;
     lastY = ypos;
 
-    mainCamera->ProcessMouseMovement(xoffset, yoffset);
-}
-
-//consider removing, since most keys control variables from main
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    // update camera angular angles only if appropriate button is pressed
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+        mainCamera->ProcessMouseMovement(xoffset, 0.0);
+    }
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        mainCamera->ProcessMouseMovement(0.0, yoffset);
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+        mainCamera->ProcessMouseScroll(yoffset);
+    }
 
 }

@@ -53,3 +53,4 @@ void Grid::addSquare(float x, float z) {
 	texCoords.push_back(glm::vec2(1.0, 0.0));
 	texCoords.push_back(glm::vec2(1.0, 1.0));
 }
+

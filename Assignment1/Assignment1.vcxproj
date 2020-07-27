@@ -158,9 +158,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\DrawNode.cpp" />
-    <ClCompile Include="src\GroupNode.cpp" />
-    <ClCompile Include="src\LightNode.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\AxisLines.cpp" />
     <ClCompile Include="src\Grid.cpp" />

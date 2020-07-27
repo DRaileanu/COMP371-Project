@@ -5,8 +5,10 @@
 #include <iostream>
 
 // loads texture and returns it's ID
-// TexParameters are hard coded so can't have different per object, consider adding more arguments to change if needed
-// method can't load transparent objects, need to change GL_RGB to GL_RGBA in glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBa, width, height, 0, GL_RGBa, GL_UNSIGNED_BYTE, data);   (requires .png)
+// method can't load transparent textures, need to change GL_RGB to GL_RGBA in glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBa, width, height, 0, GL_RGBa, GL_UNSIGNED_BYTE, data);   (requires .png)
+// TODO create new method if need to load transparent textures
+
+//NOTE: wrap tex parameters are set, but since OpenGL is state machine, need to manually set before texture draws if planning to use more than GL_REPEAT
 
 static GLuint loadTexture(const char* path) {
     GLuint texture;

@@ -1,11 +1,11 @@
 #include "Renderer.h"
 
 
-Renderer::Renderer(Camera* camera, Shader* genericShader,  Shader* lightingMaterial, Shader* lightingTexture, Shader* shadowShader) {
+Renderer::Renderer(Camera* camera, Shader* genericShader,  Shader* lightingMaterialShader, Shader* lightingTextureShader, Shader* shadowShader) {
 	this->mainCamera = camera;
 	this->genericShader = genericShader;
-	this->lightingMaterial = lightingMaterial;
-	this->lightingTexture = lightingTexture;
+	this->lightingMaterialShader = lightingMaterialShader;
+	this->lightingTextureShader = lightingTextureShader;
 	this->shadowShader = shadowShader;
 	shadowCasterLight = NULL;
 
@@ -35,36 +35,34 @@ Renderer::Renderer(Camera* camera, Shader* genericShader,  Shader* lightingMater
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
-	//setup textures
-	glActiveTexture(GL_TEXTURE7);
+	//setup depth map texture for shaders that use lighting
+	glActiveTexture(GL_TEXTURE7);//7 is arbitrary
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
 
-	lightingMaterial->use();
-	lightingMaterial->setInt("depthCubeMap", 7);
-	lightingMaterial->setFloat("far_plane", far_plane);//NOTE: if want to vary far_plane, needs to be inside render(). Putting here to reduce setting uniforms
+	lightingMaterialShader->use();
+	lightingMaterialShader->setInt("depthCubeMap", 7);
+	lightingMaterialShader->setFloat("far_plane", far_plane);//NOTE: if want to vary far_plane, needs to be inside render(). Putting here to reduce setting uniforms
 
-	lightingTexture->use();
-	lightingTexture->setInt("texture1", 0);
-	lightingTexture->setInt("depthCubeMap", 7);
-	lightingTexture->setFloat("far_plane", far_plane);
-
-
+	lightingTextureShader->use();
+	lightingTextureShader->setInt("texture1", 0);
+	lightingTextureShader->setInt("depthCubeMap", 7);
+	lightingTextureShader->setFloat("far_plane", far_plane);
 
 
-	GLuint materialIndex = glGetUniformBlockIndex(lightingMaterial->ID, "PointLights");
-	glUniformBlockBinding(lightingMaterial->ID, materialIndex, 0);
+	
+	// configure Uniform Interface Block so can set PointLights in all shaders at once
+	GLuint materialIndex = glGetUniformBlockIndex(lightingMaterialShader->ID, "PointLights");
+	glUniformBlockBinding(lightingMaterialShader->ID, materialIndex, 0);
 
-	GLuint textureIndex = glGetUniformBlockIndex(lightingTexture->ID, "PointLights");
-	glUniformBlockBinding(lightingTexture->ID, textureIndex, 0);
+	GLuint textureIndex = glGetUniformBlockIndex(lightingTextureShader->ID, "PointLights");
+	glUniformBlockBinding(lightingTextureShader->ID, textureIndex, 0);
 
 	glGenBuffers(1, &pointLightsUniformBlock);
 	glBindBuffer(GL_UNIFORM_BUFFER, pointLightsUniformBlock);
 	glBufferData(GL_UNIFORM_BUFFER, 64 * MAX_LIGHTS, NULL, GL_STATIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, pointLightsUniformBlock);
-
 
 }
 
@@ -91,7 +89,6 @@ void Renderer::render() {
 
 
 	//NOTE: checking only for shadowCasterLight can result in case where light was set but was removed from Scene Graph
-	//solution: std::find to see if its inside lights vector. Leaving like this for now since curious what sort of bugs can I get
 	if (shadowMode && shadowCasterLight) {
 
 		//TODO for now only PointLight implementation of shadows is made. Add others if needed later
@@ -123,19 +120,21 @@ void Renderer::render() {
 			//render scene into depthCubeMap
 			glEnable(GL_CULL_FACE);
 			for (auto& node : opaqueTexDraws) {
-				shadowRenderNode(node);
+				shadowShader->setMat4("model", node->getWorldTransform());
+				node->draw();
 			}
 			for (auto& node : opaqueMaterialDraws) {
-				shadowRenderNode(node);
+				shadowShader->setMat4("model", node->getWorldTransform());
+				node->draw();
 			}
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);//for safety
 			glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
 			//provide shaders that implement shadows position of shadowCastingLight
-			lightingMaterial->use();
-			lightingMaterial->setVec3("shadowCastingLightPos", lightPos);
-			lightingTexture->use();
-			lightingTexture->setVec3("shadowCastingLightPos", lightPos);
+			lightingMaterialShader->use();
+			lightingMaterialShader->setVec3("shadowCastingLightPos", lightPos);
+			lightingTextureShader->use();
+			lightingTextureShader->setVec3("shadowCastingLightPos", lightPos);
 		}
 		//TODO if DirLight & if SpotLight
 
@@ -164,17 +163,17 @@ void Renderer::render() {
 	genericShader->setMat4("VP", VP);
 
 
-	lightingMaterial->use();
-	lightingMaterial->setMat4("VP", VP);
-	lightingMaterial->setVec3("viewPos", viewPos);
-	lightingMaterial->setBool("shadows", shadowMode);
+	lightingMaterialShader->use();
+	lightingMaterialShader->setMat4("VP", VP);
+	lightingMaterialShader->setVec3("viewPos", viewPos);
+	lightingMaterialShader->setBool("shadows", shadowMode);
 
 
 
-	lightingTexture->use();
-	lightingTexture->setMat4("VP", VP);
-	lightingTexture->setVec3("viewPos", viewPos);
-	lightingTexture->setBool("shadows", shadowMode);
+	lightingTextureShader->use();
+	lightingTextureShader->setMat4("VP", VP);
+	lightingTextureShader->setVec3("viewPos", viewPos);
+	lightingTextureShader->setBool("shadows", shadowMode);
 
 
 
@@ -189,9 +188,19 @@ void Renderer::render() {
 	//		return a->getMaterial() < b->getMaterial();
 	//	}
 	//});
+
 	//std::sort(opaqueMaterialDraws.begin(), opaqueMaterialDraws.end(), [](DrawNode* a, DrawNode* b) {
 	//	return a->getMaterial() < b->getMaterial();
 	//});
+
+	std::sort(transparentDraws.begin(), transparentDraws.end(), [&](DrawNode* a, DrawNode* b) {
+		glm::vec3 aPos = glm::vec3(a->getWorldTransform()[3]);
+		glm::vec3 bPos = glm::vec3(b->getWorldTransform()[3]);
+		float aDistance = glm::length(mainCamera->Position - aPos);
+		float bDistance = glm::length(mainCamera->Position - bPos);
+		return aDistance > bDistance;
+	});
+
 	
 
 
@@ -209,8 +218,8 @@ void Renderer::render() {
 		node->draw();
 	}
 
-	lightingTexture->use();
-	lightingTexture->setFloat("texRatio", texRatio);
+	lightingTextureShader->use();
+	lightingTextureShader->setFloat("texRatio", texRatio);
 	for (auto& node : opaqueTexDraws) {
 		static GLuint prevTexture = 0;
 		static Material* prevMaterial = NULL;
@@ -224,80 +233,75 @@ void Renderer::render() {
 		}
 		if (material != prevMaterial) {
 			prevMaterial = material;
-			lightingTexture->setVec3("material.ambient", material->ambient);
-			lightingTexture->setVec3("material.diffuse", material->diffuse);
-			lightingTexture->setVec3("material.specular", material->specular);
-			lightingTexture->setFloat("material.shininess", material->shininess);
+			lightingTextureShader->setVec3("material.ambient", material->ambient);
+			lightingTextureShader->setVec3("material.diffuse", material->diffuse);
+			lightingTextureShader->setVec3("material.specular", material->specular);
+			lightingTextureShader->setFloat("material.shininess", material->shininess);
 		}
 
 		glm::mat4 model = node->getWorldTransform();
 		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
-		lightingTexture->setMat4("model", model);
-		lightingTexture->setMat3("normalMatrix", normalMatrix);
+		lightingTextureShader->setMat4("model", model);
+		lightingTextureShader->setMat3("normalMatrix", normalMatrix);
 
 		node->draw();
 	}
 	
-	lightingMaterial->use();
+	lightingMaterialShader->use();
 	for (auto& node : opaqueMaterialDraws) {
 		static Material* prevMaterial = NULL;
 		Material* material = node->getMaterial();
 		if (material != prevMaterial) {
 			prevMaterial = material;
-			lightingMaterial->setVec3("material.ambient", material->ambient);
-			lightingMaterial->setVec3("material.diffuse", material->diffuse);
-			lightingMaterial->setVec3("material.specular", material->specular);
-			lightingMaterial->setFloat("material.shininess", material->shininess);
+			lightingMaterialShader->setVec3("material.ambient", material->ambient);
+			lightingMaterialShader->setVec3("material.diffuse", material->diffuse);
+			lightingMaterialShader->setVec3("material.specular", material->specular);
+			lightingMaterialShader->setFloat("material.shininess", material->shininess);
 		}
 
 		glm::mat4 model = node->getWorldTransform();
 		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
-		lightingMaterial->setMat4("model", model);
-		lightingMaterial->setMat3("normalMatrix", normalMatrix);
+		lightingMaterialShader->setMat4("model", model);
+		lightingMaterialShader->setMat3("normalMatrix", normalMatrix);
 
 		node->draw();
 	}
 
+
+
 	// render transparents, back to front
+	// rendering with genericShader, so doent't draw textures even if present and not affected by lighting. Just an implementation detail
+	// if need different behaviour, requires new shader(s)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask(GL_FALSE);
 
-
-	// both methods seem to work the same, consider if theres really a difference since I could swear there was one when i first came up with it
-
-	//method 1
-	//--------
-	//glDisable(GL_CULL_FACE);
-	//for (auto iter = transparentDrawables.rbegin(); iter != transparentDrawables.rend(); ++iter) {
-	//	renderNode(iter->second);
-	//}
-
-	//method 2
-	//--------
 	genericShader->use();
 	glCullFace(GL_FRONT);
-	for (auto iter = transparentDraws.rbegin(); iter != transparentDraws.rend(); ++iter) {
-		genericShader->setFloat("transparency", iter->second->getTransparency());
+	for (auto& node : transparentDraws) {
+		genericShader->setFloat("transparency", node->getTransparency());
 
-		glm::mat4 model = iter->second->getWorldTransform();
+		glm::mat4 model = node->getWorldTransform();
 		genericShader->setMat4("model", model);
 
-		iter->second->draw();
+		node->draw();
 	}
 	glCullFace(GL_BACK);
-	for (auto iter = transparentDraws.rbegin(); iter != transparentDraws.rend(); ++iter) {
-		genericShader->setFloat("transparency", iter->second->getTransparency());
-		
-		glm::mat4 model = iter->second->getWorldTransform();
+	for (auto& node : transparentDraws) {
+		genericShader->setFloat("transparency", node->getTransparency());
+
+		glm::mat4 model = node->getWorldTransform();
 		genericShader->setMat4("model", model);
 
-		iter->second->draw();
+		node->draw();
 	}
 
 
-	//opaqueDrawables.clear();
-	//transparentDrawables.clear();
+	genericDraws.clear();
+	opaqueTexDraws.clear();
+	opaqueMaterialDraws.clear();
+	transparentDraws.clear();
+	lights.clear();
 }
 
 void Renderer::updateScene() {
@@ -310,14 +314,6 @@ void Renderer::updateScene() {
 }
 
 
-void Renderer::postRender()
-{
-	genericDraws.clear();
-	opaqueTexDraws.clear();
-	opaqueMaterialDraws.clear();
-	transparentDraws.clear();
-	lights.clear();
-}
 
 // update SceneGraph and collect DrawNodes to be rendered
 // TODO instead of dynamic_cast, implement visitor pattern
@@ -325,10 +321,8 @@ void Renderer::updateNode(SceneNode* node, const glm::mat4& CTM) {
 	node->updateWorldTransform(CTM);
 
 	if (DrawNode* drawNode = dynamic_cast<DrawNode*>(node)) {
-		if (drawNode->getTransparency() > 0) {
-			glm::vec3 nodePosition = glm::vec3(node->getWorldTransform()[3]);
-			float distance = glm::length(mainCamera->Position - nodePosition);
-			transparentDraws[distance] = drawNode;//adding to map container using distance as key automatically does the sorting from closest to furthest away
+		if (drawNode->getTransparency() > 0.0f) {
+			transparentDraws.push_back(drawNode);
 		}
 		else if (drawNode->getMaterial()) {
 			if (drawNode->getTexture()) {
@@ -354,31 +348,4 @@ void Renderer::updateNode(SceneNode* node, const glm::mat4& CTM) {
 			updateNode(child, node->getWorldTransform());
 		}
 	}
-}
-
-void Renderer::renderNode(DrawNode* node) {
-
-	//glm::mat4 model = node->getWorldTransform();
-	//glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
-
-
-	//shader->setMat4("model", model);
-	//shader->setMat3("normalMatrix", normalMatrix);
-
-	////if (shader == lightingMaterial || shader == lightingTexture) {
-	////	Material* material = node->getMaterial();
-	////	shader->setVec3("material.ambient", material->ambient);
-	////	shader->setVec3("material.diffuse", material->diffuse);
-	////	shader->setVec3("material.specular", material->specular);
-	////	shader->setFloat("material.shininess", material->shininess);
-	////}
-	//
-
-	//node->draw();
-}
-
-// render nodes to depthMap
-void Renderer::shadowRenderNode(DrawNode* node) {
-	shadowShader->setMat4("model", node->getWorldTransform());
-	node->draw();
 }

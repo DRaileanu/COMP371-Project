@@ -5,19 +5,20 @@
 #include "Sphere.h"
 #include <vector>
 
-//creates models of 3D letters/digits by manipulating geometry of unit cubes
+//creates models of 3D letters/digits by manipulating geometry of unit cubes and a sphere
+//model has top and bottom part, where top part can be controled individually using appropriate functions
 
 class Model : public GroupNode {
 public:
-	Model() = delete;
-	Model(char);//requires a character to be created
+	Model() = delete;//requires a character to be created
+	Model(char);
 	~Model();
 
-	//void setColours(glm::vec3);
+	//methods to set Material/Texture for all DrawNodes under this Model
 	void setMaterial(Material*);
 	void setTexture(GLuint);
 
-
+	//methods that control the topPart of model
 	void pitchForward(float pitch);
 	void pitchBackward(float pitch);
 	void shearRight(float shear);
@@ -38,9 +39,6 @@ private:
 	Sphere* sphere;
 	GroupNode* topPart;
 	GroupNode* bottomPart;
-
-
-
 
 };
 

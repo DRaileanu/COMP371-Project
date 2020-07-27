@@ -2,6 +2,9 @@
 #include "SceneNode.h"
 #include "Drawable.h"
 
+//only SceneNode allowed to have Drawable* and draw()
+//if want lighting to affect the DrawNode, needs Material to be set, otherwise draws using genericShader
+
 struct Material {
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
@@ -11,8 +14,8 @@ struct Material {
 
 class DrawNode : public SceneNode {
 public:
-	//DrawNode() {}
-	DrawNode(Drawable* d) : drawable(d), transparency(0) {}
+	DrawNode() {}
+	DrawNode(Drawable* d) : drawable(d), material(NULL), texture(0), transparency(0) {}
 	~DrawNode() {}
 
 	Drawable* getDrawable() { return drawable; }
