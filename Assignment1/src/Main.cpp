@@ -109,6 +109,14 @@ int main() {
     grid->setTexture(tileTexture);
     root->addChild(grid);
 
+
+    GroupNode* gridSurface = new GroupNode;
+    gridSurface->scale(glm::vec3(50.0f, 50.0f, 50.0f));
+    root->addChild(gridSurface);
+
+    Model* gridSurfaceModel = new Model('G');
+    root->addChild(gridSurfaceModel);
+
     // student models
     GroupNode* dan = new GroupNode;
     dan->scale(glm::vec3(2.0f, 2.0f, 2.0f));
