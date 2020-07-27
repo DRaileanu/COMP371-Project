@@ -97,7 +97,7 @@ int main() {
     // student models
     GroupNode* dan = new GroupNode;
     dan->scale(glm::vec3(2.0f, 2.0f, 2.0f));
-    dan->translate(glm::vec3(-40.0f, 0.0f, -40.0f));
+    dan->translate(glm::vec3(0.0f, 0.0f, 5.0f));
     root->addChild(dan);
 
     Model* model1 = new Model('N');
@@ -165,7 +165,7 @@ int main() {
     mohd->addChild(model10);
 
 
-    Sphere* spheredraw = new Sphere(5, 6);
+    Sphere* spheredraw = new Sphere(2.5, 5);
     //spheredraw->setColours(glm::vec3(1.0, 0.5f, 0.0f));
     DrawNode* sphere = new DrawNode(spheredraw);
     sphere->translate(glm::vec3(0.0f, 10.0f, -10.0f));
@@ -344,7 +344,7 @@ int main() {
             selectedNode->moveBackwards(glm::vec3(0.0f, 0.0f, -0.02 * dt));
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
-            selectedNode->translate(glm::vec3(0.0f, 0.0f, 5 * dt));
+            //selectedNode->translate(glm::vec3(0.0f, 0.0f, 5 * dt));
             selectedNode->moveForward(glm::vec3(0.0f, 0.0f, 0.02 * dt));
         }
 
@@ -357,11 +357,20 @@ int main() {
 
 
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(0.0f, 5.0f, 0.0f));//would use with rotaton with respect to dt, but assignment said 5 degrees
+            selectedNode->rotate(glm::vec3(0.0f, 150.0f*dt, 0.0f));//would use with rotaton with respect to dt, but assignment said 5 degrees
         }
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(0.0f, -5.0f, 0.0f));
+            selectedNode->rotate(glm::vec3(0.0f, -150.0f*dt, 0.0f));
         }
+
+        if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+            model1->pitchForward(50.0*dt);
+        }
+        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+            model1->pitchBackward(50.0 * dt);
+        }
+
+
 
 
 

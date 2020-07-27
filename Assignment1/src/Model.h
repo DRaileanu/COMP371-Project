@@ -2,6 +2,7 @@
 #include "GroupNode.h"
 #include "DrawNode.h"
 #include "Cube.h"
+#include "Sphere.h"
 #include <vector>
 
 //creates models of 3D letters/digits by manipulating geometry of unit cubes
@@ -14,6 +15,9 @@ public:
 
 	void setColours(glm::vec3);
 
+	void pitchForward(float pitch);
+	void pitchBackward(float pitch);
+
 private:
 	//available models
 	void createN();
@@ -25,5 +29,10 @@ private:
 	void create3();
 
 	Drawable* cube;//all DrawNodes of a Model will share same Cube
+	Sphere* sphere;
+	GroupNode* topPart;
+	GroupNode* bottomPart;
+
+
 };
 
