@@ -83,10 +83,15 @@ int main() {
     //root->scale(glm::vec3(0.25, 0.25, 0.25));
 
     DrawNode* axisLines = new DrawNode(new AxisLines);
+    axisLines->translate(glm::vec3(0.0f, 0.01, 0.0f));
     axisLines->scale(glm::vec3(10.0f, 10.0f, 10.0f));
     root->addChild(axisLines);
 
+    
     DrawNode* grid = new DrawNode(new Grid);
+    Material* gridMaterial = new Material{ glm::vec3(0.1, 0.1, 0.1), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.75, 0.75f, 0.75f), 32.0 };
+    grid->setMaterial(gridMaterial);
+    grid->setTexture(loadTexture("res/tile_diffuse.jpg"));
     root->addChild(grid);
 
     // student models
@@ -190,7 +195,7 @@ int main() {
     LightNode* light1 = new LightNode(LightType::PointLight);
     light1->setProperties(LightProperties{
         glm::vec3(0.2f, 0.2f, 0.2f),
-        glm::vec3(0.4f, 0.4f, 0.4f),
+        glm::vec3(2.0f, 2.0f, 2.0f),
         glm::vec3(1.0f, 1.0f, 1.0f),
         });
     light1Node->addChild(light1);

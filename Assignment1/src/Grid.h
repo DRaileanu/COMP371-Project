@@ -5,8 +5,10 @@
 
 class Grid : public Drawable {
 public:
-	Grid(int size = 100);
+	Grid();
 	~Grid();
-	virtual void draw();
+
+private:
+	void addSquare(float x, float z);
 };
 

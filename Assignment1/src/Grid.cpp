@@ -1,21 +1,34 @@
 #include "Grid.h"
 
-Grid::Grid(int size) {
-	type = GL_LINES;
-	vertices = std::vector < glm::vec3>(4 * (size + 1));//n*n squares require 2(n+1) lines
+Grid::Grid() {
+	//vertices.reserve(100*100*2*3);//n*n squares * 2 triangles/square * 3 vertices/triangle
 
-	float offset = (size % 2 == 0) ? size/2 : (size/2) + 0.5f;//offset needed about (0.0) depending on odd/even square grid
-	for (int i = 0; i <= size; ++i) {
-		vertices[4 * i]		= glm::vec3(i - offset, 0.0f, -offset);
-		vertices[4 * i + 1] = glm::vec3(i - offset, 0.0f, offset);
-		vertices[4 * i + 2] = glm::vec3(-offset, 0.0f, i-offset);
-		vertices[4 * i + 3] = glm::vec3(offset, 0.0f, i - offset);
-	}
+	vertices.push_back(glm::vec3(-50.0, 0.0f, 50.0));
+	vertices.push_back(glm::vec3(50.0, 0.0f, -50.0));
+	vertices.push_back(glm::vec3(-50.0, 0.0f, -50.0));
+
+	vertices.push_back(glm::vec3(-50.0, 0.0f, 50.0));
+	vertices.push_back(glm::vec3(50.0, 0.0f, 50.0));
+	vertices.push_back(glm::vec3(50.0, 0.0f, -50.0));
+
 
 	colours = std::vector < glm::vec3>(vertices.size());
 	for (unsigned int i = 0; i < colours.size(); ++i) {
 		colours[i] = glm::vec3(0.5f, 0.5f, 0.5f);
 	}
+
+	normals = std::vector<glm::vec3>(vertices.size());
+	for (unsigned int i = 0; i < normals.size(); ++i) {
+		normals[i] = glm::vec3(0.0f, 1.0f, 0.0f);
+	}
+
+	texCoords.push_back(glm::vec2(0.0, 0.0f));
+	texCoords.push_back(glm::vec2(50.0, 50.0f));
+	texCoords.push_back(glm::vec2(0.0, 50.0f));
+
+	texCoords.push_back(glm::vec2(0.0, 0.0f));
+	texCoords.push_back(glm::vec2(50.0, 0.0f));
+	texCoords.push_back(glm::vec2(50.0, 50.0f));
 
 	setupBufferData();
 }
@@ -23,8 +36,20 @@ Grid::Grid(int size) {
 Grid::~Grid() {
 }
 
-void Grid::draw() {
-	glLineWidth(3.0f);
-	Drawable::draw();
-	glLineWidth(1.0f);
+void Grid::addSquare(float x, float z) {
+	vertices.push_back(glm::vec3(x, 0.0, z));
+	vertices.push_back(glm::vec3(x+1.0, 0.0, z-1.0));
+	vertices.push_back(glm::vec3(x, 0.0, z-1.0));
+
+	vertices.push_back(glm::vec3(x, 0.0, z));
+	vertices.push_back(glm::vec3(x + 1.0, 0.0, z));
+	vertices.push_back(glm::vec3(x + 1.0, 0.0, z-1.0));
+
+	texCoords.push_back(glm::vec2(0.0, 0.0));
+	texCoords.push_back(glm::vec2(1.0, 1.0));
+	texCoords.push_back(glm::vec2(0.0, 1.0));
+
+	texCoords.push_back(glm::vec2(0.0, 0.0));
+	texCoords.push_back(glm::vec2(1.0, 0.0));
+	texCoords.push_back(glm::vec2(1.0, 1.0));
 }

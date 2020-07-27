@@ -188,6 +188,7 @@
     <Image Include="res\awesomeface.png" />
     <Image Include="res\container.jpg" />
     <Image Include="res\container2.jpg" />
+    <Image Include="res\tile_diffuse.jpg" />
     <Image Include="textures\awesomeface.png" />
     <Image Include="textures\container.jpg" />
     <Image Include="textures\kappa.png" />

@@ -196,7 +196,6 @@ void Renderer::render() {
 	for (auto& node : genericDraws) {
 		renderNode(node, genericShader);
 	}
-
 	lightingTexture->use();
 	lightingTexture->setFloat("texRatio", texRatio);
 	for (auto& node : opaqueTexDraws) {
