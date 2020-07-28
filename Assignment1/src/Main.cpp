@@ -290,14 +290,17 @@ int main() {
         // apply transformations to selectedNode
         //--------------------------------------
         //scale up continously
-        if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
+        if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
             selectedNode->scale(glm::vec3(0.5 * dt + 1, 0.5 * dt + 1, 0.5 * dt + 1));
         }
-        //scale up incrementally by 25%
+        //scale up incrementally by 10%
         {
             static bool keyPress = false;
             if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                selectedNode->scale(glm::vec3(1.25f, 1.25f, 1.25f));
+                if (!keyPress) {
+                    selectedNode->scale(glm::vec3(1.15f, 1.15f, 1.15f));
+                    keyPress = true;
+                }
             }
             if (glfwGetKey(window, GLFW_KEY_U) == GLFW_RELEASE) {
                 keyPress = false;
@@ -305,14 +308,17 @@ int main() {
         }
 
         //scale down continously
-        if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+        if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
             selectedNode->scale(glm::vec3(1 - 0.5 * dt, 1 - 0.5 * dt, 1 - 0.5 * dt));
         }
-        //scale down incrementally by 25%
+        //scale down incrementally by 10%
         {
             static bool keyPress = false;
             if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                selectedNode->scale(glm::vec3(0.75f, 0.75f, 0.75f));
+                if (!keyPress) {
+                    selectedNode->scale(glm::vec3(0.85f, 0.85f, 0.85f));
+                    keyPress = true;
+                }
             }
             if (glfwGetKey(window, GLFW_KEY_J) == GLFW_RELEASE) {
                 keyPress = false;
@@ -521,26 +527,26 @@ int main() {
         //toggle shadows
         {
             static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
+            if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
                 if (!keyPress) { 
                     renderer->toggleShadowMode(); 
                     keyPress = true;
                 }
             }
-            if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_RELEASE) {
+            if (glfwGetKey(window, GLFW_KEY_B) == GLFW_RELEASE) {
                 keyPress = false;
             }
         }
         //toggle textures
         {
             static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
+            if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
                 if (!keyPress) {
                     renderer->toggleTexture();
                     keyPress = true;
                 }
             }
-            if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_RELEASE) {
+            if (glfwGetKey(window, GLFW_KEY_V) == GLFW_RELEASE) {
                 keyPress = false;
             }
         }
