@@ -368,11 +368,11 @@ void Model::setTexture(GLuint tex) {
 
 
 void Model::pitchForward(float pitch) {
-	topPart->rotate(glm::vec3(pitch, 0.0f, 0.0f));
+	topPart->rotate(glm::vec3(-pitch, 0.0f, 0.0f));
 }
 
 void Model::pitchBackward(float pitch) {
-	topPart->rotate(glm::vec3(-pitch, 0.0f, 0.0f));
+	topPart->rotate(glm::vec3(pitch, 0.0f, 0.0f));
 }
 
 void Model::shearRight(float shear) {

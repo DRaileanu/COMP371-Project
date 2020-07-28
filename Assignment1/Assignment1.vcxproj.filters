@@ -70,15 +70,6 @@
     <Image Include="textures\kappa.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\container.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\awesomeface.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\container2.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="res\tile.jpg">
       <Filter>Resource Files</Filter>
     </Image>

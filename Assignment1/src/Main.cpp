@@ -1,10 +1,11 @@
-//---------------------------------------------------------------------------------------
-// The program uses a modified skeleton code provided by https://learnopengl.com
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------
+// The program uses a modified skeleton code provided by https://learnopengl.com, as well as modified shaders from the ones they provide
 // The original skeleton code is available at: https://github.com/JoeyDeVries/LearnOpenGL
-//---------------------------------------------------------------------------------------
+// The shadow shaders implemantion was according to https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows
+// Since we already implemented manually the Camera in assignment 1, we took the Camera class from learnopengl.com for this one, since it's very simple and neat.
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #pragma once
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -93,18 +94,17 @@ int main() {
     glm::vec3(0.24725, 0.2245, 0.0645),
     glm::vec3(0.34615, 0.3143, 0.0903),
     glm::vec3(0.797357, 0.723991, 0.208006),
-    83.2 
+    120.0 
     };
     Material* textureMaterial = new Material{
         glm::vec3(0.1, 0.1, 0.1),
-        glm::vec3(0.4, 0.4, 0.4),
-        glm::vec3(0.5, 0.5, 0.5),
+        glm::vec3(0.25, 0.25, 0.25),
+        glm::vec3(0.3, 0.3, 0.3),
         1.0 
     };
 
     GLuint tileTexture = loadTexture("res/tile.jpg");
     GLuint woodTexture = loadTexture("res/wood.jpg");
-
 
 
     //root, grid and axis lines
@@ -122,7 +122,7 @@ int main() {
     root->addChild(grid);
 
     // student models
-    //Dan
+    //Dan Raileanu
     Model* model1 = new Model('N');
     model1->scale(glm::vec3(2.0f, 2.0f, 2.0f));
     model1->setMaterial(textureMaterial);
@@ -136,7 +136,7 @@ int main() {
     model2->translate(glm::vec3(-35.0f, 0.0f, -45.0f));
     root->addChild(model2);
 
-    //Moh
+    //Mohamed-Yasser Houssein
     Model* model3 = new Model('H');
     model3->setMaterial(textureMaterial);
     model3->setTexture(woodTexture);
@@ -150,7 +150,7 @@ int main() {
     model4->translate(glm::vec3(45.0f, 0.0f, -45.0f));
     root->addChild(model4);
 
-    //Muher
+    //Muherthan Thalayasingam
     Model* model5 = new Model('H');
     model5->setMaterial(textureMaterial);
     model5->setTexture(woodTexture);
@@ -164,7 +164,7 @@ int main() {
     model6->translate(glm::vec3(-35.0f, 0.0f, 45.0f));
     root->addChild(model6);
 
-    //Radhep
+    //Radhep Sabapathipillai
     Model* model7 = new Model('D');
     model7->setMaterial(textureMaterial);
     model7->setTexture(woodTexture);
@@ -178,7 +178,7 @@ int main() {
     model8->translate(glm::vec3(45.0f, 0.0f, 45.0f));
     root->addChild(model8);
 
-    //Mohd
+    //Mohd Tanvir
     Model* model9 = new Model('H');
     model9->setMaterial(textureMaterial);
     model9->setTexture(woodTexture);
@@ -195,16 +195,14 @@ int main() {
 
     
     //light source(s)
-
     GroupNode* lightNode = new GroupNode();
     lightNode->translate(glm::vec3(0.0f, 30.0f, 0.0f));
     root->addChild(lightNode);
 
-
     LightNode* light = new LightNode(LightType::PointLight);
     light->setProperties(LightProperties{
         glm::vec3(0.2f, 0.2f, 0.2f),
-        glm::vec3(2.0f, 2.0f, 2.0f),
+        glm::vec3(3.0f, 3.0f, 3.0f),
         glm::vec3(1.0f, 1.0f, 1.0f),
         });
     lightNode->addChild(light);
@@ -215,14 +213,13 @@ int main() {
     light1cube->translate(glm::vec3(0.0f, 0.0f, 0.5f));
     lightNode->addChild(light1cube);
 
-
-
+    //set light source that cast shadows. Can have multiple lights, but only one casts shadows
+    renderer->setShadowCasterLight(light);
+    //root of the Scene
+    renderer->setRootSceneNode(root);
     //default selected node to transform
     SceneNode* selectedNode = lightNode;
-
-    renderer->setShadowCasterLight(light);
     
-    renderer->setRootSceneNode(root);
 
     //------------------------------------------------------------------------------
 
@@ -291,39 +288,148 @@ int main() {
  
 
         // apply transformations to selectedNode
+        //--------------------------------------
+        //scale up continously
         if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
             selectedNode->scale(glm::vec3(0.5 * dt + 1, 0.5 * dt + 1, 0.5 * dt + 1));
         }
+        //scale up incrementally by 25%
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+                selectedNode->scale(glm::vec3(1.25f, 1.25f, 1.25f));
+            }
+            if (glfwGetKey(window, GLFW_KEY_U) == GLFW_RELEASE) {
+                keyPress = false;
+            }
+        }
+
+        //scale down continously
         if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
             selectedNode->scale(glm::vec3(1 - 0.5 * dt, 1 - 0.5 * dt, 1 - 0.5 * dt));
         }
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            selectedNode->strafeLeft(100 * dt);
+        //scale down incrementally by 25%
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+                selectedNode->scale(glm::vec3(0.75f, 0.75f, 0.75f));
+            }
+            if (glfwGetKey(window, GLFW_KEY_J) == GLFW_RELEASE) {
+                keyPress = false;
+            }
         }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            selectedNode->strafeRight(100 * dt);
+        //strafe left continously (-x direction)
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->strafeLeft(25 * dt);
         }
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
-            selectedNode->moveForward(100 * dt);
-        }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
-            selectedNode->moveBackwards(100 * dt);
+        //strafe left incrementally by 5 units
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+                if (!keyPress) {
+                    selectedNode->strafeLeft(5.0f);
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE) {
+                keyPress = false;
+            }
         }
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-            selectedNode->translate(glm::vec3(0.0f, 5 * dt, 0.0f));
+        //strafe right continously (+x direction)
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->strafeRight(25 * dt);
         }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-            selectedNode->translate(glm::vec3(0.0f, -5 * dt, 0.0f));
+        //strafe right incrementally by 5 units
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+                if (!keyPress) {
+                    selectedNode->strafeRight(5.0f);
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE) {
+                keyPress = false;
+            }
         }
-
-        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+        //move forward continously (-z direction)
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->moveForward(25 * dt);
+        }
+        //move forward incrementally by 5 units
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+                if (!keyPress) {
+                    selectedNode->moveForward(5.0);
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE) {
+                keyPress = false;
+            }
+        }
+        //move backwards continously (+z direction)
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->moveBackwards(25 * dt);
+        } 
+        //move backwards incrementally by 5 units
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ) {
+                if (!keyPress) {
+                    selectedNode->moveBackwards(5.0);
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE) {
+                keyPress = false;
+            }
+        }
+        //move up continously (+y direction)
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->translate(glm::vec3(0.0f, 25 * dt, 0.0f));
+        }
+        //move down continously (-y direction)
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->translate(glm::vec3(0.0f, -25 * dt, 0.0f));
+        }
+        //rotate left continously(counter-clockwise around y-axis)
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
             selectedNode->rotate(glm::vec3(0.0f, 150.0f*dt, 0.0f));
         }
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+        //rotate left incrementally by 5 degrees (counter-clockwise around y-axis)
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+                if (!keyPress) {
+                    selectedNode->rotate(glm::vec3(0.0f, 5.0f, 0.0f));
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_RELEASE) {
+                keyPress = false;
+            }
+        }
+        //rotate right continously(clockwise around y-axis)
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
             selectedNode->rotate(glm::vec3(0.0f, -150.0f*dt, 0.0f));
         }
-
+        //rotate right incrementally by 5 degrees(clockwise around y-axis)
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+                if (!keyPress) {
+                    selectedNode->rotate(glm::vec3(0.0f, -5.0f, 0.0f));
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_E) == GLFW_RELEASE) {
+                keyPress = false;
+            }
+        }
+        //reposition selectedNode randomly on the grid
         {
             static bool keyPress = false;
             if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
@@ -340,22 +446,25 @@ int main() {
         }
 
         //Top part of Model transformations. Only works if selectedNode is a Model and not a LightNode or GroupNode
+        //pitches top of model forward
         if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-            if (Model* selectedModel = dynamic_cast<Model*>(selectedNode)) {
-                selectedModel->pitchBackward(100 * dt);
-            }
-        }
-        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
             if (Model* selectedModel = dynamic_cast<Model*>(selectedNode)) {
                 selectedModel->pitchForward(100 * dt);
             }
         }
-
+        //pitches top of model backwards
+        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+            if (Model* selectedModel = dynamic_cast<Model*>(selectedNode)) {
+                selectedModel->pitchBackward(100 * dt);
+            }
+        }
+        //shears top of model left along local x axis
         if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
             if (Model* selectedModel = dynamic_cast<Model*>(selectedNode)) {
                 selectedModel->shearLeft(dt);
             }
         }
+        //shears top of model right along local x axis
         if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
             if (Model* selectedModel = dynamic_cast<Model*>(selectedNode)) {
                 selectedModel->shearRight(dt);
@@ -365,20 +474,33 @@ int main() {
 
 
         // world orientation transformations
+        //rotate world clockwise around x axis
         if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-            root->rotate(glm::vec3(1.0f, 0.0f, 0.0f));
+            glm::mat4 worldTransform = root->getManualTransform();
+            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(75*dt), glm::vec3(1.0f, 0.0f, 0.0f));
+            root->setManualTransform(worldTransform * rotation);
         }
+        //rotate world counter-clockwise around x axis
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-            root->rotate(glm::vec3(-1.0f, 0.0f, 0.0f));
+            glm::mat4 worldTransform = root->getManualTransform();
+            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(75 * dt), glm::vec3(-1.0f, 0.0f, 0.0f));
+            root->setManualTransform(worldTransform * rotation);
         }
+        //rotate world clockwise around y-axis
         if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-            root->rotate(glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::mat4 worldTransform = root->getManualTransform();
+            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(75 * dt), glm::vec3(0.0f, 1.0f, 0.0f));
+            root->setManualTransform(worldTransform * rotation);
         }
+        //rotate world counter-clockwise around y-axis
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-            root->rotate(glm::vec3(0.0f, -1.0f, 0.0f));
+            glm::mat4 worldTransform = root->getManualTransform();
+            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(75 * dt), glm::vec3(0.0f, -1.0f, 0.0f));
+            root->setManualTransform(worldTransform * rotation);
         }
+        //reset world orientation, position and camera
         if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
-            root->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+            root->setManualTransform(glm::mat4(1.0f));
             mainCamera->Position = glm::vec3(0.0f, 7.5f, 55.0f);
             mainCamera->Yaw = -90.0f;
             mainCamera->Pitch = 0.0f;
@@ -396,7 +518,7 @@ int main() {
         if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
-
+        //toggle shadows
         {
             static bool keyPress = false;
             if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
@@ -409,7 +531,7 @@ int main() {
                 keyPress = false;
             }
         }
-
+        //toggle textures
         {
             static bool keyPress = false;
             if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
@@ -531,7 +653,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
         mainCamera->ProcessMouseMovement(0.0, yoffset);
     }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) {
         mainCamera->ProcessMouseScroll(yoffset);
     }
 

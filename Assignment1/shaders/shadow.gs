@@ -1,3 +1,5 @@
+//this code was taken from https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows
+
 #version 330 core
 layout (triangles) in;
 layout (triangle_strip, max_vertices=18) out;

@@ -182,9 +182,6 @@
     <None Include="shaders\shadow.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\awesomeface.png" />
-    <Image Include="res\container.jpg" />
-    <Image Include="res\container2.jpg" />
     <Image Include="res\tile.jpg" />
     <Image Include="res\wood.jpg" />
     <Image Include="textures\awesomeface.png" />

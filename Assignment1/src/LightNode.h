@@ -11,6 +11,7 @@ struct LightProperties {
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
 	glm::vec3 specular;
+	//NOTE: if implementing direction or coneAngle, have to modify size and structure of Uniform Interface Block in Renderer
 	//glm::vec3 direction;//uncomment if implementing SpotLight/DirectionLight in Renderer
 	//float coneAngle;//uncomment if implementing SpotLight in Renderer
 };
