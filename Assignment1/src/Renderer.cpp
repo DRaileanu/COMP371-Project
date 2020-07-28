@@ -58,7 +58,7 @@ Renderer::Renderer(Camera* camera, Shader* genericShader,  Shader* lightingMater
 
 	glGenBuffers(1, &pointLightsUniformBlock);
 	glBindBuffer(GL_UNIFORM_BUFFER, pointLightsUniformBlock);
-	glBufferData(GL_UNIFORM_BUFFER, 64 * MAX_LIGHTS, NULL, GL_STATIC_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::vec4) * MAX_LIGHTS, NULL, GL_STATIC_DRAW);//although each LightProperty uses 3 * vec3, Uniform Blocks go in chunks of 16 bytes, so need to allocate vec4 for each property in LightProperty
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, pointLightsUniformBlock);
@@ -142,13 +142,14 @@ void Renderer::render() {
 
 
 	//configure rest of shaders
-	//---------------------
+	//-------------------------
 	glBindBuffer(GL_UNIFORM_BUFFER, pointLightsUniformBlock);
 	for (int i = 0; i < lights.size(); ++i) {
 		LightProperties prop = lights[i]->getProperties();
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 4 * i, sizeof(glm::vec3), &lights[i]->getWorldTransform()[3]);
+		std::size_t stride = sizeof(glm::vec4) * 4;//although inserting glm::vec3, stride is 16 bytes for Uniform Interface Blocks
+		glBufferSubData(GL_UNIFORM_BUFFER, stride * i, sizeof(glm::vec3), &lights[i]->getWorldTransform()[3]);
 		for (int j = 0; j < 3; ++j) {
-			glBufferSubData(GL_UNIFORM_BUFFER, (sizeof(glm::vec4) * 4 * i) + (sizeof(glm::vec4) * (j + 1)), sizeof(glm::vec3), &prop.ambient + j);
+			glBufferSubData(GL_UNIFORM_BUFFER, stride * i + (sizeof(glm::vec4) * (j + 1)), sizeof(glm::vec3), &prop.ambient + j);
 		}
 	}
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -182,10 +183,11 @@ void Renderer::render() {
 		}
 	});
 
-	//std::sort(opaqueMaterialDraws.begin(), opaqueMaterialDraws.end(), [](DrawNode* a, DrawNode* b) {
-	//	return a->getMaterial() < b->getMaterial();
-	//});
+	std::sort(opaqueMaterialDraws.begin(), opaqueMaterialDraws.end(), [](DrawNode* a, DrawNode* b) {
+		return a->getMaterial() < b->getMaterial();
+	});
 	*/
+	
 
 	//sort transparent DrawNodes from furthest to closest
 	std::sort(transparentDraws.begin(), transparentDraws.end(), [&](DrawNode* a, DrawNode* b) {

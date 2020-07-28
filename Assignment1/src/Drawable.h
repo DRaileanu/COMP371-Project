@@ -6,7 +6,6 @@
 #include <vector>
 
 //base class for drawable geometry
-//can be instantiated on its own, but useless since no way to provide geometry data for now, use a class that inherits it
 
 class Drawable {
 
