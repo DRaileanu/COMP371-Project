@@ -58,7 +58,7 @@ Renderer::Renderer(Camera* camera, Shader* genericShader,  Shader* lightingMater
 
 	glGenBuffers(1, &pointLightsUniformBlock);
 	glBindBuffer(GL_UNIFORM_BUFFER, pointLightsUniformBlock);
-	glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::vec4) * MAX_LIGHTS, NULL, GL_STATIC_DRAW);//although each LightProperty uses 3 * vec3, Uniform Blocks go in chunks of 16 bytes, so need to allocate vec4 for each property in LightProperty
+	glBufferData(GL_UNIFORM_BUFFER, 4 * sizeof(glm::vec4) * MAX_LIGHTS, NULL, GL_STATIC_DRAW);//although each LightProperty uses 3 * vec3, Uniform Blocks go in chunks of 16 bytes, so need to allocate vec4 for each property in LightProperty
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, pointLightsUniformBlock);
