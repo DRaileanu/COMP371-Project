@@ -4,6 +4,7 @@ SceneNode::SceneNode() {
 	localTransform = glm::mat4(1.0f);
 	translation = glm::vec3(0.0f, 0.0f, 0.0f);
 	rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	quatrotation = glm::quat();
 	scaling = glm::vec3(1.0f, 1.0f, 1.0f);
 	manualTransform = glm::mat4(1.0f);
 	dirty = true;
@@ -16,9 +17,11 @@ SceneNode::~SceneNode() {}
 void SceneNode::updateLocalTransform() {
 	glm::mat4 transform = glm::mat4(1.0f);
 	transform = glm::translate(transform, translation);
-	transform = glm::rotate(transform, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	transform = glm::rotate(transform, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-	transform = glm::rotate(transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	//transform = glm::rotate(transform, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	//transform = glm::rotate(transform, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	//transform = glm::rotate(transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 rotTransform = glm::mat4_cast(quatrotation);
+	transform = transform * rotTransform;
 	transform = glm::scale(transform, scaling);
 	transform = transform * manualTransform;
 	localTransform = transform;
@@ -68,7 +71,14 @@ void SceneNode::scale(glm::vec3 s) {
 
 void SceneNode::rotate(glm::vec3 r) {
 	dirty = true;
-	rotation += r;
+	//rotation += r;
+
+	glm::vec3 angles = glm::vec3(glm::radians(r.x), glm::radians(r.y), glm::radians(r.z));
+	glm::quat rot(angles);
+	glm::mat4 rotMat = glm::mat4_cast(rot);
+	glm::mat4 quatrotMat = glm::mat4_cast(quatrotation);
+	glm::mat4 transform = quatrotMat * rotMat;
+	quatrotation = glm::quat_cast(transform);
 }
 void SceneNode::moveForward(float amount) {
 	dirty = true;

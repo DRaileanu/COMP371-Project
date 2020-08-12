@@ -8,6 +8,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include "Drawable.h"
 #include <vector>
 
@@ -48,13 +49,14 @@ public:
 
 protected:
 	SceneNode();//not allowed to instantiate SceneNode on their own, must be a derived class
-	void updateLocalTransform();
+	virtual void updateLocalTransform();
 
 	glm::mat4	worldTransform;
 	glm::mat4	localTransform;
 
 	glm::vec3	translation;
 	glm::vec3	rotation;
+	glm::quat	quatrotation;
 	glm::vec3	scaling;
 	glm::mat4	manualTransform;
 
