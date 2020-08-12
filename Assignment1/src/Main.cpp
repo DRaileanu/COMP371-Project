@@ -22,6 +22,7 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "Sphere.h"
+#include "RubikCube.h"
 
 
 #include <iostream>
@@ -122,6 +123,11 @@ int main() {
     root->addChild(grid);
 
     
+    RubikCube* rubikCube = new RubikCube;
+    rubikCube->scale(glm::vec3(3.0f, 3.0f, 3.0f));
+    rubikCube->translate(glm::vec3(0.0f, 5.0f, 0.0f));
+    root->addChild(rubikCube);
+
 
     
     //light source(s)
@@ -183,10 +189,10 @@ int main() {
 
         // select student models to transform
         if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-            
+            selectedNode = rubikCube;
         }
         if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-            
+            selectedNode = axisLines;
         }
         if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
             
@@ -384,27 +390,19 @@ int main() {
         //Top part of Model transformations. Only works if selectedNode is a Model and not a LightNode or GroupNode
         //pitches top of model forward
         if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-            if (Model* selectedModel = dynamic_cast<Model*>(selectedNode)) {
-                selectedModel->pitchForward(100 * dt);
-            }
+            selectedNode->rotate(glm::vec3(150.0f * dt, 0.0f, 0.0f));
         }
         //pitches top of model backwards
         if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-            if (Model* selectedModel = dynamic_cast<Model*>(selectedNode)) {
-                selectedModel->pitchBackward(100 * dt);
-            }
+            selectedNode->rotate(glm::vec3(-150.0f * dt, 0.0f, 0.0f));
         }
         //shears top of model left along local x axis
         if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-            if (Model* selectedModel = dynamic_cast<Model*>(selectedNode)) {
-                selectedModel->shearLeft(dt);
-            }
+            selectedNode->rotate(glm::vec3(0.0f, 0.0f, 150.0f * dt));
         }
         //shears top of model right along local x axis
         if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-            if (Model* selectedModel = dynamic_cast<Model*>(selectedNode)) {
-                selectedModel->shearRight(dt);
-            }
+            selectedNode->rotate(glm::vec3(0.0f, 0.0f, -150.0f * dt));
         }
 
 

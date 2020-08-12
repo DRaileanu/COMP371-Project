@@ -158,6 +158,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Quad.cpp" />
+    <ClCompile Include="src\RubikCube.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\AxisLines.cpp" />
     <ClCompile Include="src\Grid.cpp" />
@@ -189,6 +191,8 @@
     <Image Include="textures\kappa.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Quad.h" />
+    <ClInclude Include="src\RubikCube.h" />
     <ClInclude Include="src\DrawNode.h" />
     <ClInclude Include="src\GroupNode.h" />
     <ClInclude Include="src\Sphere.h" />
