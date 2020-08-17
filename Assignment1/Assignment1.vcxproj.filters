@@ -87,6 +87,24 @@
     <Image Include="res\wood.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\top.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\right.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\left.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\front.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bottom.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\back.png">
+      <Filter>Resource Files</Filter>
+    </Image>
     <Image Include="res\top.jpg">
       <Filter>Resource Files</Filter>
     </Image>
@@ -103,6 +121,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\back.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\top1.gif">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

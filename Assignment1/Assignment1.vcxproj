@@ -188,12 +188,19 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\back.jpg" />
+    <Image Include="res\back.png" />
     <Image Include="res\bottom.jpg" />
+    <Image Include="res\bottom.png" />
     <Image Include="res\front.jpg" />
+    <Image Include="res\front.png" />
     <Image Include="res\left.jpg" />
+    <Image Include="res\left.png" />
     <Image Include="res\right.jpg" />
+    <Image Include="res\right.png" />
     <Image Include="res\tile.jpg" />
     <Image Include="res\top.jpg" />
+    <Image Include="res\top.png" />
+    <Image Include="res\top1.gif" />
     <Image Include="res\wood.jpg" />
     <Image Include="textures\awesomeface.png" />
     <Image Include="textures\container.jpg" />
