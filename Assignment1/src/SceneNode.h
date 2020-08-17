@@ -33,6 +33,7 @@ public:
 	void translate(glm::vec3);
 	void scale(glm::vec3);
 	void rotate(glm::vec3);//input is rotation along xyz-axes in degrees. Rotations are applied in order: ZYX
+	void rotate(glm::mat4);//input is a rotaiton Matrix to apply to current one;
 	
 	void moveForward(float amount);//move in -z direction relative to local axis
 	void moveBackwards(float amount);//move in z direction relative to local axis
@@ -42,11 +43,11 @@ public:
 
 	//worldTransformation
 	const glm::mat4& getWorldTransform() { return worldTransform; }
-	void updateWorldTransform(const glm::mat4& CTM);
+	virtual void updateWorldTransform(const glm::mat4& CTM);
 
 	bool isDirty() { return dirty; }//optimization to avoid recomputing localTransform if hasn't changed since last frame
 	
-
+	glm::quat	quatrotation;
 protected:
 	SceneNode();//not allowed to instantiate SceneNode on their own, must be a derived class
 	virtual void updateLocalTransform();
@@ -56,7 +57,7 @@ protected:
 
 	glm::vec3	translation;
 	glm::vec3	rotation;
-	glm::quat	quatrotation;
+	//glm::quat	quatrotation;
 	glm::vec3	scaling;
 	glm::mat4	manualTransform;
 
