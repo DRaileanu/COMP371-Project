@@ -113,14 +113,26 @@ int main() {
     GroupNode* root = new GroupNode;
 
 
-    ParticleEmitter* particleEmitter = new ParticleEmitter;
-    ParticleEffect* particleEffect = new ParticleEffect(50);
+    //ParticleEmitter* particleEmitter = new ParticleEmitter;
+    ParticleEffect* particleEffect = new ParticleEffect(500);
     //particleEffect->SetParticleEmitter(particleEmitter);
-    particleEffect->SetCamera(mainCamera);
     DrawNode* particles = new DrawNode(particleEffect);
     particles->translate(glm::vec3(0.0f, 15.0f, 0.0f));
     root->addChild(particles);
 
+
+    DrawNode* particles1 = new DrawNode(particleEffect);
+    particles1->translate(glm::vec3(-10.0f, 15.0f, 0.0f));
+    root->addChild(particles1);
+
+    DrawNode* particles2 = new DrawNode(particleEffect);
+    particles2->translate(glm::vec3(10.0f, 15.0f, 0.0f));
+    root->addChild(particles2);
+
+
+    DrawNode* particles3 = new DrawNode(particleEffect);
+    particles3->translate(glm::vec3(0.0f, 25.0f, 8.0f));
+    root->addChild(particles3);
 
 
 

@@ -158,6 +158,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ParticleEffect.cpp" />
+    <ClCompile Include="src\ParticleEmitter.cpp" />
     <ClCompile Include="src\Quad.cpp" />
     <ClCompile Include="src\RubikCube.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
@@ -191,7 +193,11 @@
     <Image Include="textures\kappa.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ParticleEffect.h" />
+    <ClInclude Include="src\Particle.h" />
+    <ClInclude Include="src\ParticleEmitter.h" />
     <ClInclude Include="src\Quad.h" />
+    <ClInclude Include="src\Random.h" />
     <ClInclude Include="src\RubikCube.h" />
     <ClInclude Include="src\DrawNode.h" />
     <ClInclude Include="src\GroupNode.h" />

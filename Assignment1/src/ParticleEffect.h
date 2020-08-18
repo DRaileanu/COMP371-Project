@@ -19,6 +19,8 @@ public:
     ParticleEffect(unsigned int numParticles = 0);
     virtual ~ParticleEffect();
 
+    //void draw();
+
     void SetCamera(Camera* pCamera);
     void SetParticleEmitter(ParticleEmitter* pEmitter);
 

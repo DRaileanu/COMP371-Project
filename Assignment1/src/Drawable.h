@@ -21,7 +21,7 @@ public:
 
 protected:
 	//handles setup of data buffers into coresponding array object
-	void setupBufferData();
+	virtual void setupBufferData();
 
 	GLuint VAO;//array object
 	GLuint bufferObjects[NUM_BUFFERS];
