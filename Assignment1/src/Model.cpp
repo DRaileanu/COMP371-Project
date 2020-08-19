@@ -3,37 +3,12 @@
 
 
 Model::Model(char c) {
-	cube = new Cube;
-	sphere = new Sphere(3.0, 4);
-	sphere->setColours(glm::vec3(0.7f, 0.7f, 0.7f));
-
-	bottomPart = new GroupNode;
-	addChild(bottomPart);
-
-	topPart = new GroupNode;
-	topPart->translate(glm::vec3(0.0f, 2.5f, 0.0f));
-	addChild(topPart);
-
-	DrawNode* sphereNode = new DrawNode(sphere);
-	sphereNode->setTransparency(0.7f);
-	sphereNode->translate(glm::vec3(0.0f, 3.0f, 0.0f));
-	topPart->addChild(sphereNode);
-
-
+	cube = new TimexCube;
+	model = new GroupNode;
+	model->translate(glm::vec3(0.0f, 0.0f, 0.0f));
+	addChild(model);
 	switch (c) {
-	case 'N': {createN(); }
-	break;
-	case '1': {create1(); }
-	break;
-	case 'H': {createH(); }
-	break;
-	case '5': {create5(); }
-	break;
-	case '2': {create2(); }
-	break;
-	case 'D': {createD(); }
-	break;
-	case '3': {create3(); }
+	case '0': {create0(); }
 	break;
 	}
 }
@@ -43,7 +18,7 @@ Model::~Model() {
 }
 
 
-void Model::createN() {
+/*void Model::createN() {
 	DrawNode* node;
 	node = new DrawNode(cube);
 	node->translate(glm::vec3(-0.5f, 0.75f, 0.0f));
@@ -89,9 +64,9 @@ void Model::createN() {
 
 
 
-}
+}*/
 
-void Model::create1() {
+/*void Model::create1() {
 	DrawNode* node;
 
 	node = new DrawNode(cube);
@@ -114,9 +89,59 @@ void Model::create1() {
 		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
 		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)));
 	topPart->addChild(node);
+}*/
+void Model::create0() {
+	DrawNode* node;
+
+	node = new DrawNode(cube);
+	node->scale(glm::vec3(0.5f, 2.0f, 1.0f));
+	//node->translate(glm::vec3(5.0f, 1.25f, 0.0f));
+	model->addChild(node);
+
+	node = new DrawNode(cube);
+	node->scale(glm::vec3(0.5f, 2.0f, 1.0f));
+	node->translate(glm::vec3(0.0f, 1.1f, 0.0f));
+	model->addChild(node);
+
+	node = new DrawNode(cube);
+	node->translate(glm::vec3(0.7f, 1.8f, 0.0f));
+	model->addChild(node);
+
+	node = new DrawNode(cube);
+	node->translate(glm::vec3(0.7f, -0.7f, 0.0f));
+	model->addChild(node);
+
+	node = new DrawNode(cube);
+	node->scale(glm::vec3(0.5f, 2.0f, 1.0f));
+	node->translate(glm::vec3(1.4f, 0.0f, 0.0f));
+	model->addChild(node);
+
+	node = new DrawNode(cube);
+	node->scale(glm::vec3(0.5f, 2.0f, 1.0f));
+	node->translate(glm::vec3(1.4f, 1.1f, 0.0f));
+	model->addChild(node);
+
+
+
+	/*node = new DrawNode(cube);
+	node->scale(glm::vec3(1.0f, 2.5f, 1.0f));
+	node->translate(glm::vec3(0.0f, 1.25f, 0.0f));
+	model->addChild(node);
+
+
+	node = new DrawNode(cube);
+	node->scale(glm::vec3(1.25f, 1.0f, 1.0f));
+	node->translate(glm::vec3(-1.125, 1.5f, 0.0f));
+	node->setManualTransform(glm::mat4(
+		glm::vec4(1.0f, 1.0f, 0.0f, 0.0f),
+		glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
+		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
+		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+	model->addChild(node);*/
 }
 
-void Model::createH() {
+
+/*void Model::createH() {
 	DrawNode* node;
 
 	node = new DrawNode(cube);
@@ -345,7 +370,7 @@ void Model::setMaterial(Material* material) {
 	};
 	traversal(this);
 
-}
+}*/
 //using lambda recursion, sets textures for all DrawNodes under this Model
 void Model::setTexture(GLuint tex) {
 	auto traversal = [&](SceneNode* node)->void {
@@ -367,7 +392,7 @@ void Model::setTexture(GLuint tex) {
 }
 
 
-void Model::pitchForward(float pitch) {
+/*void Model::pitchForward(float pitch) {
 	topPart->rotate(glm::vec3(-pitch, 0.0f, 0.0f));
 }
 
@@ -389,5 +414,5 @@ void Model::shearLeft(float shear) {
 
 void Model::scaleTop(float scale) {
 	topPart->scale(glm::vec3(1.0f, 1+scale, 1.0f));
-}
+}*/
 
