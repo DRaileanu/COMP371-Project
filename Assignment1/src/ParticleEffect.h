@@ -31,6 +31,12 @@ public:
     // Resize the particle buffer with numParticles
     void Resize(unsigned int numParticles);
 
+    void setForce(glm::vec3 f) { force = f; }
+    void setRotateAxis(glm::vec3 axis) { rotateAxis = glm::normalize(axis); }
+    void setRotateKeyFrames(float begin, float end) { rotateKeyFrames = std::make_pair(begin, end); }
+    void setSizeKeyFrames(float begin, float end) { sizeKeyFrames = std::make_pair(begin, end); }
+    void setColorKeyFrames(glm::vec3 begin, glm::vec3 end) { colorKeyFrames = std::make_pair(begin, end); }
+
 protected:
     void setupBufferData() override;
     void RandomizeParticle(Particle& particle);
@@ -39,9 +45,13 @@ public:
     // Build the vertex buffer from the particle buffer
     void BuildVertexBuffer();
 private:
-    ParticleEmitter* m_pParticleEmitter;
+    ParticleEmitter*        particleEmitter;
 
-    std::vector<Particle>      m_Particles;
+    std::vector<Particle>   particles;
     // Apply this force to every particle in the effect
-    //glm::vec3           m_Force;
+    glm::vec3               force;
+    glm::vec3               rotateAxis;
+    std::pair<float, float> rotateKeyFrames;
+    std::pair<float, float> sizeKeyFrames;
+    std::pair<glm::vec3, glm::vec3> colorKeyFrames;
 };

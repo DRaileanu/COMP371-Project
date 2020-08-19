@@ -17,8 +17,13 @@
 #include <glm/gtx/norm.hpp>
 
 ParticleEffect::ParticleEffect(unsigned int numParticles) :
-    m_pParticleEmitter(NULL)
-    //, m_Force(0, -9.81f, 0)
+    particleEmitter(NULL),
+    force(0, 0, 0),
+    rotateAxis(0.0f, 0.0f, 1.0f),//if manually changing, make sure it's normalized
+    rotateKeyFrames(0.0f, 90.0f),
+    sizeKeyFrames(1.0f, 0.0f),
+    colorKeyFrames(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f))
+
 {
     Resize(numParticles);
     setupBufferData();
@@ -29,46 +34,46 @@ ParticleEffect::~ParticleEffect() {}
 
 void ParticleEffect::SetParticleEmitter(ParticleEmitter* pEmitter)
 {
-    m_pParticleEmitter = pEmitter;
+    particleEmitter = pEmitter;
 }
 
 
 void ParticleEffect::RandomizeParticle(Particle& particle)
 {
-    particle.m_fAge = 0.0f;
-    particle.m_fLifeTime = RandRange(0.75, 1.5);
+    particle.age = 0.0f;
+    particle.lifeTime = RandRange(0.75, 1.5);
 
     glm::vec3 unitVec = RandUnitVec();
 
-    particle.m_Position = unitVec * 1.0f;
-    particle.m_Velocity = unitVec * RandRange(2.0, 5.0);
+    particle.position = unitVec * 1.0f;
+    particle.velocity = unitVec * RandRange(2.0, 5.0);
 }
 
 void ParticleEffect::RandomizeParticles()
 {
-    for (unsigned int i = 0; i < m_Particles.size(); ++i)
+    for (unsigned int i = 0; i < particles.size(); ++i)
     {
-        RandomizeParticle(m_Particles[i]);
+        RandomizeParticle(particles[i]);
     }
 }
 
 void ParticleEffect::EmitParticle(Particle& particle)
 {
-    assert(m_pParticleEmitter != NULL);
-    m_pParticleEmitter->EmitParticle(particle);
+    assert(particleEmitter != NULL);
+    particleEmitter->EmitParticle(particle);
 }
 
 void ParticleEffect::EmitParticles()
 {
-    if (m_pParticleEmitter == NULL)
+    if (particleEmitter == NULL)
     {
         RandomizeParticles();
     }
     else
     {
-        for (unsigned int i = 0; i < m_Particles.size(); ++i)
+        for (unsigned int i = 0; i < particles.size(); ++i)
         {
-            EmitParticle(m_Particles[i]);
+            EmitParticle(particles[i]);
         }
     }
 }
@@ -80,37 +85,37 @@ void ParticleEffect::BuildVertexBuffer()
     const glm::vec3 Z(0, 0, 0.5);
 
 
-    for (unsigned int i = 0; i < m_Particles.size(); ++i)
+    for (unsigned int i = 0; i < particles.size(); ++i)
     {
-        Particle& particle = m_Particles[i];
-        glm::quat rotation = glm::angleAxis(particle.m_fRotate, glm::vec3(0.75, 0.5, 1.0f));
+        Particle& particle = particles[i];
+        glm::quat rotation = glm::normalize(glm::angleAxis(particle.rotate, rotateAxis));
 
         unsigned int vertexIndex = i * 8;
         unsigned int indicesIndex = i * 36;
         // Bottom-left-front
-        vertices[vertexIndex + 0] = particle.m_Position + (rotation * (-X - Y + Z) * particle.m_fSize);
-        colours[vertexIndex + 0] = particle.m_Color;
+        vertices[vertexIndex + 0] = particle.position + (rotation * (-X - Y + Z) *  particle.size);
+        colours[vertexIndex + 0] = particle.color;
         // Bottom-right-front
-        vertices[vertexIndex + 1] = particle.m_Position + (rotation * (X - Y + Z) * particle.m_fSize);
-        colours[vertexIndex + 1] = particle.m_Color;
+        vertices[vertexIndex + 1] = particle.position + (rotation * (X - Y + Z) * particle.size);
+        colours[vertexIndex + 1] = particle.color;
         // Top-right-front
-        vertices[vertexIndex + 2] = particle.m_Position + (rotation * (X + Y + Z) * particle.m_fSize);
-        colours[vertexIndex + 2] = particle.m_Color;
+        vertices[vertexIndex + 2] = particle.position + (rotation * (X + Y + Z) * particle.size);
+        colours[vertexIndex + 2] = particle.color;
         // Top-left-front
-        vertices[vertexIndex + 3] = particle.m_Position + (rotation * (-X + Y + Z) * particle.m_fSize);
-        colours[vertexIndex + 3] = particle.m_Color;    
+        vertices[vertexIndex + 3] = particle.position + (rotation * (-X + Y + Z) * particle.size);
+        colours[vertexIndex + 3] = particle.color;    
         // Bottom-left-back
-        vertices[vertexIndex + 4] = particle.m_Position + (rotation * (-X - Y - Z) * particle.m_fSize);
-        colours[vertexIndex + 4] = particle.m_Color;
+        vertices[vertexIndex + 4] = particle.position + (rotation * (-X - Y - Z) * particle.size);
+        colours[vertexIndex + 4] = particle.color;
         // Bottom-right-back
-        vertices[vertexIndex + 5] = particle.m_Position + (rotation * (X - Y - Z) * particle.m_fSize);
-        colours[vertexIndex + 5] = particle.m_Color;
+        vertices[vertexIndex + 5] = particle.position + (rotation * (X - Y - Z) * particle.size);
+        colours[vertexIndex + 5] = particle.color;
         // Bottom-right-back
-        vertices[vertexIndex + 6] = particle.m_Position + (rotation * (X + Y - Z) * particle.m_fSize);
-        colours[vertexIndex + 6] = particle.m_Color;
+        vertices[vertexIndex + 6] = particle.position + (rotation * (X + Y - Z) * particle.size);
+        colours[vertexIndex + 6] = particle.color;
         // Bottom-left-back
-        vertices[vertexIndex + 7] = particle.m_Position + (rotation * (-X + Y - Z) * particle.m_fSize);
-        colours[vertexIndex + 7] = particle.m_Color;
+        vertices[vertexIndex + 7] = particle.position + (rotation * (-X + Y - Z) * particle.size);
+        colours[vertexIndex + 7] = particle.color;
 
         indices[indicesIndex + 0] = vertexIndex + 0;
         indices[indicesIndex + 1] = vertexIndex + 1;
@@ -175,23 +180,23 @@ void ParticleEffect::BuildVertexBuffer()
 
 void ParticleEffect::Update(float fDeltaTime)
 {
-    for (unsigned int i = 0; i < m_Particles.size(); ++i)
+    for (unsigned int i = 0; i < particles.size(); ++i)
     {
-        Particle& particle = m_Particles[i];
+        Particle& particle = particles[i];
 
-        particle.m_fAge += fDeltaTime;
-        if (particle.m_fAge > particle.m_fLifeTime)
+        particle.age += fDeltaTime;
+        if (particle.age > particle.lifeTime)
         {
-            if (m_pParticleEmitter != NULL) EmitParticle(particle);
+            if (particleEmitter != NULL) EmitParticle(particle);
             else RandomizeParticle(particle);
         }
 
-        float lifeRatio = glm::clamp(particle.m_fAge / particle.m_fLifeTime, 0.0f, 1.0f);
-       // particle.m_Velocity += (m_Force * fDeltaTime);
-        particle.m_Position += (particle.m_Velocity * fDeltaTime);
-        particle.m_Color = glm::vec3(1.0f, 0.0f, 0.0f);
-        particle.m_fRotate = glm::lerp<float>(0.0f, 90.0f, lifeRatio);
-        particle.m_fSize = glm::lerp<float>(0.050f, 0.025f, lifeRatio);
+        float lifeRatio = glm::clamp(particle.age / particle.lifeTime, 0.0f, 1.0f);
+        particle.velocity += (force * fDeltaTime);
+        particle.position += (particle.velocity * fDeltaTime);
+        particle.color = glm::lerp(colorKeyFrames.first, colorKeyFrames.second, lifeRatio);
+        particle.rotate = glm::lerp<float>(rotateKeyFrames.first, rotateKeyFrames.second, lifeRatio);
+        particle.size = glm::lerp<float>(sizeKeyFrames.first, sizeKeyFrames.second, lifeRatio);
     }
 
     BuildVertexBuffer();
@@ -202,7 +207,7 @@ void ParticleEffect::Update(float fDeltaTime)
 void ParticleEffect::Resize(unsigned int numParticles)
 {
     numParticles = std::min(numParticles, MAX_PARTICLES);
-    m_Particles.resize(numParticles, Particle());
+    particles.resize(numParticles, Particle());
     vertices.resize(8 * numParticles);
     colours.resize(8 * numParticles);
     indices.resize(36 * numParticles);

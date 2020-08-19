@@ -113,14 +113,33 @@ int main() {
     GroupNode* root = new GroupNode;
 
 
-    //ParticleEmitter* particleEmitter = new ParticleEmitter;
-    ParticleEffect* particleEffect = new ParticleEffect(500);
-    //particleEffect->SetParticleEmitter(particleEmitter);
+    ParticleEmitter* particleEmitter = new ParticleEmitter;
+    particleEmitter->MaxWidth = 1.0f;
+    particleEmitter->MinWidth = -1.0f;
+    particleEmitter->MaxHeight = 3.0f;
+    particleEmitter->MinHeight = 0.1f;
+    particleEmitter->MaxDepth = 1.0f;
+    particleEmitter->MinDepth = -1.0f;
+    particleEmitter->MaxSpeed = 25.5;
+    particleEmitter->MinSpeed = 15.8;
+    particleEmitter->MaxLifetime = 1;
+    particleEmitter->MinLifetime = 3;
+    
+
+
+    ParticleEffect* particleEffect = new ParticleEffect(1000);
+    particleEffect->setForce(glm::vec3(0.0f, -30.0, 0.0f));
+    particleEffect->setRotateAxis(glm::vec3(0.25, 0.5, 0.75));
+    particleEffect->setRotateKeyFrames(0.0f, 90.0f);
+    particleEffect->setSizeKeyFrames(0.35, 0.15);
+    particleEffect->setColorKeyFrames(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+
+    particleEffect->SetParticleEmitter(particleEmitter);
     DrawNode* particles = new DrawNode(particleEffect);
-    particles->translate(glm::vec3(0.0f, 15.0f, 0.0f));
+    particles->translate(glm::vec3(0.0f, 10.0f, 0.0f));
     root->addChild(particles);
 
-
+    /*
     DrawNode* particles1 = new DrawNode(particleEffect);
     particles1->translate(glm::vec3(-10.0f, 15.0f, 0.0f));
     root->addChild(particles1);
@@ -133,6 +152,8 @@ int main() {
     DrawNode* particles3 = new DrawNode(particleEffect);
     particles3->translate(glm::vec3(0.0f, 25.0f, 8.0f));
     root->addChild(particles3);
+
+    */
 
 
 

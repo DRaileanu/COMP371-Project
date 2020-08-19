@@ -9,10 +9,10 @@ ParticleEmitter::ParticleEmitter() :
 	MaxHeight(-1),
 	MinDepth(-1),
 	MaxDepth(-1),
-	MinSpeed(10),
-	MaxSpeed(20),
-	MinLifetime(3),
-	MaxLifetime(5),
+	MinSpeed(5),
+	MaxSpeed(11),
+	MinLifetime(0.5),
+	MaxLifetime(1.25),
 	Origin(0)
 {}
 
@@ -26,9 +26,9 @@ void ParticleEmitter::EmitParticle(Particle& particle) {
 
 	glm::vec3 vector(x, y, z);
 
-	particle.m_Position = vector + Origin;
-	particle.m_Velocity = glm::normalize(vector) * speed;
+	particle.position = vector + Origin;
+	particle.velocity = glm::normalize(vector) * speed;
 
-	particle.m_fLifeTime = lifetime;
-	particle.m_fAge = 0;
+	particle.lifeTime = lifetime;
+	particle.age = 0;
 }

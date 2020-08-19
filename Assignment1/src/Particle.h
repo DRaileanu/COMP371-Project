@@ -7,19 +7,22 @@
 struct Particle
 {
     Particle()
-        : m_Position(0)
-        , m_Velocity(0)
-        , m_Color(0)
-        , m_fRotate(0)
-        , m_fAge(0)
-        , m_fLifeTime(0)
+        : position(0)
+        , velocity(0)
+        , color(0)
+        , rotate(0)
+        , age(0)
+        , lifeTime(0)
     {}
 
-    glm::vec3   m_Position; // Center point of particle
-    glm::vec3   m_Velocity; // Current particle velocity
-    glm::vec3   m_Color;    // Particle color
-    float       m_fRotate;  // Rotate the particle the center
-    float       m_fSize;    // Size of the particle
-    float       m_fAge;
-    float       m_fLifeTime;
+    glm::vec3   position; // Center point of particle
+    glm::vec3   velocity; // Current particle velocity
+    glm::vec3   color;    // Particle color
+    float       rotate;  // Rotate the particle the center
+    float       size;    // Size of the particle
+    float       age;
+    float       lifeTime;
+
+    std::pair<float, float> rotateKeyFrames;
+    std::pair<float, float> sizeKeyFrames;
 };

@@ -84,6 +84,7 @@ void SceneNode::rotate(glm::vec3 r) {
 }
 
 void SceneNode::rotate(glm::mat4 rotationMatrix) {
+	dirty = true;
 	glm::mat4 quatRotMat = glm::mat4_cast(quatrotation);
 	glm::mat4 transform = rotationMatrix * quatRotMat ;
 	quatrotation = glm::normalize(glm::quat_cast(transform));
