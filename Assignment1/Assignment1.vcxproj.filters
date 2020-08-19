@@ -60,6 +60,12 @@
     <ClCompile Include="src\ParticleEmitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TimexCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\ZigzagCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -165,11 +171,15 @@
     <ClInclude Include="src\RubikCubeParticles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ZigzagCube.h">
+<ClInclude Include="src\DecorativeCubes.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DecorativeCubes.h">
+</ClInclude>
+<ClInclude Include="src\Timer.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
+</ClInclude>
+<ClInclude Include="src\ZigzagCube.h">
+      <Filter>Header Files</Filter>
+</ClInclude>
+
   </ItemGroup>
 </Project>

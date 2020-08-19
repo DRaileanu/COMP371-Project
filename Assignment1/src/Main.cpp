@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <time.h>
+#include "Timer.h"
 
 
 //----------------------------------------
@@ -194,7 +195,13 @@ int main() {
     DrawNode* decorativeCubesNode4 = new DrawNode(decorativeCubes);
     grid4Node->addChild(decorativeCubesNode4);
 
-    
+    Timer* timer = new Timer();
+    timer->scale(glm::vec3(3.0f, 3.0f, 3.0f));
+    timer->translate(glm::vec3(10.0f, 10.0f, 0.0f));
+    root->addChild(timer);
+
+
+
     
     //light source(s)
     GroupNode* lightNode = new GroupNode();
@@ -604,7 +611,7 @@ int main() {
         total += 1/dt;
         float avg = total / frames;
         frames++;
-        std::cout << '\r' << "dt: " << dt << "\tFPS: " << 1 / dt << "\tavgFPS: " << avg;;//for debugging
+        //std::cout << '\r' << "dt: " << dt << "\tFPS: " << 1 / dt << "\tavgFPS: " << avg;;//for debugging
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

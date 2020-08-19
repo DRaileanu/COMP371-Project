@@ -11,3 +11,10 @@ public:
 	Cube();
 	~Cube() {}
 };
+
+class TimexCube : public Drawable
+{
+public:
+	TimexCube();
+	~TimexCube() {}
+};
