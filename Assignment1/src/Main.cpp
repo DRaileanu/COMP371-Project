@@ -27,6 +27,7 @@
 #include "ParticleEffect.h"
 #include "Random.h"
 #include "ZigzagCube.h"
+#include "DecorativeCubes.h"
 
 
 #include <iostream>
@@ -70,7 +71,7 @@ int main() {
     programInit();
 
     // setup Camera
-    mainCamera = new Camera(glm::vec3(0.0f, 7.5f, 55.0f));
+    mainCamera = new Camera(glm::vec3(0.0f, 20.0f, 75.0f));
     glfwGetCursorPos(window, &lastX, &lastY);
 
     ////frame time parameters
@@ -119,53 +120,6 @@ int main() {
 
 
 
-    /*
-    ParticleEmitter* particleEmitter = new ParticleEmitter;
-    particleEmitter->MaxWidth = 0.25f;
-    particleEmitter->MinWidth = -0.25f;
-    particleEmitter->MaxHeight = 0.5f;
-    particleEmitter->MinHeight = 0.0f;
-    particleEmitter->MaxDepth = 0.1f;
-    particleEmitter->MinDepth = -0.1f;
-    particleEmitter->MaxSpeed = 2.5;
-    particleEmitter->MinSpeed = 0.8;
-    particleEmitter->MaxLifetime = 0.25;
-    particleEmitter->MinLifetime = 0.75;
-    
-
-
-    ParticleEffect* particleEffect = new ParticleEffect(300);
-    particleEffect->setForce(glm::vec3(0.0f, -30.0, 0.0f));
-    particleEffect->setRotateAxis(glm::vec3(0.25, 0.5, 0.75));
-    particleEffect->setRotateKeyFrames(0.0f, 90.0f);
-    particleEffect->setSizeKeyFrames(0.050, 0.025);
-    particleEffect->setColorKeyFrames(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-    particleEffect->SetParticleEmitter(particleEmitter);
-    DrawNode* particles = new DrawNode(particleEffect);
-    particles->translate(glm::vec3(0.0f, 10.0f, 0.0f));
-    root->addChild(particles);
-
-    */
-
-    /*
-    DrawNode* particles1 = new DrawNode(particleEffect);
-    particles1->translate(glm::vec3(-10.0f, 15.0f, 0.0f));
-    root->addChild(particles1);
-
-    DrawNode* particles2 = new DrawNode(particleEffect);
-    particles2->translate(glm::vec3(10.0f, 15.0f, 0.0f));
-    root->addChild(particles2);
-
-
-    DrawNode* particles3 = new DrawNode(particleEffect);
-    particles3->translate(glm::vec3(0.0f, 25.0f, 8.0f));
-    root->addChild(particles3);
-
-    */
-
-
-
 
     DrawNode* axisLines = new DrawNode(new AxisLines);
     axisLines->translate(glm::vec3(0.0f, 0.01, 0.0f));
@@ -181,22 +135,22 @@ int main() {
     
     RubikCube* rubikCube1 = new RubikCubeParticles;
     rubikCube1->scale(glm::vec3(3.0f, 3.0f, 3.0f));
-    rubikCube1->translate(glm::vec3(0.0f, 5.0f, 0.0f));
+    rubikCube1->translate(glm::vec3(0.0f, 25.0f, 0.0f));
     root->addChild(rubikCube1);
 
     RubikCube* rubikCube2 = new RubikCubeColors;
     rubikCube2->scale(glm::vec3(3.0f, 3.0f, 3.0f));
-    rubikCube2->translate(glm::vec3(0.0f, 5.0f, 0.0f));
+    rubikCube2->translate(glm::vec3(0.0f, 25.0f, 0.0f));
     //root->addChild(rubikCube);
 
 
+    DecorativeCubes* decorativeCubes = new DecorativeCubes(500);
+    DrawNode* decorativeCubesNode = new DrawNode(decorativeCubes);
+    decorativeCubesNode->translate(glm::vec3(0.0f, 0.2f, 0.0f));
+    root->addChild(decorativeCubesNode);
 
-    /*
-    for (int i = 0; i < 100; i++) {
-        ZigzagCube* zigzagCube = new ZigzagCube(50, 50);
-        root->addChild(zigzagCube);
-    }
 
+    //grid 2
     GroupNode* grid2Node = new GroupNode;
     grid2Node->rotate(glm::vec3(90.0f, 0.0f, 0.0f));
     grid2Node->translate(glm::vec3(0.0f, 50.0f, -50.0f));
@@ -206,12 +160,39 @@ int main() {
     grid2->setMaterial(gridMaterial);
     grid2->setTexture(tileTexture);
     grid2Node->addChild(grid2);
+    
+    DrawNode* decorativeCubesNode2 = new DrawNode(decorativeCubes);
+    grid2Node->addChild(decorativeCubesNode2);
 
-    for (int i = 0; i < 100; i++) {
-        ZigzagCube* zigzagCube = new ZigzagCube(50, 50);
-        grid2Node->addChild(zigzagCube);
-    }
-    */
+    
+    //grid3
+    GroupNode* grid3Node = new GroupNode;
+    grid3Node->rotate(glm::vec3(0.0f, 0.0f, -90.0f));
+    grid3Node->translate(glm::vec3(-50.0f, 50.0f, 0.0f));
+    root->addChild(grid3Node);
+
+    DrawNode* grid3 = new DrawNode(new Grid);
+    grid3->setMaterial(gridMaterial);
+    grid3->setTexture(tileTexture);
+    grid3Node->addChild(grid3);
+
+    DrawNode* decorativeCubesNode3 = new DrawNode(decorativeCubes);
+    grid3Node->addChild(decorativeCubesNode3);
+
+
+    //grid4
+    GroupNode* grid4Node = new GroupNode;
+    grid4Node->rotate(glm::vec3(0.0f, 0.0f, 90.0f));
+    grid4Node->translate(glm::vec3(50.0f, 50.0f, 0.0f));
+    root->addChild(grid4Node);
+
+    DrawNode* grid4 = new DrawNode(new Grid);
+    grid4->setMaterial(gridMaterial);
+    grid4->setTexture(tileTexture);
+    grid4Node->addChild(grid4);
+
+    DrawNode* decorativeCubesNode4 = new DrawNode(decorativeCubes);
+    grid4Node->addChild(decorativeCubesNode4);
 
     
     
@@ -257,7 +238,7 @@ int main() {
         float dt = glfwGetTime() - lastFrame;
         lastFrame += dt;
 
-
+        decorativeCubes->Update(dt);
 
         // keyboard input handling
         // --------------

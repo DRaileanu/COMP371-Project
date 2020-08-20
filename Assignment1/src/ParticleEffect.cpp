@@ -1,5 +1,4 @@
 #include "ParticleEmitter.h"
-#include "Camera.h"
 #include "Random.h"
 #include "ParticleEffect.h"
 #include <algorithm>
@@ -15,7 +14,6 @@ ParticleEffect::ParticleEffect(unsigned int numParticles) :
 
 {
     Resize(numParticles);
-    setupBufferData();
 
     //map indices to vertex positions
     //it's possible to have indices map to invalid vertices if there are less particles than MAX_PARTICLES
@@ -74,6 +72,7 @@ ParticleEffect::ParticleEffect(unsigned int numParticles) :
         indices[indicesIndex + 35] = vertexIndex + 7;
     }
 
+    setupBufferData();
 }
 
 ParticleEffect::~ParticleEffect() {}
@@ -132,13 +131,11 @@ void ParticleEffect::BuildVertexBuffer()
     const glm::vec3 Z(0, 0, 0.5);
 
 
-    for (unsigned int i = 0; i < particles.size(); ++i)
-    {
+    for (unsigned int i = 0; i < particles.size(); ++i) {
         Particle& particle = particles[i];
         glm::quat rotation = glm::normalize(glm::angleAxis(particle.rotate, rotateAxis));
 
         unsigned int vertexIndex = i * 8;
-        unsigned int indicesIndex = i * 36;
         // Bottom-left-front
         vertices[vertexIndex + 0] = particle.position + (rotation * (-X - Y + Z) *  particle.size);
         colours[vertexIndex + 0] = particle.color;
@@ -173,18 +170,16 @@ void ParticleEffect::BuildVertexBuffer()
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * vertices.size(), &vertices[0]);
     glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[COLOUR_BUFFER]);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * colours.size(), &colours[0]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferObjects[INDEX_BUFFER]);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(unsigned int) * indices.size(), &indices[0]);
     glBindVertexArray(0);
 }
 
-void ParticleEffect::Update(float fDeltaTime)
+void ParticleEffect::Update(float dt)
 {
     for (unsigned int i = 0; i < particles.size(); ++i)
     {
         Particle& particle = particles[i];
 
-        particle.age += fDeltaTime;
+        particle.age += dt;
         if (particle.age > particle.lifeTime)
         {
             if (particleEmitter != NULL) EmitParticle(particle);
@@ -192,8 +187,8 @@ void ParticleEffect::Update(float fDeltaTime)
         }
 
         float lifeRatio = glm::clamp(particle.age / particle.lifeTime, 0.0f, 1.0f);
-        particle.velocity += (force * fDeltaTime);
-        particle.position += (particle.velocity * fDeltaTime);
+        particle.velocity += (force * dt);
+        particle.position += (particle.velocity * dt);
         particle.color = glm::mix(colorKeyFrames.first, colorKeyFrames.second, lifeRatio);
         particle.rotate = glm::mix<float>(rotateKeyFrames.first, rotateKeyFrames.second, lifeRatio);
         particle.size = glm::mix<float>(sizeKeyFrames.first, sizeKeyFrames.second, lifeRatio);
@@ -217,20 +212,20 @@ void ParticleEffect::setupBufferData() {
     //positions
     glGenBuffers(1, &bufferObjects[VERTEX_BUFFER]);
     glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[VERTEX_BUFFER]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_PARTICLES, NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_PARTICLES, NULL, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(VERTEX_BUFFER);
     
     //colours
     glGenBuffers(1, &bufferObjects[COLOUR_BUFFER]);
     glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[COLOUR_BUFFER]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_PARTICLES, NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_PARTICLES, NULL, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(COLOUR_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(COLOUR_BUFFER);
     
     glGenBuffers(1, &bufferObjects[INDEX_BUFFER]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferObjects[INDEX_BUFFER]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 36 * MAX_PARTICLES, NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 36 * MAX_PARTICLES, indices.data(), GL_STATIC_DRAW);
 
     glBindVertexArray(0);
 }
@@ -238,5 +233,5 @@ void ParticleEffect::setupBufferData() {
 
 void ParticleEffect::draw() {
     glBindVertexArray(VAO);
-    glDrawElements(type, particles.size() * 12, GL_UNSIGNED_INT, 0);
+    glDrawElements(type, particles.size() * 36, GL_UNSIGNED_INT, 0);
 }

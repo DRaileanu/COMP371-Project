@@ -3,9 +3,7 @@
 #include "Drawable.h"
 #include "Particle.h"
 #include "ParticleEmitter.h"
-#include "Camera.h"
 #include <vector>
-#include <string>
 
 
 /**
@@ -31,7 +29,7 @@ public:
     void RandomizeParticles();
     void EmitParticles();
 
-    virtual void Update(float fDeltaTime);
+    virtual void Update(float dt);
 
     // Resize the particle buffer with numParticles
     void Resize(unsigned int numParticles);
@@ -47,7 +45,7 @@ protected:
     void RandomizeParticle(Particle& particle);//creates new particle when when no ParticleEmitter is present
     void EmitParticle(Particle& particle);//creates new particle using ParticleEmitter
     void BuildVertexBuffer();// Build the vertex buffer from the particle buffer
-private:
+
     ParticleEmitter*        particleEmitter;
 
     std::vector<Particle>   particles;
