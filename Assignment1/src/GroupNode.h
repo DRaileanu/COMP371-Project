@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneNode.h"
+#include <algorithm>
 
 //Only SceneNode that is allowed to have children. Use to provide SceneGraph topology
 
@@ -14,7 +15,11 @@ public:
 		children.push_back(child);
 	}
 
-	//TODO add removeChild() if needed. Can't just itirate through children, since some may be GroupNode with their own children
+	void removeChild(SceneNode* child) {
+		if (std::find(children.begin(), children.end(), child) != children.end()) {
+			children.erase(std::find(children.begin(), children.end(), child));
+		}
+	}
 
 	std::vector<SceneNode*> getChildren() { return children; }
 

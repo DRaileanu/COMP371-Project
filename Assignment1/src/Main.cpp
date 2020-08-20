@@ -179,10 +179,15 @@ int main() {
     root->addChild(grid);
 
     
-    RubikCube* rubikCube = new RubikCubeParticles;
-    rubikCube->scale(glm::vec3(3.0f, 3.0f, 3.0f));
-    rubikCube->translate(glm::vec3(0.0f, 5.0f, 0.0f));
-    root->addChild(rubikCube);
+    RubikCube* rubikCube1 = new RubikCubeParticles;
+    rubikCube1->scale(glm::vec3(3.0f, 3.0f, 3.0f));
+    rubikCube1->translate(glm::vec3(0.0f, 5.0f, 0.0f));
+    root->addChild(rubikCube1);
+
+    RubikCube* rubikCube2 = new RubikCubeColors;
+    rubikCube2->scale(glm::vec3(3.0f, 3.0f, 3.0f));
+    rubikCube2->translate(glm::vec3(0.0f, 5.0f, 0.0f));
+    //root->addChild(rubikCube);
 
 
 
@@ -234,7 +239,11 @@ int main() {
     //root of the Scene
     renderer->setRootSceneNode(root);
     //default selected node to transform
-    SceneNode* selectedNode = rubikCube;
+    
+
+    RubikCube* selectedRubikCube = rubikCube1;
+    SceneNode* selectedNode = selectedRubikCube;
+
 
     
 
@@ -270,44 +279,80 @@ int main() {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        // select student models to transform
+
+        //select appropriate rubik cube
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
+                if (!keyPress) {
+                    root->removeChild(selectedRubikCube);
+                    root->addChild(rubikCube2);
+                    selectedRubikCube = rubikCube2;
+                    selectedNode = selectedRubikCube;
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_RELEASE) {
+                keyPress = false;
+            }
+        }
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+                if (!keyPress) {
+                    root->removeChild(selectedRubikCube);
+                    root->addChild(rubikCube1);
+                    selectedRubikCube = rubikCube1;
+                    selectedNode = selectedRubikCube;
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_H) == GLFW_RELEASE) {
+                keyPress = false;
+            }
+        }
+
+
+        // apply rubikCube rotations
         if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-            rubikCube->rotatePositiveXCW();
+            selectedRubikCube->rotatePositiveXCW();
         }
         if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-            rubikCube->rotatePositiveXCCW();
+            selectedRubikCube->rotatePositiveXCCW();
         }
         if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
-            rubikCube->rotateNegativeXCW();
+            selectedRubikCube->rotateNegativeXCW();
         }
         if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
-            rubikCube->rotateNegativeXCCW();
+            selectedRubikCube->rotateNegativeXCCW();
         }
         if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
-            rubikCube->rotatePositiveYCW();
+            selectedRubikCube->rotatePositiveYCW();
         }
         if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-            rubikCube->rotatePositiveYCCW();
+            selectedRubikCube->rotatePositiveYCCW();
         }
         if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-            rubikCube->rotateNegativeYCW();
+            selectedRubikCube->rotateNegativeYCW();
         }
         if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS) {
-            rubikCube->rotateNegativeYCCW();
+            selectedRubikCube->rotateNegativeYCCW();
         }
         if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
-            rubikCube->rotatePositiveZCW();
+            selectedRubikCube->rotatePositiveZCW();
         }
         if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
-            rubikCube->rotatePositiveZCCW();
+            selectedRubikCube->rotatePositiveZCCW();
         }
         if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
-            rubikCube->rotateNegativeZCW();
+            selectedRubikCube->rotateNegativeZCW();
         }
         if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
-            rubikCube->rotateNegativeZCCW();
+            selectedRubikCube->rotateNegativeZCCW();
         }
  
+
+
 
         // apply transformations to selectedNode
         //--------------------------------------
