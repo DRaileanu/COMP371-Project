@@ -27,13 +27,16 @@ public:
 
 private:
 	//available models
-	//void createN();
 	void create0();
 	void create1();
 	void create2();
 	void create3();
 	void create4();
 	void create5();
+	void create6();
+	void create7();
+	void create8();
+	void create9();
 	void createColumn();
 
 	Drawable* cube;//all DrawNodes of a Model will share same Cube
