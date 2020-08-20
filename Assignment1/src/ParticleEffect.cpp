@@ -5,17 +5,6 @@
 #include <algorithm>
 
 
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/vector_angle.hpp>
-#include <glm/gtx/compatibility.hpp>
-#include <glm/gtx/matrix_operation.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/gtx/euler_angles.hpp>
-#include <glm/gtx/norm.hpp>
-
 ParticleEffect::ParticleEffect(unsigned int numParticles) :
     particleEmitter(NULL),
     force(0, 0, 0),
@@ -27,6 +16,64 @@ ParticleEffect::ParticleEffect(unsigned int numParticles) :
 {
     Resize(numParticles);
     setupBufferData();
+
+    //map indices to vertex positions
+    //it's possible to have indices map to invalid vertices if there are less particles than MAX_PARTICLES
+    //this is ok, since we override the draw method to only draw using indices of actual number of particles
+    indices.resize(36 * MAX_PARTICLES);
+    for (int i = 0; i < MAX_PARTICLES; ++i) {
+        unsigned int vertexIndex = i * 8;
+        unsigned int indicesIndex = i * 36;
+
+        indices[indicesIndex + 0] = vertexIndex + 0;
+        indices[indicesIndex + 1] = vertexIndex + 1;
+        indices[indicesIndex + 2] = vertexIndex + 2;
+
+        indices[indicesIndex + 3] = vertexIndex + 0;
+        indices[indicesIndex + 4] = vertexIndex + 2;
+        indices[indicesIndex + 5] = vertexIndex + 3;
+
+        indices[indicesIndex + 6] = vertexIndex + 5;
+        indices[indicesIndex + 7] = vertexIndex + 4;
+        indices[indicesIndex + 8] = vertexIndex + 7;
+
+        indices[indicesIndex + 9] = vertexIndex + 5;
+        indices[indicesIndex + 10] = vertexIndex + 7;
+        indices[indicesIndex + 11] = vertexIndex + 6;
+
+        indices[indicesIndex + 12] = vertexIndex + 4;
+        indices[indicesIndex + 13] = vertexIndex + 0;
+        indices[indicesIndex + 14] = vertexIndex + 3;
+
+        indices[indicesIndex + 15] = vertexIndex + 4;
+        indices[indicesIndex + 16] = vertexIndex + 3;
+        indices[indicesIndex + 17] = vertexIndex + 7;
+
+        indices[indicesIndex + 18] = vertexIndex + 1;
+        indices[indicesIndex + 19] = vertexIndex + 5;
+        indices[indicesIndex + 20] = vertexIndex + 6;
+
+        indices[indicesIndex + 21] = vertexIndex + 1;
+        indices[indicesIndex + 22] = vertexIndex + 6;
+        indices[indicesIndex + 23] = vertexIndex + 2;
+
+        indices[indicesIndex + 24] = vertexIndex + 4;
+        indices[indicesIndex + 25] = vertexIndex + 5;
+        indices[indicesIndex + 26] = vertexIndex + 1;
+
+        indices[indicesIndex + 27] = vertexIndex + 4;
+        indices[indicesIndex + 28] = vertexIndex + 1;
+        indices[indicesIndex + 29] = vertexIndex + 0;
+
+        indices[indicesIndex + 30] = vertexIndex + 3;
+        indices[indicesIndex + 31] = vertexIndex + 2;
+        indices[indicesIndex + 32] = vertexIndex + 6;
+
+        indices[indicesIndex + 33] = vertexIndex + 3;
+        indices[indicesIndex + 34] = vertexIndex + 6;
+        indices[indicesIndex + 35] = vertexIndex + 7;
+    }
+
 }
 
 ParticleEffect::~ParticleEffect() {}
@@ -117,53 +164,6 @@ void ParticleEffect::BuildVertexBuffer()
         vertices[vertexIndex + 7] = particle.position + (rotation * (-X + Y - Z) * particle.size);
         colours[vertexIndex + 7] = particle.color;
 
-        indices[indicesIndex + 0] = vertexIndex + 0;
-        indices[indicesIndex + 1] = vertexIndex + 1;
-        indices[indicesIndex + 2] = vertexIndex + 2;
-
-        indices[indicesIndex + 3] = vertexIndex + 0;
-        indices[indicesIndex + 4] = vertexIndex + 2;
-        indices[indicesIndex + 5] = vertexIndex + 3;
-
-        indices[indicesIndex + 6] = vertexIndex + 5;
-        indices[indicesIndex + 7] = vertexIndex + 4;
-        indices[indicesIndex + 8] = vertexIndex + 7;
-
-        indices[indicesIndex + 9] = vertexIndex + 5;
-        indices[indicesIndex + 10] = vertexIndex + 7;
-        indices[indicesIndex + 11] = vertexIndex + 6;
-
-        indices[indicesIndex + 12] = vertexIndex + 4;
-        indices[indicesIndex + 13] = vertexIndex + 0;
-        indices[indicesIndex + 14] = vertexIndex + 3;
-
-        indices[indicesIndex + 15] = vertexIndex + 4;
-        indices[indicesIndex + 16] = vertexIndex + 3;
-        indices[indicesIndex + 17] = vertexIndex + 7;
-
-        indices[indicesIndex + 18] = vertexIndex + 1;
-        indices[indicesIndex + 19] = vertexIndex + 5;
-        indices[indicesIndex + 20] = vertexIndex + 6;
-
-        indices[indicesIndex + 21] = vertexIndex + 1;
-        indices[indicesIndex + 22] = vertexIndex + 6;
-        indices[indicesIndex + 23] = vertexIndex + 2;
-
-        indices[indicesIndex + 24] = vertexIndex + 4;
-        indices[indicesIndex + 25] = vertexIndex + 5;
-        indices[indicesIndex + 26] = vertexIndex + 1;
-
-        indices[indicesIndex + 27] = vertexIndex + 4;
-        indices[indicesIndex + 28] = vertexIndex + 1;
-        indices[indicesIndex + 29] = vertexIndex + 0;
-
-        indices[indicesIndex + 30] = vertexIndex + 3;
-        indices[indicesIndex + 31] = vertexIndex + 2;
-        indices[indicesIndex + 32] = vertexIndex + 6;
-
-        indices[indicesIndex + 33] = vertexIndex + 3;
-        indices[indicesIndex + 34] = vertexIndex + 6;
-        indices[indicesIndex + 35] = vertexIndex + 7;
 
 
     }
@@ -194,9 +194,9 @@ void ParticleEffect::Update(float fDeltaTime)
         float lifeRatio = glm::clamp(particle.age / particle.lifeTime, 0.0f, 1.0f);
         particle.velocity += (force * fDeltaTime);
         particle.position += (particle.velocity * fDeltaTime);
-        particle.color = glm::lerp(colorKeyFrames.first, colorKeyFrames.second, lifeRatio);
-        particle.rotate = glm::lerp<float>(rotateKeyFrames.first, rotateKeyFrames.second, lifeRatio);
-        particle.size = glm::lerp<float>(sizeKeyFrames.first, sizeKeyFrames.second, lifeRatio);
+        particle.color = glm::mix(colorKeyFrames.first, colorKeyFrames.second, lifeRatio);
+        particle.rotate = glm::mix<float>(rotateKeyFrames.first, rotateKeyFrames.second, lifeRatio);
+        particle.size = glm::mix<float>(sizeKeyFrames.first, sizeKeyFrames.second, lifeRatio);
     }
 
     BuildVertexBuffer();
@@ -210,7 +210,6 @@ void ParticleEffect::Resize(unsigned int numParticles)
     particles.resize(numParticles, Particle());
     vertices.resize(8 * numParticles);
     colours.resize(8 * numParticles);
-    indices.resize(36 * numParticles);
 }
 
 void ParticleEffect::setupBufferData() {
@@ -236,3 +235,8 @@ void ParticleEffect::setupBufferData() {
     glBindVertexArray(0);
 }
 
+
+void ParticleEffect::draw() {
+    glBindVertexArray(VAO);
+    glDrawElements(type, particles.size() * 12, GL_UNSIGNED_INT, 0);
+}

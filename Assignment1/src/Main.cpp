@@ -25,6 +25,8 @@
 #include "RubikCubeColors.h"
 #include "RubikCubeParticles.h"
 #include "ParticleEffect.h"
+#include "Random.h"
+#include "ZigzagCube.h"
 
 
 #include <iostream>
@@ -106,7 +108,7 @@ int main() {
         1.0 
     };
 
-    GLuint tileTexture = loadTexture("res/tile.jpg");
+    GLuint tileTexture = loadTexture("res/floor.jpg");
     GLuint woodTexture = loadTexture("res/wood.jpg");
 
 
@@ -129,7 +131,7 @@ int main() {
 
 
     ParticleEffect* particleEffect = new ParticleEffect(300);
-    //particleEffect->setForce(glm::vec3(0.0f, -30.0, 0.0f));
+    particleEffect->setForce(glm::vec3(0.0f, -30.0, 0.0f));
     particleEffect->setRotateAxis(glm::vec3(0.25, 0.5, 0.75));
     particleEffect->setRotateKeyFrames(0.0f, 90.0f);
     particleEffect->setSizeKeyFrames(0.050, 0.025);
@@ -177,6 +179,9 @@ int main() {
     root->addChild(rubikCube);
 
 
+    ZigzagCube* zigzagCube = new ZigzagCube(50, 50);
+    root->addChild(zigzagCube);
+
     
     //light source(s)
     GroupNode* lightNode = new GroupNode();
@@ -216,7 +221,11 @@ int main() {
         float dt = glfwGetTime() - lastFrame;
         lastFrame += dt;
 
-        //particleEffect->Update(dt);
+        int randomint = RandRange(0, 4);
+        if (randomint == 4) {
+            std::cout << std::endl << randomint << std::endl;
+        }
+
 
         // keyboard input handling
         // --------------
@@ -444,19 +453,19 @@ int main() {
         //Top part of Model transformations. Only works if selectedNode is a Model and not a LightNode or GroupNode
         //pitches top of model forward
         if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(150.0f * dt, 0.0f, 0.0f));
+            selectedNode->rotate(glm::vec3(-150.0f * dt, 0.0f, 0.0f));
         }
         //pitches top of model backwards
         if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(-150.0f * dt, 0.0f, 0.0f));
+            selectedNode->rotate(glm::vec3(150.0f * dt, 0.0f, 0.0f));
         }
         //shears top of model left along local x axis
         if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(0.0f, 0.0f, 150.0f * dt));
+            selectedNode->rotate(glm::vec3(0.0f, 0.0f, -150.0f * dt));
         }
         //shears top of model right along local x axis
         if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(0.0f, 0.0f, -150.0f * dt));
+            selectedNode->rotate(glm::vec3(0.0f, 0.0f, 150.0f * dt));
         }
 
 

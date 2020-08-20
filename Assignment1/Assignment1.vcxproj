@@ -173,6 +173,7 @@
     <ClCompile Include="src\SceneNode.cpp" />
     <ClCompile Include="src\Sphere.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
+    <ClCompile Include="src\ZigzagCube.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\generic.fs" />
@@ -186,6 +187,7 @@
     <None Include="shaders\shadow.vs" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\floor.jpg" />
     <Image Include="res\tile.jpg" />
     <Image Include="res\wood.jpg" />
     <Image Include="textures\awesomeface.png" />
@@ -215,6 +217,7 @@
     <ClInclude Include="src\SceneNode.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\TextureLoader.h" />
+    <ClInclude Include="src\ZigzagCube.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
