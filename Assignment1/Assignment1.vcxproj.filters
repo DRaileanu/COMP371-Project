@@ -1,184 +1,74 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="src\ParticleEffect.cpp" />
+    <ClCompile Include="src\ParticleEmitter.cpp" />
+    <ClCompile Include="src\Quad.cpp" />
+    <ClCompile Include="src\RubikCube.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\AxisLines.cpp" />
+    <ClCompile Include="src\Grid.cpp" />
+    <ClCompile Include="src\Cube.cpp" />
+    <ClCompile Include="src\Drawable.cpp" />
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\SceneNode.cpp" />
+    <ClCompile Include="src\Sphere.cpp" />
+    <ClCompile Include="src\stb_image.cpp" />
+    <ClCompile Include="src\Timer.cpp" />
+    <ClCompile Include="src\TimexCube.cpp" />
+    <ClCompile Include="src\ZigzagCube.cpp" />
+    <ClCompile Include="src\BorderLines.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Cube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SceneNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Grid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Drawable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AxisLines.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\stb_image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Sphere.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RubikCube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Quad.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ParticleEffect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ParticleEmitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TimexCube.cpp">
-    <ClCompile Include="src\ZigzagCube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\RubikCubeParticles.h" />
+    <ClInclude Include="src\RubikCubeColors.h" />
+    <ClInclude Include="src\ParticleEffect.h" />
+    <ClInclude Include="src\Particle.h" />
+    <ClInclude Include="src\ParticleEmitter.h" />
+    <ClInclude Include="src\Quad.h" />
+    <ClInclude Include="src\Random.h" />
+    <ClInclude Include="src\RubikCube.h" />
+    <ClInclude Include="src\DrawNode.h" />
+    <ClInclude Include="src\GroupNode.h" />
+    <ClInclude Include="src\Sphere.h" />
+    <ClInclude Include="src\LightNode.h" />
+    <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\AxisLines.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Grid.h" />
+    <ClInclude Include="src\Drawable.h" />
+    <ClInclude Include="src\Cube.h" />
+    <ClInclude Include="src\Model.h" />
+    <ClInclude Include="src\SceneNode.h" />
+    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\TextureLoader.h" />
+    <ClInclude Include="src\Timer.h" />
+    <ClInclude Include="src\ZigzagCube.h" />
+    <ClInclude Include="src\BorderLines.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\shadow.vs" />
-    <None Include="shaders\shadow.fs" />
-    <None Include="shaders\shadow.gs" />
-    <None Include="shaders\generic.vs" />
+    <ResourceCompile Include="Assignment1.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\floor.jpg" />
+    <Image Include="res\tile.jpg" />
+    <Image Include="res\wood.jpg" />
+    <Image Include="textures\awesomeface.png" />
+    <Image Include="textures\container.jpg" />
+    <Image Include="textures\kappa.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="shaders\generic.fs" />
-    <None Include="shaders\lightingMaterial.vs" />
-    <None Include="shaders\lightingMaterial.fs" />
+    <None Include="shaders\generic.vs" />
     <None Include="shaders\lightingTexture.fs" />
     <None Include="shaders\lightingTexture.vs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="textures\awesomeface.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="textures\container.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="textures\kappa.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\tile.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\wood.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\floor.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SceneNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Grid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Drawable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AxisLines.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TextureLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Sphere.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GroupNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DrawNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\LightNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RubikCube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Quad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Particle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ParticleEffect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ParticleEmitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Random.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RubikCubeColors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RubikCubeParticles.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Assignment1.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-    <ClInclude Include="src\ZigzagCube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <None Include="shaders\lightingMaterial.fs" />
+    <None Include="shaders\lightingMaterial.vs" />
+    <None Include="shaders\shadow.fs" />
+    <None Include="shaders\shadow.gs" />
+    <None Include="shaders\shadow.vs" />
   </ItemGroup>
 </Project>

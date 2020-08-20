@@ -27,6 +27,7 @@
 #include "ParticleEffect.h"
 #include "Random.h"
 #include "ZigzagCube.h"
+#include "BorderLines.h"
 
 
 #include <iostream>
@@ -179,16 +180,37 @@ int main() {
     grid->setTexture(tileTexture);
     root->addChild(grid);
 
+    Timer* timer = new Timer();
+    timer->scale(glm::vec3(3.0f, 3.0f, 3.0f));
+    timer->translate(glm::vec3(10.0f, 50.0f, 0.0f));
+    root->addChild(timer);
     
     RubikCube* rubikCube = new RubikCubeParticles;
     rubikCube->scale(glm::vec3(3.0f, 3.0f, 3.0f));
-    rubikCube->translate(glm::vec3(0.0f, 5.0f, 0.0f));
     root->addChild(rubikCube);
 
-    Timer* timer = new Timer();
-    timer->scale(glm::vec3(3.0f, 3.0f, 3.0f));
-    timer->translate(glm::vec3(10.0f, 10.0f, 0.0f));
-    root->addChild(timer);
+    BorderLines* lineTop = new BorderLines('T');
+    lineTop->setMaterial(textureMaterial);
+    lineTop->scale(glm::vec3(2.0f, 2.0f, 2.0f));
+    timer->addChild(lineTop);
+
+    BorderLines* lineBottom = new BorderLines('B');
+    lineBottom->setMaterial(textureMaterial);
+    lineBottom->scale(glm::vec3(2.0f, 2.0f, 2.0f));
+    timer->addChild(lineBottom);
+
+    BorderLines* lineRight = new BorderLines('R');
+    lineRight->setMaterial(textureMaterial);
+    lineRight->scale(glm::vec3(2.0f, 2.0f, 2.0f));
+    timer->addChild(lineRight);
+
+    BorderLines* lineLeft = new BorderLines('L');
+    lineLeft->setMaterial(textureMaterial);
+    lineLeft->scale(glm::vec3(2.0f, 2.0f, 2.0f));
+    timer->addChild(lineLeft);
+
+
+
 
 
     /*
@@ -253,6 +275,10 @@ int main() {
         float dt = glfwGetTime() - lastFrame;
         lastFrame += dt;
 
+        lineTop->moveSideToSide(dt);
+        lineBottom->moveSideToSide(dt);
+        lineRight->moveSideToSide2(dt);
+        lineLeft->moveSideToSide2(dt);
 
 
         // keyboard input handling
