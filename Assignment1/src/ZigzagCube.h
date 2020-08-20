@@ -13,6 +13,9 @@ public:
 	~ZigzagCube() {}
 
 	void update(const glm::mat4& CTM, float dt) override {
+		glm::vec3 randomColor = glm::vec3(0.5, 0.5, 0.5) * RandUnitVec();
+		color = glm::normalize(color + randomColor);
+		cube.setColours(color);
 		animationUpdate(dt);
 		updateWorldTransform(CTM);
 	}
@@ -26,13 +29,14 @@ private:
 	float width;
 	float depth;
 	Cube cube;
-	ParticleEffect pEffect;
-	DrawNode* pEffectNode;
+	glm::vec3 color;
 
-	float animDuration = 0.2;
+	float animDuration = 0.1;
 	glm::vec3 keyframe1Pos;
 	glm::vec3 keyframe2Pos;
 	Direction direction;
+	float keyframeTime = 0.0f;
+	bool lastKeyframe = false;
 
 };
 

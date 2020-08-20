@@ -21,7 +21,7 @@ public:
 
 	//get transform parameters
 	const glm::vec3 getTranslation() { return translation; }
-	const glm::vec3 getRotation() { return rotation; }
+	const glm::quat getRotation() { return rotation; }
 	const glm::vec3 getScaling() { return scaling; }
 	const glm::mat4 getManualTransform() { return manualTransform; }
 	//set transform parameters
@@ -48,7 +48,6 @@ public:
 	const glm::mat4& getWorldTransform() { return worldTransform; }//can be used to get translation in world space from last column
 
 	bool isDirty() { return dirty; }//optimization to avoid recomputing localTransform if hasn't changed since last frame
-	
 protected:
 	SceneNode();//not allowed to instantiate SceneNode on their own, must be a derived class
 	virtual void updateLocalTransform();
@@ -58,8 +57,7 @@ protected:
 	glm::mat4	localTransform;
 
 	glm::vec3	translation;
-	glm::vec3	rotation;
-	glm::quat	quatrotation;
+	glm::quat	rotation;
 	glm::vec3	scaling;
 	glm::mat4	manualTransform;
 

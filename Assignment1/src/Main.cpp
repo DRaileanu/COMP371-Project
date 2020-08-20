@@ -90,7 +90,7 @@ int main() {
 
     //generate all the Materials and textures
     Material* gridMaterial = new Material{
-        glm::vec3(0.1, 0.1, 0.1), 
+        glm::vec3(0.75, 0.75, 0.75), 
         glm::vec3(0.5, 0.5, 0.5), 
         glm::vec3(0.75, 0.75f, 0.75f), 
         32.0 
@@ -102,7 +102,7 @@ int main() {
     120.0 
     };
     Material* textureMaterial = new Material{
-        glm::vec3(0.1, 0.1, 0.1),
+        glm::vec3(0.25, 0.25, 0.25),
         glm::vec3(0.25, 0.25, 0.25),
         glm::vec3(0.3, 0.3, 0.3),
         1.0 
@@ -116,6 +116,10 @@ int main() {
     GroupNode* root = new GroupNode;
 
 
+
+
+
+    /*
     ParticleEmitter* particleEmitter = new ParticleEmitter;
     particleEmitter->MaxWidth = 0.25f;
     particleEmitter->MinWidth = -0.25f;
@@ -140,7 +144,9 @@ int main() {
     particleEffect->SetParticleEmitter(particleEmitter);
     DrawNode* particles = new DrawNode(particleEffect);
     particles->translate(glm::vec3(0.0f, 10.0f, 0.0f));
-    //root->addChild(particles);
+    root->addChild(particles);
+
+    */
 
     /*
     DrawNode* particles1 = new DrawNode(particleEffect);
@@ -179,9 +185,30 @@ int main() {
     root->addChild(rubikCube);
 
 
-    ZigzagCube* zigzagCube = new ZigzagCube(50, 50);
-    root->addChild(zigzagCube);
 
+    /*
+    for (int i = 0; i < 100; i++) {
+        ZigzagCube* zigzagCube = new ZigzagCube(50, 50);
+        root->addChild(zigzagCube);
+    }
+
+    GroupNode* grid2Node = new GroupNode;
+    grid2Node->rotate(glm::vec3(90.0f, 0.0f, 0.0f));
+    grid2Node->translate(glm::vec3(0.0f, 50.0f, -50.0f));
+    root->addChild(grid2Node);
+
+    DrawNode* grid2 = new DrawNode(new Grid);
+    grid2->setMaterial(gridMaterial);
+    grid2->setTexture(tileTexture);
+    grid2Node->addChild(grid2);
+
+    for (int i = 0; i < 100; i++) {
+        ZigzagCube* zigzagCube = new ZigzagCube(50, 50);
+        grid2Node->addChild(zigzagCube);
+    }
+    */
+
+    
     
     //light source(s)
     GroupNode* lightNode = new GroupNode();
@@ -221,10 +248,6 @@ int main() {
         float dt = glfwGetTime() - lastFrame;
         lastFrame += dt;
 
-        int randomint = RandRange(0, 4);
-        if (randomint == 4) {
-            std::cout << std::endl << randomint << std::endl;
-        }
 
 
         // keyboard input handling
