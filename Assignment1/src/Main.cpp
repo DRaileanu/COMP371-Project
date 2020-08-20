@@ -338,6 +338,22 @@ int main() {
         if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
             selectedRubikCube->rotateNegativeZCCW();
         }
+
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            std::cout <<"in here";
+            timer->start();
+            unsigned long seconds = 10;
+            std::cout << "timer started . . ." << std::endl;
+            while (true) {
+                if (timer->elapsedTime() >= seconds) {
+                    break;
+                }
+                else {
+                    // do other things
+                }
+            }
+            std::cout << seconds << " seconds elapsed" << std::endl;
+        }
  
 
 
