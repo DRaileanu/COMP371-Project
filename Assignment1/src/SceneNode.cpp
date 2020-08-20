@@ -3,8 +3,7 @@
 SceneNode::SceneNode() {
 	localTransform = glm::mat4(1.0f);
 	translation = glm::vec3(0.0f, 0.0f, 0.0f);
-	rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	quatrotation = glm::quat();
+	rotation = glm::quat();
 	scaling = glm::vec3(1.0f, 1.0f, 1.0f);
 	manualTransform = glm::mat4(1.0f);
 	dirty = true;
@@ -16,12 +15,8 @@ SceneNode::~SceneNode() {}
 // computes local transform using transformaiton parameters in order shear->->scale->rotate(ZYX)->translate
 void SceneNode::updateLocalTransform() {
 	glm::mat4 transform = glm::mat4(1.0f);
-	transform = glm::translate(transform, translation);
-	//transform = glm::rotate(transform, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	//transform = glm::rotate(transform, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-	//transform = glm::rotate(transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	
-	glm::mat4 rotTransform = glm::mat4_cast(quatrotation);
+	transform = glm::translate(transform, translation);	
+	glm::mat4 rotTransform = glm::mat4_cast(rotation);
 	transform = transform * rotTransform;
 	transform = glm::scale(transform, scaling);
 	transform = transform * manualTransform;
@@ -50,7 +45,9 @@ void SceneNode::setTranslation(glm::vec3 t) {
 
 void SceneNode::setRotation(glm::vec3 r) {
 	dirty = true;
-	rotation = r;
+	glm::vec3 angles = glm::vec3(glm::radians(r.x), glm::radians(r.y), glm::radians(r.z));
+	rotation = glm::normalize(glm::quat(angles));
+
 }
 
 void SceneNode::setScaling(glm::vec3 s) {
@@ -76,56 +73,55 @@ void SceneNode::scale(glm::vec3 s) {
 
 void SceneNode::rotate(glm::vec3 r) {
 	dirty = true;
-	//rotation += r;
 
 	glm::vec3 angles = glm::vec3(glm::radians(r.x), glm::radians(r.y), glm::radians(r.z));
 	glm::quat rot(angles);
 	rot = glm::normalize(rot);
 
 	glm::mat4 rotMat = glm::mat4_cast(rot);
-	glm::mat4 quatRotMat = glm::mat4_cast(quatrotation);
+	glm::mat4 quatRotMat = glm::mat4_cast(rotation);
 	glm::mat4 transform = quatRotMat * rotMat;
-	quatrotation = glm::normalize(glm::quat_cast(transform));
+	rotation = glm::normalize(glm::quat_cast(transform));
 
 }
 
 void SceneNode::rotate(glm::mat4 rotationMatrix) {
 	dirty = true;
-	glm::mat4 quatRotMat = glm::mat4_cast(quatrotation);
-	glm::mat4 transform = rotationMatrix * quatRotMat ;
-	quatrotation = glm::normalize(glm::quat_cast(transform));
+	glm::mat4 rotMat = glm::mat4_cast(rotation);
+	glm::mat4 transform = rotationMatrix * rotMat ;
+	rotation = glm::normalize(glm::quat_cast(transform));
 
 }
 
 
 void SceneNode::moveForward(float amount) {
 	dirty = true;
-	translation += quatrotation * glm::vec3(0.0f, 0.0f, -amount);
+	translation += rotation * glm::vec3(0.0f, 0.0f, -amount);
 }
 void SceneNode::moveBackwards(float amount) {
 	dirty = true;
-	translation += quatrotation * glm::vec3(0.0f, 0.0f, amount);
+	translation += rotation * glm::vec3(0.0f, 0.0f, amount);
 }
 
 void SceneNode::strafeLeft(float amount) {
 	dirty = true;
-	translation += quatrotation * glm::vec3(-amount, 0.0f, 0.0f);
+	translation += rotation * glm::vec3(-amount, 0.0f, 0.0f);
 
 }
 
 void SceneNode::strafeRight(float amount) {
 	dirty = true;
-	translation += quatrotation * glm::vec3(amount, 0.0f, 0.0f);
+	translation += rotation * glm::vec3(amount, 0.0f, 0.0f);
 
 }
 
 void SceneNode::moveDown(float amount) {
 	dirty = true;
-	translation += quatrotation * glm::vec3(0.0f, -amount, 0.0f);
+	translation += rotation * glm::vec3(0.0f, -amount, 0.0f);
 }
 
 void SceneNode::moveUp(float amount) {
 	dirty = true;
-	translation += quatrotation * glm::vec3(0.0f, amount, 0.0f);
+	translation += rotation * glm::vec3(0.0f, amount, 0.0f);
 }
 

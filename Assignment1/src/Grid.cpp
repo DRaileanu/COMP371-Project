@@ -4,7 +4,7 @@ Grid::Grid() {
 	vertices.reserve(100*100*2*3);//n*n squares * 2 triangles/square * 3 vertices/triangle
 
 	for (int x = -50; x < 50; ++x) {
-		for (int z = -50; z < 50; ++z) {
+		for (int z = -49; z < 51; ++z) {
 			addSquare(float(x), float(z));
 		}
 	}

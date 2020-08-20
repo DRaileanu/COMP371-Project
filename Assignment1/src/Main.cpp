@@ -25,6 +25,8 @@
 #include "RubikCubeColors.h"
 #include "RubikCubeParticles.h"
 #include "ParticleEffect.h"
+#include "Random.h"
+#include "ZigzagCube.h"
 
 
 #include <iostream>
@@ -89,7 +91,7 @@ int main() {
 
     //generate all the Materials and textures
     Material* gridMaterial = new Material{
-        glm::vec3(0.1, 0.1, 0.1), 
+        glm::vec3(0.75, 0.75, 0.75), 
         glm::vec3(0.5, 0.5, 0.5), 
         glm::vec3(0.75, 0.75f, 0.75f), 
         32.0 
@@ -101,13 +103,13 @@ int main() {
     120.0 
     };
     Material* textureMaterial = new Material{
-        glm::vec3(0.1, 0.1, 0.1),
+        glm::vec3(0.25, 0.25, 0.25),
         glm::vec3(0.25, 0.25, 0.25),
         glm::vec3(0.3, 0.3, 0.3),
         1.0 
     };
 
-    GLuint tileTexture = loadTexture("res/tile.jpg");
+    GLuint tileTexture = loadTexture("res/floor.jpg");
     GLuint woodTexture = loadTexture("res/wood.jpg");
 
 
@@ -115,6 +117,10 @@ int main() {
     GroupNode* root = new GroupNode;
 
 
+
+
+
+    /*
     ParticleEmitter* particleEmitter = new ParticleEmitter;
     particleEmitter->MaxWidth = 0.25f;
     particleEmitter->MinWidth = -0.25f;
@@ -130,7 +136,7 @@ int main() {
 
 
     ParticleEffect* particleEffect = new ParticleEffect(300);
-    //particleEffect->setForce(glm::vec3(0.0f, -30.0, 0.0f));
+    particleEffect->setForce(glm::vec3(0.0f, -30.0, 0.0f));
     particleEffect->setRotateAxis(glm::vec3(0.25, 0.5, 0.75));
     particleEffect->setRotateKeyFrames(0.0f, 90.0f);
     particleEffect->setSizeKeyFrames(0.050, 0.025);
@@ -139,7 +145,9 @@ int main() {
     particleEffect->SetParticleEmitter(particleEmitter);
     DrawNode* particles = new DrawNode(particleEffect);
     particles->translate(glm::vec3(0.0f, 10.0f, 0.0f));
-    //root->addChild(particles);
+    root->addChild(particles);
+
+    */
 
     /*
     DrawNode* particles1 = new DrawNode(particleEffect);
@@ -182,6 +190,30 @@ int main() {
     timer->translate(glm::vec3(10.0f, 10.0f, 0.0f));
     root->addChild(timer);
 
+
+    /*
+    for (int i = 0; i < 100; i++) {
+        ZigzagCube* zigzagCube = new ZigzagCube(50, 50);
+        root->addChild(zigzagCube);
+    }
+
+    GroupNode* grid2Node = new GroupNode;
+    grid2Node->rotate(glm::vec3(90.0f, 0.0f, 0.0f));
+    grid2Node->translate(glm::vec3(0.0f, 50.0f, -50.0f));
+    root->addChild(grid2Node);
+
+    DrawNode* grid2 = new DrawNode(new Grid);
+    grid2->setMaterial(gridMaterial);
+    grid2->setTexture(tileTexture);
+    grid2Node->addChild(grid2);
+
+    for (int i = 0; i < 100; i++) {
+        ZigzagCube* zigzagCube = new ZigzagCube(50, 50);
+        grid2Node->addChild(zigzagCube);
+    }
+    */
+
+    
     
     //light source(s)
     GroupNode* lightNode = new GroupNode();
@@ -221,7 +253,7 @@ int main() {
         float dt = glfwGetTime() - lastFrame;
         lastFrame += dt;
 
-        //particleEffect->Update(dt);
+
 
         // keyboard input handling
         // --------------
@@ -449,19 +481,19 @@ int main() {
         //Top part of Model transformations. Only works if selectedNode is a Model and not a LightNode or GroupNode
         //pitches top of model forward
         if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(150.0f * dt, 0.0f, 0.0f));
+            selectedNode->rotate(glm::vec3(-150.0f * dt, 0.0f, 0.0f));
         }
         //pitches top of model backwards
         if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(-150.0f * dt, 0.0f, 0.0f));
+            selectedNode->rotate(glm::vec3(150.0f * dt, 0.0f, 0.0f));
         }
         //shears top of model left along local x axis
         if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(0.0f, 0.0f, 150.0f * dt));
+            selectedNode->rotate(glm::vec3(0.0f, 0.0f, -150.0f * dt));
         }
         //shears top of model right along local x axis
         if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(0.0f, 0.0f, -150.0f * dt));
+            selectedNode->rotate(glm::vec3(0.0f, 0.0f, 150.0f * dt));
         }
 
 

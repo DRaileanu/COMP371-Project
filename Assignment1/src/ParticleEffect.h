@@ -17,8 +17,13 @@
 class ParticleEffect : public Drawable {
     static const unsigned int MAX_PARTICLES = 1000;
 public:
-    ParticleEffect(unsigned int numParticles = 0);
+    ParticleEffect(unsigned int numParticles = 1);
     virtual ~ParticleEffect();
+
+    //current implementation has indices map to invalid vertices if there are less particles than MAX_PARTICLES
+    //so need to override draw in order to draw according to particles.size() instead of indices.size()
+    //this is simply done to boost fps
+    void draw() override;
 
     void SetParticleEmitter(ParticleEmitter* pEmitter);
 
@@ -38,20 +43,18 @@ public:
     void setColorKeyFrames(glm::vec3 begin, glm::vec3 end) { colorKeyFrames = std::make_pair(begin, end); }
 
 protected:
-    void setupBufferData() override;
-    void RandomizeParticle(Particle& particle);
-    void EmitParticle(Particle& particle);
-public:
-    // Build the vertex buffer from the particle buffer
-    void BuildVertexBuffer();
+    void setupBufferData() override;//override, since we make buffer big enough to hold MAX_PARTICLES particles even if have less
+    void RandomizeParticle(Particle& particle);//creates new particle when when no ParticleEmitter is present
+    void EmitParticle(Particle& particle);//creates new particle using ParticleEmitter
+    void BuildVertexBuffer();// Build the vertex buffer from the particle buffer
 private:
     ParticleEmitter*        particleEmitter;
 
     std::vector<Particle>   particles;
     // Apply this force to every particle in the effect
-    glm::vec3               force;
-    glm::vec3               rotateAxis;
-    std::pair<float, float> rotateKeyFrames;
-    std::pair<float, float> sizeKeyFrames;
-    std::pair<glm::vec3, glm::vec3> colorKeyFrames;
+    glm::vec3               force;//force that affects velocity at every update
+    glm::vec3               rotateAxis;//axis on which particles rotate at every update
+    std::pair<float, float> rotateKeyFrames;//rotation keyframes during the life of a particle (in degrees)
+    std::pair<float, float> sizeKeyFrames;//size keyframes during lifetime of particle
+    std::pair<glm::vec3, glm::vec3> colorKeyFrames;//color keyframes during lifetime of particle
 };

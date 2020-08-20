@@ -64,6 +64,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\TimexCube.cpp">
+    <ClCompile Include="src\ZigzagCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -92,6 +93,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\wood.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\floor.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -173,5 +177,8 @@
     <ResourceCompile Include="Assignment1.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+    <ClInclude Include="src\ZigzagCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
