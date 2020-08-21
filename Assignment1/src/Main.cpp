@@ -244,6 +244,7 @@ int main() {
         // update frame time parameters
         float dt = glfwGetTime() - lastFrame;
         lastFrame += dt;
+        timer->timeUpdate(timer->elapsedTime(),timer->timeStarted);
 
         decorativeCubes->Update(dt);
 
@@ -339,24 +340,12 @@ int main() {
             selectedRubikCube->rotateNegativeZCCW();
         }
 
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
             unsigned long seconds = 10;
             unsigned long currentTime =0;
             std::cout << "time about to start";
+            timer->timeStarted = true;
             timer->start();
-            while (true) {
-                if (timer->elapsedTime() > currentTime) {
-                    std::cout<<currentTime<<std::endl;
-                    currentTime = timer->elapsedTime();
-                }
-                if (timer->elapsedTime() >= seconds) {
-                    break;
-                }
-                else {
-           
-                }
-            }
-            std::cout << seconds << " seconds elapsed" << std::endl;
         }
  
 

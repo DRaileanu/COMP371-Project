@@ -1,13 +1,4 @@
 #pragma once
-#ifdef _WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-#endif
-#include <iostream>
-#include <cstdlib>
-using namespace std;
-
 
 
 #include "GroupNode.h"
@@ -21,7 +12,6 @@ class Timer : public GroupNode
 private:
 	unsigned long begTime = 0;
 public:
-	void gameStart();
 	void start() {
 		begTime = clock();
 	}
@@ -31,6 +21,9 @@ public:
 	bool isTimeout(unsigned long seconds) {
 		return seconds >= elapsedTime();
 	};
+	void timeUpdate(unsigned long elapsedTime,bool timeStarted);
+	void updateRightSecond();
+	char getModelChar(int);
 
 	Timer();
 	~Timer() {};
@@ -39,5 +32,9 @@ public:
 	Model* rightMinute;
 	Model* leftSecond;
 	Model* rightSecond;
+
+	int rightSecond_int;
+	int current_seconds;
+	bool timeStarted;
 
 };
