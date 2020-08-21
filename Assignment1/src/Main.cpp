@@ -302,11 +302,12 @@ int main() {
             glfwSetWindowShouldClose(window, true);
 
 
+        
         //select appropriate rubik cube
         //select Colours Rubik CUbe
         {
             static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
+            if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
                 if (!keyPress) {
                     root->removeChild(selectedRubikCube);
                     root->addChild(rubikCube1);
@@ -315,14 +316,14 @@ int main() {
                     keyPress = true;
                 }
             }
-            if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_RELEASE) {
+            if (glfwGetKey(window, GLFW_KEY_7) == GLFW_RELEASE) {
                 keyPress = false;
             }
         }
         //select Textures Rubik Cube
         {
             static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+            if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS) {
                 if (!keyPress) {
                     root->removeChild(selectedRubikCube);
                     root->addChild(rubikCube2);
@@ -331,14 +332,14 @@ int main() {
                     keyPress = true;
                 }
             }
-            if (glfwGetKey(window, GLFW_KEY_H) == GLFW_RELEASE) {
+            if (glfwGetKey(window, GLFW_KEY_8) == GLFW_RELEASE) {
                 keyPress = false;
             }
         }
         //select Jigsaw Rubik Cube
         {
             static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+            if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
                 if (!keyPress) {
                     root->removeChild(selectedRubikCube);
                     root->addChild(rubikCube3);
@@ -347,14 +348,14 @@ int main() {
                     keyPress = true;
                 }
             }
-            if (glfwGetKey(window, GLFW_KEY_C) == GLFW_RELEASE) {
+            if (glfwGetKey(window, GLFW_KEY_9) == GLFW_RELEASE) {
                 keyPress = false;
             }
         }
         //select Particles Rubik Cube
         {
             static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+            if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
                 if (!keyPress) {
                     root->removeChild(selectedRubikCube);
                     root->addChild(rubikCube4);
@@ -363,236 +364,11 @@ int main() {
                     keyPress = true;
                 }
             }
-            if (glfwGetKey(window, GLFW_KEY_B) == GLFW_RELEASE) {
+            if (glfwGetKey(window, GLFW_KEY_0) == GLFW_RELEASE) {
                 keyPress = false;
             }
         }
 
-
-
-        // apply rubikCube rotations
-        if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-            selectedRubikCube->selectFace1();
-        }
-        if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-            selectedRubikCube->selectFace2();
-        }
-        if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
-            selectedRubikCube->selectFace3();
-        }
-        if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
-            selectedRubikCube->selectFace4();
-        }
-        if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
-            selectedRubikCube->selectFace5();
-        }
-        if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-            selectedRubikCube->selectFace6();
-        }
-        if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
-            selectedRubikCube->rotateFaceCW();
-        }
-        if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS) {
-            selectedRubikCube->rotateFaceCCW();
-        }
-        if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
-            
-        }
-        if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
-            
-        }
-        if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
-            decorativeCubes->removeCubes(500);
-        }
-        if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
-            decorativeCubes->addCubes(500);
-        }
-        //starting timer
-        if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
-            if (!timer->timeStarted) {
-                timer->timeStarted = true;
-                timer->start();
-            }
-        }
-        //stopping timer
-        if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
-            timer->pause();
-        }
-        //reseting timer
-        if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
-            timer->reset();
-        }
- 
-
-        // apply transformations to selectedNode
-        //--------------------------------------
-        //scale up continously
-        if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-            selectedNode->scale(glm::vec3(0.5 * dt + 1, 0.5 * dt + 1, 0.5 * dt + 1));
-        }
-        //scale up incrementally by 10%
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                if (!keyPress) {
-                    selectedNode->scale(glm::vec3(1.15f, 1.15f, 1.15f));
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_U) == GLFW_RELEASE) {
-                keyPress = false;
-            }
-        }
-
-        //scale down continously
-        if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-            selectedNode->scale(glm::vec3(1 - 0.5 * dt, 1 - 0.5 * dt, 1 - 0.5 * dt));
-        }
-        //scale down incrementally by 10%
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                if (!keyPress) {
-                    selectedNode->scale(glm::vec3(0.85f, 0.85f, 0.85f));
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_J) == GLFW_RELEASE) {
-                keyPress = false;
-            }
-        }
-        //strafe left continously (-x direction)
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-            selectedNode->strafeLeft(25 * dt);
-        }
-        //strafe left incrementally by 5 units
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                if (!keyPress) {
-                    selectedNode->strafeLeft(5.0f);
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE) {
-                keyPress = false;
-            }
-        }
-
-        //strafe right continously (+x direction)
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-            selectedNode->strafeRight(25 * dt);
-        }
-        //strafe right incrementally by 5 units
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                if (!keyPress) {
-                    selectedNode->strafeRight(5.0f);
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE) {
-                keyPress = false;
-            }
-        }
-        //move forward continously (-z direction)
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-            selectedNode->moveForward(25 * dt);
-        }
-        //move forward incrementally by 5 units
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                if (!keyPress) {
-                    selectedNode->moveForward(5.0);
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE) {
-                keyPress = false;
-            }
-        }
-        //move backwards continously (+z direction)
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-            selectedNode->moveBackwards(25 * dt);
-        } 
-        //move backwards incrementally by 5 units
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ) {
-                if (!keyPress) {
-                    selectedNode->moveBackwards(5.0);
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE) {
-                keyPress = false;
-            }
-        }
-        //move up continously (+y direction)
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-            selectedNode->moveUp(25 * dt);
-        }
-        //move down continously (-y direction)
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-            selectedNode->moveDown(25 * dt);
-        }
-
-
-        /*
-        //rotate left continously(counter-clockwise around y-axis)
-        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-            selectedNode->rotate(glm::vec3(0.0f, 150.0f*dt, 0.0f));
-        }
-        //rotate left incrementally by 5 degrees (counter-clockwise around y-axis)
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                if (!keyPress) {
-                    selectedRubikCube->rotate(glm::vec3(0.0f, 90.0, 0.0f));
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_RELEASE) {
-                keyPress = false;
-            }
-        }
-        //rotate right continously(clockwise around y-axis)
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-            selectedNode->rotate(glm::vec3(0.0f, -150.0f*dt, 0.0f));
-        }
-        //rotate right incrementally by 5 degrees(clockwise around y-axis)
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                if (!keyPress) {
-                    selectedRubikCube->rotate(glm::vec3(0.0f, -90.0, 0.0f));
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_E) == GLFW_RELEASE) {
-                keyPress = false;
-            }
-        }
-        */
-        //reposition selectedNode randomly on the grid
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-                if (!keyPress) {
-                    float x = -45.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (45.0f + 45.0f)));
-                    float z = -45.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (45.0f + 45.0f)));
-                    selectedNode->setTranslation(glm::vec3(x, 0, z));
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
-                keyPress = false;
-            }
-        }
-
-        
         //rotate whole cube on some axis
         //x-axis
         if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
@@ -616,69 +392,90 @@ int main() {
             selectedRubikCube->rotateZCW();
         }
 
-        //ROLL
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                if (!keyPress) {
-                    selectedRubikCube->rotate(glm::vec3(0.0f, 0.0, 90.0f));
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_X) == GLFW_RELEASE) {
-                keyPress = false;
+        // selected rubik cube face
+        if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+            selectedRubikCube->selectFace1();
+        }
+        if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+            selectedRubikCube->selectFace2();
+        }
+        if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
+            selectedRubikCube->selectFace3();
+        }
+        if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
+            selectedRubikCube->selectFace4();
+        }
+        if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
+            selectedRubikCube->selectFace5();
+        }
+        if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
+            selectedRubikCube->selectFace6();
+        }
+
+        // rotate selected face of the selected rubik cube
+        // clockwise
+        if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+            selectedRubikCube->rotateFaceCW();
+        }
+        // anti-clockwise
+        if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+            selectedRubikCube->rotateFaceCCW();
+        }
+
+        //increase/decrease number of decorative cubes
+        if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
+            decorativeCubes->removeCubes(500);
+        }
+        if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
+            decorativeCubes->addCubes(500);
+        }
+        //starting timer
+        if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+            if (!timer->timeStarted) {
+                timer->timeStarted = true;
+                timer->start();
             }
         }
-         
-        {
-            static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-                if (!keyPress) {
-                    selectedRubikCube->rotate(glm::vec3(0.0f, 0.0, -90.0f));
-                    keyPress = true;
-                }
-            }
-            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
-                keyPress = false;
-            }
+        //stopping timer
+        if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+            timer->pause();
+        }
+        //reseting timer
+        if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
+            timer->reset();
+        }
+ 
+
+        //strafe left continously (-x direction)
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->strafeLeft(25 * dt);
         }
         
 
+        //strafe right continously (+x direction)
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->strafeRight(25 * dt);
+        }
+        
+        //move forward continously (-z direction)
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->moveForward(25 * dt);
+        }
+        
+        //move backwards continously (+z direction)
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->moveBackwards(25 * dt);
+        } 
+        
+        //move up continously (+y direction)
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->moveUp(25 * dt);
+        }
+        //move down continously (-y direction)
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+            selectedNode->moveDown(25 * dt);
+        }
 
-
-        // world orientation transformations
-        //rotate world clockwise around x axis
-        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-            glm::mat4 worldTransform = root->getManualTransform();
-            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(75*dt), glm::vec3(1.0f, 0.0f, 0.0f));
-            root->setManualTransform(worldTransform * rotation);
-        }
-        //rotate world counter-clockwise around x axis
-        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-            glm::mat4 worldTransform = root->getManualTransform();
-            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(75 * dt), glm::vec3(-1.0f, 0.0f, 0.0f));
-            root->setManualTransform(worldTransform * rotation);
-        }
-        //rotate world clockwise around y-axis
-        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-            glm::mat4 worldTransform = root->getManualTransform();
-            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(75 * dt), glm::vec3(0.0f, 1.0f, 0.0f));
-            root->setManualTransform(worldTransform * rotation);
-        }
-        //rotate world counter-clockwise around y-axis
-        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-            glm::mat4 worldTransform = root->getManualTransform();
-            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(75 * dt), glm::vec3(0.0f, -1.0f, 0.0f));
-            root->setManualTransform(worldTransform * rotation);
-        }
-        //reset world orientation, position and camera
-        if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
-            root->setManualTransform(glm::mat4(1.0f));
-            mainCamera->Position = glm::vec3(0.0f, 7.5f, 55.0f);
-            mainCamera->Yaw = -90.0f;
-            mainCamera->Pitch = 0.0f;
-            mainCamera->ProcessMouseMovement(0.0, 0.0);
-        }
 
 
         // change rendering modes
@@ -694,26 +491,26 @@ int main() {
         //toggle shadows
         {
             static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+            if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
                 if (!keyPress) { 
                     renderer->toggleShadowMode(); 
                     keyPress = true;
                 }
             }
-            if (glfwGetKey(window, GLFW_KEY_B) == GLFW_RELEASE) {
+            if (glfwGetKey(window, GLFW_KEY_O) == GLFW_RELEASE) {
                 keyPress = false;
             }
         }
         //toggle textures
         {
             static bool keyPress = false;
-            if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+            if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
                 if (!keyPress) {
                     renderer->toggleTexture();
                     keyPress = true;
                 }
             }
-            if (glfwGetKey(window, GLFW_KEY_V) == GLFW_RELEASE) {
+            if (glfwGetKey(window, GLFW_KEY_I) == GLFW_RELEASE) {
                 keyPress = false;
             }
         }
