@@ -21,8 +21,13 @@ public:
 	bool isTimeout(unsigned long seconds) {
 		return seconds >= elapsedTime();
 	};
+	void stop();
 	void timeUpdate(unsigned long elapsedTime,bool timeStarted);
 	void updateRightSecond();
+	void updateLeftSecond();
+	void updateRightMinute();
+	void updateLeftMinute();
+	void reset();
 	char getModelChar(int);
 
 	Timer();
@@ -34,6 +39,9 @@ public:
 	Model* rightSecond;
 
 	int rightSecond_int;
+	int leftSecond_int;
+	int rightMinute_int;
+	int leftMinute_int;
 	int current_seconds;
 	bool timeStarted;
 
