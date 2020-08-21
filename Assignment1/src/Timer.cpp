@@ -78,7 +78,6 @@ void Timer::timeUpdate(unsigned long elapsedTime,bool timeStarted) {
 
 			current_seconds++;
 			updateRightSecond();
-			std::cout << current_seconds;
 		}
 	}
 }
