@@ -304,7 +304,7 @@ int main() {
 
         // apply rubikCube rotations
         if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-            selectedRubikCube->rotatePositiveXCW();        
+            selectedRubikCube->rotatePositiveXCW();       
         }
         if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
             selectedRubikCube->rotatePositiveXCCW();

@@ -3,7 +3,7 @@
 extern irrklang::ISoundEngine* SoundEngine;
 RubikCube::RubikCube() {
 	animated = false;
-	animationDuration = 0.7f;
+	animationDuration = 0.3f;
 	//setup all the rubikParts
 	GroupNode* rubikPart;
 
@@ -202,23 +202,7 @@ void RubikCube::animationUpdate() {
 		
 	}
 	
-	//for testing by performing rotation 1 in frame
-	/*
-	glm::vec3 deltaRotation = animationRotation;
-	glm::quat rotationQuaternion(glm::radians(deltaRotation));
-	glm::mat4 rotationMatrix = glm::mat4_cast(rotationQuaternion);
-	for (auto& animNode : animationNodes) {
-		animNode->rotate(rotationMatrix);
-
-		glm::vec3 translation = animNode->getTranslation();
-		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), translation);
-		glm::mat4 rotatedTranslationMatrix = rotationMatrix * translationMatrix;
-		glm::vec3 rotatedTranslation = glm::vec3(rotatedTranslationMatrix[3]);
-		animNode->setTranslation(rotatedTranslation);
-
-	}
-	animated = false;
-	*/
+	
 
 }
 
