@@ -236,7 +236,8 @@
     <ClInclude Include="src\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="audio\breakout.mp3" />
+    <Media Include="audio\gameSong.mp3" />
+    <Media Include="audio\turn.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

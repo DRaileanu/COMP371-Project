@@ -1,8 +1,9 @@
 #include "RubikCube.h"
 
+extern irrklang::ISoundEngine* SoundEngine;
 RubikCube::RubikCube() {
 	animated = false;
-	animationDuration = 0.25f;
+	animationDuration = 0.7f;
 	//setup all the rubikParts
 	GroupNode* rubikPart;
 
@@ -228,6 +229,7 @@ void RubikCube::animationUpdate() {
 void RubikCube::rotatePositiveXCW() {
 	if (!animated) {//only do the setup when called without any animation in progress
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -258,6 +260,7 @@ void RubikCube::rotatePositiveXCW() {
 void RubikCube::rotatePositiveXCCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -286,6 +289,7 @@ void RubikCube::rotatePositiveXCCW() {
 void RubikCube::rotateNegativeXCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -314,6 +318,7 @@ void RubikCube::rotateNegativeXCW() {
 void RubikCube::rotateNegativeXCCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -342,6 +347,7 @@ void RubikCube::rotateNegativeXCCW() {
 void RubikCube::rotatePositiveYCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -370,6 +376,7 @@ void RubikCube::rotatePositiveYCW() {
 void RubikCube::rotatePositiveYCCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -398,6 +405,7 @@ void RubikCube::rotatePositiveYCCW() {
 void RubikCube::rotateNegativeYCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -426,6 +434,7 @@ void RubikCube::rotateNegativeYCW() {
 void RubikCube::rotateNegativeYCCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -454,6 +463,7 @@ void RubikCube::rotateNegativeYCCW() {
 void RubikCube::rotatePositiveZCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -482,6 +492,7 @@ void RubikCube::rotatePositiveZCW() {
 void RubikCube::rotatePositiveZCCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -510,6 +521,7 @@ void RubikCube::rotatePositiveZCCW() {
 void RubikCube::rotateNegativeZCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;
@@ -538,6 +550,7 @@ void RubikCube::rotateNegativeZCW() {
 void RubikCube::rotateNegativeZCCW() {
 	if (!animated) {
 		animated = true;
+		SoundEngine->play2D("audio/turn.mp3");
 
 		animationNodes.clear();
 		std::map<std::tuple<int, int, int>, GroupNode*> temp;

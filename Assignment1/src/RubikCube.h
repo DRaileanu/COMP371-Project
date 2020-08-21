@@ -2,6 +2,7 @@
 #include "GroupNode.h"
 #include "DrawNode.h"
 #include "Quad.h"
+#include "irrKlang/irrKlang.h"
 
 #include <map>
 

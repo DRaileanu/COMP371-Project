@@ -1,9 +1,14 @@
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------
-// The program uses a modified skeleton code provided by https://learnopengl.com, as well as modified shaders from the ones they provide
-// The original skeleton code is available at: https://github.com/JoeyDeVries/LearnOpenGL
-// The shadow shaders implemantion was according to https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows
-// Since we already implemented manually the Camera in assignment 1, we took the Camera class from learnopengl.com for this one, since it's very simple and neat.
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+ The program uses a modified skeleton code provided by https://learnopengl.com, as well as modified shaders from the ones they provide
+ The original skeleton code is available at: https://github.com/JoeyDeVries/LearnOpenGL
+ The shadow shaders implemantion was according to https://learnopengl.com/Advanced-Lighting/Shadows/Point-Shadows
+ Since we already implemented manually the Camera in assignment 1, we took the Camera class from learnopengl.com for this one, since it's very simple and neat.
+
+ We use irrKlang audio engine from https://www.ambiera.com/irrklang
+ Audio sounds where
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
 
 #pragma once
 #include <glad/glad.h>
@@ -52,6 +57,9 @@ Camera* mainCamera;
 double lastX;
 double lastY;
 
+//setup sound engine using irrKlang
+irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
+
 //----------------------------------------
 // Functions prototypes
 //----------------------------------------
@@ -73,8 +81,6 @@ int main() {
     //initialize OpenGL libraries and create window
     programInit();
 
-    //setup sound engine using irrKlang
-    irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
     
     // setup Camera
     mainCamera = new Camera(glm::vec3(0.0f, 20.0f, 75.0f));
@@ -298,7 +304,7 @@ int main() {
 
         // apply rubikCube rotations
         if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-            selectedRubikCube->rotatePositiveXCW();
+            selectedRubikCube->rotatePositiveXCW();        
         }
         if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
             selectedRubikCube->rotatePositiveXCCW();
