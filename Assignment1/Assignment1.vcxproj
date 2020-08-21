@@ -175,6 +175,8 @@
     <ClCompile Include="src\Sphere.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
     <ClCompile Include="src\ZigzagCube.cpp" />
+    <ClCompile Include="src\Timer.cpp" />
+    <ClCompile Include="src\TimexCube.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\generic.fs" />
@@ -219,7 +221,8 @@
     <ClInclude Include="src\SceneNode.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\TextureLoader.h" />
-    <ClInclude Include="src\ZigzagCube.h" />
+    <ClInclude Include="src\Timer.h" />
+   <ClInclude Include="src\ZigzagCube.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
