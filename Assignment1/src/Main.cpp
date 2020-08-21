@@ -396,10 +396,10 @@ int main() {
             selectedRubikCube->rotateFaceCCW();
         }
         if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
-            selectedRubikCube->rotatePositiveZCW();
+            
         }
         if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
-            selectedRubikCube->rotatePositiveZCCW();
+            
         }
         if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
             decorativeCubes->removeCubes(500);
@@ -538,6 +538,9 @@ int main() {
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
             selectedNode->moveDown(25 * dt);
         }
+
+
+        /*
         //rotate left continously(counter-clockwise around y-axis)
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
             selectedNode->rotate(glm::vec3(0.0f, 150.0f*dt, 0.0f));
@@ -547,7 +550,7 @@ int main() {
             static bool keyPress = false;
             if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
                 if (!keyPress) {
-                    selectedNode->rotate(glm::vec3(0.0f, 5.0f, 0.0f));
+                    selectedRubikCube->rotate(glm::vec3(0.0f, 90.0, 0.0f));
                     keyPress = true;
                 }
             }
@@ -564,7 +567,7 @@ int main() {
             static bool keyPress = false;
             if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
                 if (!keyPress) {
-                    selectedNode->rotate(glm::vec3(0.0f, -5.0f, 0.0f));
+                    selectedRubikCube->rotate(glm::vec3(0.0f, -90.0, 0.0f));
                     keyPress = true;
                 }
             }
@@ -572,6 +575,7 @@ int main() {
                 keyPress = false;
             }
         }
+        */
         //reposition selectedNode randomly on the grid
         {
             static bool keyPress = false;
@@ -588,23 +592,57 @@ int main() {
             }
         }
 
-        //Top part of Model transformations. Only works if selectedNode is a Model and not a LightNode or GroupNode
-        //pitches top of model forward
+        
+        //rotate whole cube on some axis
+        //x-axis
         if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(-150.0f * dt, 0.0f, 0.0f));
+            selectedRubikCube->rotateXCCW();
         }
-        //pitches top of model backwards
         if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(150.0f * dt, 0.0f, 0.0f));
+            selectedRubikCube->rotateXCW();
         }
-        //shears top of model left along local x axis
-        if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(0.0f, 0.0f, -150.0f * dt));
+        //y-axis
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+            selectedRubikCube->rotateYCCW();
         }
-        //shears top of model right along local x axis
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+            selectedRubikCube->rotateYCW();
+        }
+        //z-axis
         if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-            selectedNode->rotate(glm::vec3(0.0f, 0.0f, 150.0f * dt));
+            selectedRubikCube->rotateZCCW();
         }
+        if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+            selectedRubikCube->rotateZCW();
+        }
+
+        //ROLL
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+                if (!keyPress) {
+                    selectedRubikCube->rotate(glm::vec3(0.0f, 0.0, 90.0f));
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_X) == GLFW_RELEASE) {
+                keyPress = false;
+            }
+        }
+         
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+                if (!keyPress) {
+                    selectedRubikCube->rotate(glm::vec3(0.0f, 0.0, -90.0f));
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
+                keyPress = false;
+            }
+        }
+        
 
 
 

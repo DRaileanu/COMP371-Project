@@ -44,25 +44,21 @@ public:
 	void rotateFaceCCW();
 
 	//methods to rotate faces of the Rubik Cube
-	void rotatePositiveXCW();
-	void rotatePositiveXCCW();
-	void rotateNegativeXCW();
-	void rotateNegativeXCCW();
+	void rotateXCW();
+	void rotateXCCW();
 
-	void rotatePositiveYCW();
-	void rotatePositiveYCCW();
-	void rotateNegativeYCW();
-	void rotateNegativeYCCW();
+	void rotateYCW();
+	void rotateYCCW();
 
-	void rotatePositiveZCW();
-	void rotatePositiveZCCW();
-	void rotateNegativeZCW();
-	void rotateNegativeZCCW();
+	void rotateZCW();
+	void rotateZCCW();
 
 protected:
 	RubikCube();
 	virtual void update(const glm::mat4& CTM, float dt) override;//override SceneNode method in order to call animationUpdate() during an animation
 	void animationUpdate();//rotates/translates animationNodes during an animation
+	void rotationAnimationUpdate();//performs animation of whole rubik cube, added at last minute, so didn't have time to integrate with animationUpdate together
+	void refreshSelectedFace();//after whole cube rotation, need to refresh selected face, as we want it to be the one that rotated in place of old one
 
 	DrawNode* arrow;
 	int selectedFace;
@@ -71,5 +67,9 @@ protected:
 	std::vector<GroupNode*> animationNodes;//animationUpdate() needs to keep track of which mini-cubes are we animating
 	glm::vec3 animationRotation;//animationUpdate() needs to keep track of how are we animating
 	float animationDuration;//controls speed of animation
+
+	bool rotatingWholeCube;//to know if need to call rotationAnimationUpdate() or animationUpdate() (because feature added at last minute)
+	glm::vec3 wholeCubeRotation;
+
 };
 
