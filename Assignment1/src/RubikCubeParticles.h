@@ -13,7 +13,12 @@ public:
 
 	void update(const glm::mat4& CTM, float dt) override {
 		if (animated) {
-			animationUpdate();
+			if (rotatingWholeCube) {
+				rotationAnimationUpdate();
+			}
+			else {
+				animationUpdate();
+			}
 		}
 		updateWorldTransform(CTM);
 		for (auto& el : particleEffects) {
