@@ -24,7 +24,7 @@ extern  unsigned int SCR_WIDTH;
 extern  unsigned int SCR_HEIGHT;
 
 class Renderer{
-	const static int MAX_LIGHTS = 3;//be sure that it matches the MAX_LIGHTS from shaders !!!
+	const static int MAX_LIGHTS = 1;//be sure that it matches the MAX_LIGHTS from shaders !!!
 	const static unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;//quality of depth map
 	//if want variable far_plane, need to send them to shaders in render() and not in Renderer constructor!
 	const float near_plane = 0.1;//minimum distance from which depth is computed

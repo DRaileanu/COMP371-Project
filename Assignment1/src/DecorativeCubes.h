@@ -9,7 +9,7 @@
 
 
 class DecorativeCubes : public Drawable {
-	static const unsigned int MAX_CUBES = 5000;
+	static const unsigned int MAX_CUBES = 10000;
 	struct DecorativeCube {
 		DecorativeCube() {
 			int xPos = RandRange(-48, 48);

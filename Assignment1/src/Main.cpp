@@ -131,20 +131,20 @@ int main() {
     //rubik cubes
     RubikCube* rubikCube1 = new RubikCubeColors;
     rubikCube1->scale(glm::vec3(5.0f, 5.0f, 5.0f));
-    rubikCube1->translate(glm::vec3(15.0f, 44.0f, 15.0f));
+    rubikCube1->translate(glm::vec3(14.0f, 44.0f, 14.0f));
     root->addChild(rubikCube1);//only add one rubik cube, rest are added during swap
 
     RubikCube* rubikCube2 = new RubikCubeTextures;
     rubikCube2->scale(glm::vec3(5.0f, 5.0f, 5.0f));
-    rubikCube2->translate(glm::vec3(15.0f, 44.0f, 15.0f));
+    rubikCube2->translate(glm::vec3(14.0f, 44.0f, 14.0f));
     
     RubikCube* rubikCube3 = new RubikCubeJigsaw;
     rubikCube3->scale(glm::vec3(5.0f, 5.0f, 5.0f));
-    rubikCube3->translate(glm::vec3(15.0f, 44.0f, 15.0f));
+    rubikCube3->translate(glm::vec3(14.0f, 44.0f, 14.0f));
 
     RubikCube* rubikCube4 = new RubikCubeParticles;
     rubikCube4->scale(glm::vec3(5.0f, 5.0f, 5.0f));
-    rubikCube4->translate(glm::vec3(15.0f, 44.f, 15.0f));
+    rubikCube4->translate(glm::vec3(14.0f, 44.f, 14.0f));
 
 
     //skybox, made from 6 grids and decorative cubes
@@ -415,12 +415,32 @@ int main() {
         }
 
         //increase/decrease number of decorative cubes
-        if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
-            decorativeCubes->removeCubes(500);
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
+                if (!keyPress) {
+                    decorativeCubes->removeCubes(1000);
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_RELEASE) {
+                keyPress = false;
+            }
         }
-        if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
-            decorativeCubes->addCubes(500);
+        {
+            static bool keyPress = false;
+            if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
+                if (!keyPress) {
+                    decorativeCubes->addCubes(1000);
+                    keyPress = true;
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_RELEASE) {
+                keyPress = false;
+            }
         }
+
+
         //starting timer
         if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
             if (!timer->timeStarted) {
