@@ -1,5 +1,7 @@
 #pragma once;
 
+//utility class to provide random numbers or unit vectors
+
 // Generate a random number between [0..1)
 inline float Random()
 {

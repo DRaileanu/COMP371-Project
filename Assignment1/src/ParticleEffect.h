@@ -12,6 +12,7 @@
  * Although particles are normally made using billboard quads, these particles will be rotated/translated around as a 3d object, hence they are modeled as cubes.
  */
 
+
 class ParticleEffect : public Drawable {
     static const unsigned int MAX_PARTICLES = 1000;
 public:

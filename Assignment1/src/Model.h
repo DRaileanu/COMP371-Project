@@ -2,7 +2,6 @@
 #include "GroupNode.h"
 #include "DrawNode.h"
 #include "Cube.h"
-#include "Sphere.h"
 #include <vector>
 
 //creates models of 3D letters/digits by manipulating geometry of unit cubes and a sphere
@@ -40,7 +39,6 @@ private:
 	void createColumn();
 
 	Drawable* cube;//all DrawNodes of a Model will share same Cube
-	Sphere* sphere;
 	GroupNode* model;
 
 };

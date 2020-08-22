@@ -6,7 +6,7 @@
 #include "Pyramid.h"
 #include <map>
 
-//Class that handles the topology and transformations of the RubikCube
+//Class that handles the topology and transformations of the RubikCube. The class is abstract, different kinds of Rubic Cubes will have to implement their own setupDrawNodes() according to what type of puzzle they have
 /*
 	When naming/mapping nodes to rubikParts, it's according to the following convention:
 	Think of RubikCube as a 3x3x3 cube, where coordinate 2,2,2 should be thought of as the origin (the middle-most cube)
@@ -20,8 +20,13 @@
 	Since the middle-most mini-cube is never rendered (coordinate 2,2,2), there are a total of 26 GroupNodes in the RubikCube.
 	During rotations, the RubikCube handles swaping Groupnodes to their appropriate coordinates in the rubikParts	
 
-	The cube can be transformed in 12 different ways, there are 6 faces that can each be rotated clockwise(CW)/counter-clockwise(CCW).
-	The functions to perform rotations are named according to the normal direction of the face being rotated and if CW or CCW
+	The face numbers have their normals pointing in the following directions:
+	1 : +Y
+	2 : +Z
+	3 : +X
+	4 : -Y
+	5 : -X
+	6 : -Z
 */
 
 class RubikCube : public GroupNode{
@@ -29,7 +34,7 @@ public:
 	//RubikCube();
 	~RubikCube() {};
 
-	virtual void setupDrawNodes() = 0;
+	virtual void setupDrawNodes() = 0;//ever
 
 	//methods to select face to apply rotations
 	void selectFace1();
