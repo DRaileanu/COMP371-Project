@@ -65,6 +65,59 @@ DecorativeCubes::DecorativeCubes(unsigned int numCubes) {
     setupBufferData();
 }
 
+void DecorativeCubes::Resize(unsigned int numCubes)
+{
+    numCubes = std::min(numCubes, MAX_CUBES);
+    unsigned int cubesSize = cubes.size();
+    if (cubes.size() < numCubes) {
+        for (unsigned int i = 0; i < numCubes - cubesSize; ++i) {
+            cubes.push_back(DecorativeCube());
+        }
+    }
+    else {
+        cubes.resize(numCubes);
+    }
+    vertices.resize(8 * numCubes);
+    colours.resize(8 * numCubes);
+}
+
+void DecorativeCubes::addCubes(unsigned int numCubes) {
+    unsigned int newNumCubes = std::min(cubes.size() + numCubes, MAX_CUBES);
+    Resize(newNumCubes);
+}
+
+void DecorativeCubes::removeCubes(unsigned int numCubes) {
+    if (numCubes >= cubes.size()) {
+        Resize(0);
+    }
+    else {
+        Resize(cubes.size() - numCubes);
+    }
+}
+
+void DecorativeCubes::setupBufferData() {
+    glBindVertexArray(VAO);
+    //positions
+    glGenBuffers(1, &bufferObjects[VERTEX_BUFFER]);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[VERTEX_BUFFER]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_CUBES, NULL, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(VERTEX_BUFFER);
+
+    //colours
+    glGenBuffers(1, &bufferObjects[COLOUR_BUFFER]);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[COLOUR_BUFFER]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_CUBES, NULL, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(COLOUR_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(COLOUR_BUFFER);
+
+    glGenBuffers(1, &bufferObjects[INDEX_BUFFER]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferObjects[INDEX_BUFFER]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 36 * MAX_CUBES, indices.data(), GL_STATIC_DRAW);
+
+    glBindVertexArray(0);
+}
+
 
 void DecorativeCubes::draw() {
     glBindVertexArray(VAO);
@@ -110,44 +163,6 @@ void DecorativeCubes::Update(float dt) {
     BuildVertexBuffer();
 }
 
-void DecorativeCubes::setupBufferData() {
-    glBindVertexArray(VAO);
-    //positions
-    glGenBuffers(1, &bufferObjects[VERTEX_BUFFER]);
-    glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[VERTEX_BUFFER]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_CUBES, NULL, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(VERTEX_BUFFER);
-
-    //colours
-    glGenBuffers(1, &bufferObjects[COLOUR_BUFFER]);
-    glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[COLOUR_BUFFER]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_CUBES, NULL, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(COLOUR_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(COLOUR_BUFFER);
-
-    glGenBuffers(1, &bufferObjects[INDEX_BUFFER]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferObjects[INDEX_BUFFER]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 36 * MAX_CUBES, indices.data(), GL_STATIC_DRAW);
-
-    glBindVertexArray(0);
-}
-
-void DecorativeCubes::Resize(unsigned int numCubes)
-{
-    numCubes = std::min(numCubes, MAX_CUBES);
-    unsigned int cubesSize = cubes.size();
-    if (cubes.size() < numCubes) {
-        for (unsigned int i = 0; i < numCubes - cubesSize; ++i) {
-            cubes.push_back(DecorativeCube());
-        }
-    }
-    else {
-        cubes.resize(numCubes);
-    }
-    vertices.resize(8 * numCubes);
-    colours.resize(8 * numCubes);
-}
 
 void DecorativeCubes::BuildVertexBuffer() {
     const glm::vec3 X(0.1, 0, 0);
@@ -192,16 +207,3 @@ void DecorativeCubes::BuildVertexBuffer() {
     glBindVertexArray(0);
 }
 
-void DecorativeCubes::addCubes(unsigned int numCubes) {
-    unsigned int newNumCubes = std::min(cubes.size() + numCubes, MAX_CUBES);
-    Resize(newNumCubes);
-}
-
-void DecorativeCubes::removeCubes(unsigned int numCubes) {
-    if (numCubes >= cubes.size()) {
-        Resize(0);
-    }
-    else {
-        Resize(cubes.size() - numCubes);
-    }
-}

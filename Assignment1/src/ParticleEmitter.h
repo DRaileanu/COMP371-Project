@@ -1,6 +1,8 @@
 #pragma once;
-
 #include "Particle.h"
+
+// Particle emitter creates random properties of a Particle
+// Note that it does not actually create the new particle, it takes one as argument and sets its properties
 
 class ParticleEmitter {
 public:

@@ -118,10 +118,12 @@ void Renderer::render() {
 
 			//render scene into depthCubeMap
 			glEnable(GL_CULL_FACE);
-			//for (auto& node : genericDraws) {
-			//	shadowShader->setMat4("model", node->getWorldTransform());
-			//	node->draw();
-			//}
+			for (auto& node : genericDraws) {
+				if (node->getCastsShadow()) {
+					shadowShader->setMat4("model", node->getWorldTransform());
+					node->draw();
+				}
+			}
 			for (auto& node : opaqueTexDraws) {
 				shadowShader->setMat4("model", node->getWorldTransform());
 				node->draw();

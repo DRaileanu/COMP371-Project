@@ -35,11 +35,13 @@ public:
 
 				quadNode = new DrawNode(redQuad);
 				quadNode->translate(glm::vec3(0.0f, 0.0f, 0.5f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 
 				quadNode = new DrawNode(blackQuad);
 				quadNode->rotate(glm::vec3(0.0f, 180.0f, 0.0f));
 				quadNode->translate(glm::vec3(0.0f, 0.0f, 0.49f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 			}
 		}
@@ -52,10 +54,12 @@ public:
 				quadNode = new DrawNode(greenQuad);
 				quadNode->rotate(glm::vec3(0.0f, 180.0f, 0.0f));
 				quadNode->translate(glm::vec3(0.0f, 0.0f, -0.5f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 
 				quadNode = new DrawNode(blackQuad);
 				quadNode->translate(glm::vec3(0.0f, 0.0f, -0.49f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 			}
 		}
@@ -68,11 +72,13 @@ public:
 				quadNode = new DrawNode(whiteQuad);
 				quadNode->rotate(glm::vec3(0.0f, 90.0f, 0.0f));
 				quadNode->translate(glm::vec3(0.5f, 0.0f, 0.0f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 
 				quadNode = new DrawNode(blackQuad);
 				quadNode->rotate(glm::vec3(0.0f, -90.0f, 0.0f));
 				quadNode->translate(glm::vec3(0.49f, 0.0f, 0.0f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 			}
 		}
@@ -85,11 +91,13 @@ public:
 				quadNode = new DrawNode(yellowQuad);
 				quadNode->rotate(glm::vec3(0.0f, -90.0f, 0.0f));
 				quadNode->translate(glm::vec3(-0.5f, 0.0f, 0.0f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 
 				quadNode = new DrawNode(blackQuad);
 				quadNode->rotate(glm::vec3(0.0f, 90.0f, 0.0f));
 				quadNode->translate(glm::vec3(-0.49f, 0.0f, 0.0f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 			}
 		}
@@ -102,11 +110,13 @@ public:
 				quadNode = new DrawNode(orangeQuad);
 				quadNode->rotate(glm::vec3(-90.0f, 0.0f, 0.0f));
 				quadNode->translate(glm::vec3(0.0f, 0.5f, 0.0f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 
 				quadNode = new DrawNode(blackQuad);
 				quadNode->rotate(glm::vec3(90.0f, 0.0f, 0.0f));
 				quadNode->translate(glm::vec3(0.0f, 0.49f, 0.0f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 			}
 		}
@@ -119,11 +129,13 @@ public:
 				quadNode = new DrawNode(blueQuad);
 				quadNode->rotate(glm::vec3(90.0f, 0.0f, 0.0f));
 				quadNode->translate(glm::vec3(0.0f, -0.5f, 0.0f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 
 				quadNode = new DrawNode(blackQuad);
 				quadNode->rotate(glm::vec3(-90.0f, 0.0f, 0.0f));
 				quadNode->translate(glm::vec3(0.0f, -0.49f, 0.0f));
+				quadNode->setCastsShadow(true);
 				rubikPart->addChild(quadNode);
 			}
 		}

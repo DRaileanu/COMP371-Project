@@ -36,10 +36,14 @@ public:
 	float getTransparency() { return transparency; }
 	void setTransparency(float t) { transparency = t; }
 
+	bool getCastsShadow() { return castsShadow; }
+	void setCastsShadow(bool b) { castsShadow = b; }
+
 private:
 	Drawable* drawable;
 	Material* material;
 	GLuint texture;
 	float transparency;
+	bool castsShadow = false;
 };
 

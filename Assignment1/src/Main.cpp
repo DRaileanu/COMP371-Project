@@ -108,12 +108,7 @@ int main() {
         glm::vec3(0.25, 0.25f, 0.25f), 
         32.0 
     };
-    Material* polishedGoldMaterial = new Material{
-    glm::vec3(0.24725, 0.2245, 0.0645),
-    glm::vec3(0.34615, 0.3143, 0.0903),
-    glm::vec3(0.797357, 0.723991, 0.208006),
-    120.0 
-    };
+
     Material* textureMaterial = new Material{
         glm::vec3(0.25, 0.25, 0.25),
         glm::vec3(0.25, 0.25, 0.25),
@@ -263,7 +258,8 @@ int main() {
 
 
     //start music
-    SoundEngine->play2D("audio/gameSong.mp3", true);
+    //SoundEngine->play2D("audio/gameSong.mp3", true);
+    irrklang::ISound* mainSong = SoundEngine->play2D("audio/gameSong.mp3", true, false, true);
     //------------------------------------------------------------------------------
 
     // render loop
@@ -521,6 +517,28 @@ int main() {
             }
         }
 
+        //toggle music
+        {
+            static bool keyPress = false;
+            static bool soundOn = true;
+            if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
+                if (!keyPress) {
+                    if (soundOn) {
+                        mainSong->setIsPaused(true);
+                        keyPress = true;
+                        soundOn = false;
+                    }
+                    else {
+                        mainSong->setIsPaused(false);
+                        keyPress = true;
+                        soundOn = true;
+                    }
+                }
+            }
+            if (glfwGetKey(window, GLFW_KEY_U) == GLFW_RELEASE) {
+                keyPress = false;
+            }
+        }
 
 
         // update scene

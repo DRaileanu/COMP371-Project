@@ -4,7 +4,7 @@ extern irrklang::ISoundEngine* SoundEngine;
 RubikCube::RubikCube() {
 	animated = false;
 	rotatingWholeCube = false;
-	animationDuration = 0.4f;
+	animationDuration = 1.0f;
 	//add arrow
 	arrow = new DrawNode(new Pyramid);
 	arrow->setRotation(glm::vec3(180.0, 0.0f, 0.0f));

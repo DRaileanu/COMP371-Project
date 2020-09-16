@@ -77,6 +77,43 @@ ParticleEffect::ParticleEffect(unsigned int numParticles) :
 
 ParticleEffect::~ParticleEffect() {}
 
+void ParticleEffect::Resize(unsigned int numParticles)
+{
+    numParticles = std::min(numParticles, MAX_PARTICLES);
+    particles.resize(numParticles, Particle());
+    vertices.resize(8 * numParticles);
+    colours.resize(8 * numParticles);
+}
+
+void ParticleEffect::setupBufferData() {
+    glBindVertexArray(VAO);
+    //positions
+    glGenBuffers(1, &bufferObjects[VERTEX_BUFFER]);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[VERTEX_BUFFER]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_PARTICLES, NULL, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(VERTEX_BUFFER);
+
+    //colours
+    glGenBuffers(1, &bufferObjects[COLOUR_BUFFER]);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[COLOUR_BUFFER]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_PARTICLES, NULL, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(COLOUR_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(COLOUR_BUFFER);
+
+    glGenBuffers(1, &bufferObjects[INDEX_BUFFER]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferObjects[INDEX_BUFFER]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 36 * MAX_PARTICLES, indices.data(), GL_STATIC_DRAW);
+
+    glBindVertexArray(0);
+}
+
+
+void ParticleEffect::draw() {
+    glBindVertexArray(VAO);
+    glDrawElements(type, particles.size() * 36, GL_UNSIGNED_INT, 0);
+}
+
 
 void ParticleEffect::SetParticleEmitter(ParticleEmitter* pEmitter)
 {
@@ -103,12 +140,8 @@ void ParticleEffect::RandomizeParticles()
     }
 }
 
-void ParticleEffect::EmitParticle(Particle& particle)
-{
-    assert(particleEmitter != NULL);
-    particleEmitter->EmitParticle(particle);
-}
 
+/*
 void ParticleEffect::EmitParticles()
 {
     if (particleEmitter == NULL)
@@ -122,6 +155,37 @@ void ParticleEffect::EmitParticles()
             EmitParticle(particles[i]);
         }
     }
+}
+*/
+
+void ParticleEffect::EmitParticle(Particle& particle)
+{
+    assert(particleEmitter != NULL);
+    particleEmitter->EmitParticle(particle);
+}
+
+void ParticleEffect::Update(float dt)
+{
+    for (unsigned int i = 0; i < particles.size(); ++i)
+    {
+        Particle& particle = particles[i];
+
+        particle.age += dt;
+        if (particle.age > particle.lifeTime)
+        {
+            if (particleEmitter != NULL) EmitParticle(particle);
+            else RandomizeParticle(particle);
+        }
+
+        float lifeRatio = glm::clamp(particle.age / particle.lifeTime, 0.0f, 1.0f);
+        particle.velocity += (force * dt);
+        particle.position += (particle.velocity * dt);
+        particle.color = glm::mix(colorKeyFrames.first, colorKeyFrames.second, lifeRatio);
+        particle.rotate = glm::mix<float>(rotateKeyFrames.first, rotateKeyFrames.second, lifeRatio);
+        particle.size = glm::mix<float>(sizeKeyFrames.first, sizeKeyFrames.second, lifeRatio);
+    }
+
+    BuildVertexBuffer();
 }
 
 void ParticleEffect::BuildVertexBuffer()
@@ -173,65 +237,5 @@ void ParticleEffect::BuildVertexBuffer()
     glBindVertexArray(0);
 }
 
-void ParticleEffect::Update(float dt)
-{
-    for (unsigned int i = 0; i < particles.size(); ++i)
-    {
-        Particle& particle = particles[i];
-
-        particle.age += dt;
-        if (particle.age > particle.lifeTime)
-        {
-            if (particleEmitter != NULL) EmitParticle(particle);
-            else RandomizeParticle(particle);
-        }
-
-        float lifeRatio = glm::clamp(particle.age / particle.lifeTime, 0.0f, 1.0f);
-        particle.velocity += (force * dt);
-        particle.position += (particle.velocity * dt);
-        particle.color = glm::mix(colorKeyFrames.first, colorKeyFrames.second, lifeRatio);
-        particle.rotate = glm::mix<float>(rotateKeyFrames.first, rotateKeyFrames.second, lifeRatio);
-        particle.size = glm::mix<float>(sizeKeyFrames.first, sizeKeyFrames.second, lifeRatio);
-    }
-
-    BuildVertexBuffer();
-}
 
 
-
-void ParticleEffect::Resize(unsigned int numParticles)
-{
-    numParticles = std::min(numParticles, MAX_PARTICLES);
-    particles.resize(numParticles, Particle());
-    vertices.resize(8 * numParticles);
-    colours.resize(8 * numParticles);
-}
-
-void ParticleEffect::setupBufferData() {
-    glBindVertexArray(VAO);
-    //positions
-    glGenBuffers(1, &bufferObjects[VERTEX_BUFFER]);
-    glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[VERTEX_BUFFER]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_PARTICLES, NULL, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(VERTEX_BUFFER);
-    
-    //colours
-    glGenBuffers(1, &bufferObjects[COLOUR_BUFFER]);
-    glBindBuffer(GL_ARRAY_BUFFER, bufferObjects[COLOUR_BUFFER]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 8 * MAX_PARTICLES, NULL, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(COLOUR_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(COLOUR_BUFFER);
-    
-    glGenBuffers(1, &bufferObjects[INDEX_BUFFER]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferObjects[INDEX_BUFFER]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 36 * MAX_PARTICLES, indices.data(), GL_STATIC_DRAW);
-
-    glBindVertexArray(0);
-}
-
-
-void ParticleEffect::draw() {
-    glBindVertexArray(VAO);
-    glDrawElements(type, particles.size() * 36, GL_UNSIGNED_INT, 0);
-}

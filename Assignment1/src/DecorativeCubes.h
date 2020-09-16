@@ -10,6 +10,8 @@
 
 class DecorativeCubes : public Drawable {
 	static const unsigned int MAX_CUBES = 10000;
+
+	// private struct for a single Decorative Cube that travels on xz plane
 	struct DecorativeCube {
 		DecorativeCube() {
 			int xPos = RandRange(-48, 48);
@@ -41,6 +43,7 @@ class DecorativeCubes : public Drawable {
 		float		keyframeDuration;
 	};
 
+
 public:
 	DecorativeCubes(unsigned int numCubes = 0);
 	virtual ~DecorativeCubes() {}
@@ -49,7 +52,7 @@ public:
 
 	virtual void Update(float dt);
 
-	void Resize(unsigned int numCubes);
+	void Resize(unsigned int numCubes);//resize number of decorative cubes
 
 	void addCubes(unsigned int numCubes);//adds numCubes as long as still under MAX_CUBES
 	void removeCubes(unsigned int numCubes);//removes numCubes unless already 0

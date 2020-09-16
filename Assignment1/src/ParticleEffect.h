@@ -28,7 +28,7 @@ public:
 
     // Test method to randomize the particles in an interesting way
     void RandomizeParticles();
-    void EmitParticles();
+    //void EmitParticles();
 
     virtual void Update(float dt);
 
